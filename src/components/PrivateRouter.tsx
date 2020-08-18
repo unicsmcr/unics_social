@@ -1,19 +1,21 @@
-import React from "react";
+import React, { ElementType, FunctionComponent } from "react";
 
-import { Route , Redirect, withRouter } from 'react-router-dom';
-interface propsForRouter {
-    Component: JSX.Element
+import { Route, Redirect, withRouter, RouteComponentProps } from 'react-router-dom';
+
+interface propsForRouter extends RouteComponentProps {
+    Component: ElementType
     exact: boolean
-    path: String
+    path: string
 }
-const PrivateRouter = (props: propsForRouter): JSX.Element =>  {
-    const {Component, ...rest} = props
+
+const PrivateRouter: FunctionComponent<propsForRouter> = (props) => {
+    const { Component, ...rest } = props
     return (
         <Route
             {...rest}
             render={props =>
-                localStorage.getItem('access-token')  ? <Component />:
-                    <Redirect to="/login"/>
+                localStorage.getItem('access-token') ? <Component /> :
+                    <Redirect to="/login" />
             }
         />
     )
