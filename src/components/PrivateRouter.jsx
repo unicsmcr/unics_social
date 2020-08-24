@@ -3,6 +3,7 @@ import React from "react";
 import { Route, Redirect, withRouter } from 'react-router-dom';
 
 
+
 const PrivateRouter = (props) => {
     const { Component, ...rest } = props
     return (
