@@ -9,15 +9,25 @@ import useStyles from './util/useStyles';
 const footers = [
   {
     title: 'General',
-    links: ['About', 'Sponsors', 'Contact'],
+    links: [
+			['About', '/'],
+			['Sponsors', '/sponsors'],
+			['Contact', '/contact'],
+		]
   },
   {
     title: 'Resources',
-    links: ['News', 'GitHub'],
+    links: [
+			['News', ''],
+			['GitHub', 'https://github.com/unicsmcr'],
+		]
   },
   {
     title: 'Legal',
-    links: ['Privacy policy', 'Terms of use'],
+    links: [
+			['Privacy policy', ''],
+			['Terms of use', ''],
+		]
   },
 ];
 
@@ -32,9 +42,9 @@ export default function Footer() {
 						{footer.title}
 					</Typography>
 					<ul>
-						{footer.links.map(item => (
+						{footer.links.map(([item, url]) => (
 							<li key={item}>
-								<Link href="#" variant="subtitle1" color="textSecondary">
+								<Link href={url} variant="subtitle1" color="textSecondary">
 									{item}
 								</Link>
 							</li>
