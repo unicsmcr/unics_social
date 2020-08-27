@@ -15,6 +15,6 @@ export const EventsListSlice = createSlice({
         }
     }
 })
-export const {setChannels, appendChannel, removeChannel} = EventsListSlice.actions
-export const selectChannels = state => state.eventsList
+export const {setChannels, appendEvent, removeEvent} = EventsListSlice.actions
+export const selectEventsList = state => state.eventsList
 export default EventsListSlice.reducer
