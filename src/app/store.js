@@ -1,9 +1,9 @@
 import {configureStore} from "@reduxjs/toolkit";
 import AuthReducer from "../features/AuthSlice";
-import ChannelsReducer from "../features/ChannelsSlice";
+import EventsListReducer from "../features/EventsListSlice";
 export default configureStore({
     reducer: {
         auth: AuthReducer,
-        channels: ChannelsReducer,
+        eventsList: EventsListReducer,
     }
 })
