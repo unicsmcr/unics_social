@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1, 1.5),
   },
   heroContent: {
-    padding: theme.spacing(24, 2, 24, 2),
+    padding: theme.spacing(28, 2, 28, 2),
   },
   cardHeader: {
     backgroundColor:
