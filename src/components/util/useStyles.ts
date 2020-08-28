@@ -23,15 +23,8 @@ const useStyles = makeStyles(theme => ({
 	'heroContent': {
 		padding: theme.spacing(28, 2, 28, 2)
 	},
-	'cardHeader': {
-		backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700]
-	},
-	'cardPricing': {
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'baseline',
-		marginBottom: theme.spacing(2)
+	'paddedCaption': {
+		padding: theme.spacing(2, 0, 2, 0)
 	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
