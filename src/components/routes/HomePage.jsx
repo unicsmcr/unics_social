@@ -5,7 +5,7 @@ import Container from '@material-ui/core/Container';
 import Footer from '../../components/Footer';
 import useStyles from '../../components/util/useStyles';
 import PublicAppBar from '../bars/PublicAppBar';
-import EventCard from "../EventCard";
+import EventCard from '../EventCard';
 
 export default function Homepage() {
 	const classes = useStyles();

@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'baseline',
 		marginBottom: theme.spacing(2)
 	},
-	eventCard: {
+	'eventCard': {
 		width: 300
 	},
 	'footer': {
