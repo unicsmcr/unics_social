@@ -1,23 +1,26 @@
 import React from "react";
 import Card from "@material-ui/core/Card";
-import {CardContent, CardHeader, Typography} from "@material-ui/core";
+import {CardContent, Typography} from "@material-ui/core";
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
+import useStyles from "./util/useStyles";
 const EventCard = ({title, description, startDate, endDate}) => {
+    const classes = useStyles();
     return(
-        <Card>
-            <CardHeader>
+        <Card className={classes.eventCard}>
+            <CardContent>
                 <Typography variant={"h3"}>
                     {title}
                 </Typography>
-            </CardHeader>
-            <CardContent>
                 <Typography variant={"h5"} color="textSecondary">
-                    {description}
+                    {description.substring(0, 50)}
+                </Typography>
+                <Typography variant={"subtitle2"} color="secondary">
+                    {startDate} - {endDate}
                 </Typography>
             </CardContent>
             <CardActions>
-                <Button size="small">Learn More</Button>
+                <Button size="small" color="primary">Learn More</Button>
             </CardActions>
         </Card>
     )

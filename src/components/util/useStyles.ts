@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'baseline',
 		marginBottom: theme.spacing(2)
 	},
+	eventCard: {
+		width: 300
+	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
 		marginTop: theme.spacing(8),

@@ -5,6 +5,7 @@ import Container from '@material-ui/core/Container';
 import Footer from '../../components/Footer';
 import useStyles from '../../components/util/useStyles';
 import PublicAppBar from '../bars/PublicAppBar';
+import EventCard from "../EventCard";
 
 export default function Homepage() {
 	const classes = useStyles();
@@ -21,6 +22,7 @@ export default function Homepage() {
 				<Typography variant="h5" align="center" color="textSecondary" component="p">
           We're helping to connect University of Manchester students with each other online in light of the COVID-19 pandemic!
 				</Typography>
+				<EventCard title="Event" description="dsdsd" startDate="23/12" endDate="12/12"/>
 			</Container>
 			{/* End hero unit */}
 			<Footer />
