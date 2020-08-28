@@ -6,6 +6,7 @@ import Footer from '../../components/Footer';
 import useStyles from '../../components/util/useStyles';
 import PublicAppBar from '../bars/PublicAppBar';
 import EventCard from '../EventCard';
+import LoadingEventCard from "../LoadingEventCard";
 
 export default function Homepage() {
 	const classes = useStyles();
@@ -23,6 +24,7 @@ export default function Homepage() {
           We're helping to connect University of Manchester students with each other online in light of the COVID-19 pandemic!
 				</Typography>
 				<EventCard title="Event" description="dsdsd" startDate="23/12" endDate="12/12"/>
+				<LoadingEventCard/>
 			</Container>
 			{/* End hero unit */}
 			<Footer />
