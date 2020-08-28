@@ -1,7 +1,5 @@
 import React from 'react';
 
-const NetworkingPage = () => {
-    return <div>NetworkingPage</div>
-}
+const NetworkingPage = () => <div>NetworkingPage</div>;
 
 export default NetworkingPage;
