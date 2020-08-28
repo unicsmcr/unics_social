@@ -4,16 +4,18 @@ import HomePage from './components/routes/HomePage';
 import EventsPage from './components/routes/EventsPage';
 import ChatPage from './components/routes/ChatPage';
 import NetworkingPage from './components/routes/NetworkingPage';
-import Header from './components/Header';
 import FriendsPage from './components/routes/FriendsPage';
+import RegistrationPage from './components/routes/RegistrationPage';
+import LoginPage from './components/routes/LoginPage';
 
 function App() {
   return (
     <div>
       <BrowserRouter>
-        <Header />
         <Switch>
           <Route path='/' exact component={HomePage} />
+          <Route path='/register' exact component={RegistrationPage} />
+          <Route path='/login' exact component={LoginPage} />
           <Route path='/events' component={EventsPage} />
           <Route path='/chat' component={ChatPage} />
           <Route path='/friends' component={FriendsPage} />
