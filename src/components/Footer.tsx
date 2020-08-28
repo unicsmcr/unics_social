@@ -7,28 +7,28 @@ import Link from '@material-ui/core/Link';
 import useStyles from './util/useStyles';
 
 const footers = [
-  {
-    title: 'General',
-    links: [
+	{
+		title: 'General',
+		links: [
 			['About', '/'],
 			['Sponsors', '/sponsors'],
-			['Contact', '/contact'],
+			['Contact', '/contact']
 		]
-  },
-  {
-    title: 'Resources',
-    links: [
+	},
+	{
+		title: 'Resources',
+		links: [
 			['News', ''],
-			['GitHub', 'https://github.com/unicsmcr'],
+			['GitHub', 'https://github.com/unicsmcr']
 		]
-  },
-  {
-    title: 'Legal',
-    links: [
+	},
+	{
+		title: 'Legal',
+		links: [
 			['Privacy policy', ''],
-			['Terms of use', ''],
+			['Terms of use', '']
 		]
-  },
+	}
 ];
 
 export default function Footer() {
@@ -36,7 +36,7 @@ export default function Footer() {
 
 	return <Container maxWidth="md" component="footer" className={classes.footer}>
 		<Grid container spacing={4} justify="space-between">
-			{footers.map((footer) => (
+			{footers.map(footer => (
 				<Grid item xs={6} sm={4} key={footer.title}>
 					<Typography variant="h6" color="textPrimary" gutterBottom>
 						{footer.title}
@@ -56,18 +56,18 @@ export default function Footer() {
 		<Box mt={5}>
 			<Copyright />
 		</Box>
-	</Container>
+	</Container>;
 }
 
 function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://unicsmcr.com/">
+	return (
+		<Typography variant="body2" color="textSecondary" align="center">
+			{'Copyright © '}
+			<Link color="inherit" href="https://unicsmcr.com/">
         UniCS Manchester
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
+			</Link>{' '}
+			{new Date().getFullYear()}
+			{'.'}
+		</Typography>
+	);
 }

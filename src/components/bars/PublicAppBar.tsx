@@ -7,9 +7,9 @@ import useStyles from '../../components/util/useStyles';
 import { Link as RouterLink } from 'react-router-dom';
 
 export default function PublicAppBar() {
-  const classes = useStyles();
+	const classes = useStyles();
 
-  return (
+	return (
 		<AppBar position="static" color="default" elevation={0} className={classes.appBar}>
 			<Toolbar className={classes.toolbar}>
 				<Typography variant="h6" color="textPrimary" noWrap className={classes.toolbarTitle}>
@@ -24,5 +24,5 @@ export default function PublicAppBar() {
 				</Button>
 			</Toolbar>
 		</AppBar>
-  );
+	);
 }
