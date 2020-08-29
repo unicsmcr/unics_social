@@ -117,7 +117,7 @@ export default function RegistrationPage() {
 					<TextField variant="outlined" { ...buildProps('forename', 'Forename') } />
 					<TextField variant="outlined" { ...buildProps('surname', 'Surname') } />
 					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('email', 'Email') }/>
-					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('password', 'Password') } />
+					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('password', 'Password') } />
 					<Button variant="contained" color="primary" type="submit">
 						Register
 					</Button>
