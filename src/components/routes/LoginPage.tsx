@@ -84,8 +84,7 @@ export default function LoginPage({ history }) {
 			})
 				.then(jwt => {
 					setState({ ...state, formState: LoginPageState.Success });
-					dispatch(setJWT(jwt));
-					setTimeout(() => history.push('/account'), 1e3);
+					setTimeout(() => dispatch(setJWT(jwt)), 1e3);
 				})
 				.catch(err => {
 					console.warn(err);
