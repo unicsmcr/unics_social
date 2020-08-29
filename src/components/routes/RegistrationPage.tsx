@@ -38,6 +38,8 @@ enum RegistrationState {
 	Success
 }
 
+type FormField = 'forename'|'surname'|'email'|'password';
+
 export default function RegistrationPage() {
 	const classes = useStyles();
 	const [state, setState] = useState({
@@ -53,7 +55,7 @@ export default function RegistrationPage() {
 		formError: ''
 	});
 
-	const changeInput = (key: 'forename'|'surname'|'email'|'password', value: string) => {
+	const changeInput = (key: FormField, value: string) => {
 		setState({
 			...state,
 			[key]: value,
@@ -97,13 +99,21 @@ export default function RegistrationPage() {
 	};
 
 	const mainContent = () => {
+		const buildProps = (key: FormField, label: string) => ({
+			label,
+			fullWidth: true,
+			error: Boolean(state[`${key}Error`]),
+			helperText: state[`${key}Error`],
+			onChange: (e: React.ChangeEvent<HTMLInputElement>) => changeInput(key, e.target.value),
+			value: state[key]
+		});
 		switch (state.formState) {
 			case RegistrationState.FillingForm:
 				return <form noValidate autoComplete="off" className={classes.form} onSubmit={onSubmit}>
-					<TextField label="Forename" variant="outlined" fullWidth error={Boolean(state.forenameError)} helperText={state.forenameError} onChange={e => changeInput('forename', e.target.value)} value={state.forename}/>
-					<TextField label="Surname" variant="outlined" fullWidth error={Boolean(state.surnameError)} helperText={state.surnameError} onChange={e => changeInput('surname', e.target.value)} value={state.surname}/>
-					<TextField label="Email" variant="outlined" fullWidth InputProps={{ type: 'email' }} error={Boolean(state.emailError)} helperText={state.emailError} onChange={e => changeInput('email', e.target.value)} value={state.email} />
-					<TextField label="Password" variant="outlined" fullWidth InputProps={{ type: 'password' }} error={Boolean(state.passwordError)} helperText={state.passwordError} onChange={e => changeInput('password', e.target.value)} value={state.password} />
+					<TextField variant="outlined" { ...buildProps('forename', 'Forename') } />
+					<TextField variant="outlined" { ...buildProps('surname', 'Surname') } />
+					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('email', 'Email') }/>
+					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('password', 'Password') } />
 					<Button variant="contained" color="primary" type="submit">
 						Register
 					</Button>
