@@ -11,7 +11,7 @@ import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import makeClient from '../util/makeClient';
+import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
 import NotificationDialog from '../util/NotificationDialog';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
@@ -82,7 +82,6 @@ export default function RegistrationPage() {
 		setState(newState);
 		if (newState.formState !== RegistrationState.Registering) return;
 
-		const client = makeClient();
 		const { forename, surname, password, email } = newState;
 		const register = () => {
 			client.register({
