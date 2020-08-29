@@ -6,15 +6,20 @@ import Typography from '@material-ui/core/Typography';
 import Backdrop from '@material-ui/core/Backdrop';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import { makeStyles } from '@material-ui/core/styles';
-import { setJWT } from '../../store/slices/AuthSlice';
-import { useDispatch } from 'react-redux';
+import { setJWT, selectJWT } from '../store/slices/AuthSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link as RouterLink } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
 		borderBottom: `1px solid ${theme.palette.divider}`
 	},
 	toolbar: {
-		flexWrap: 'wrap'
+		'flexWrap': 'wrap',
+		'& a': {
+			cursor: 'pointer',
+			textDecoration: 'none'
+		}
 	},
 	toolbarTitle: {
 		flexGrow: 1
@@ -28,8 +33,9 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export default function ProtectedAppBar() {
+export default function AutoAppBar() {
 	const classes = useStyles();
+	const hasJWT = Boolean(useSelector(selectJWT));
 	const [loggingOut, setLoggingOut] = useState(false);
 	const dispatch = useDispatch();
 
@@ -44,15 +50,28 @@ export default function ProtectedAppBar() {
 		<AppBar position="static" color="default" elevation={0} className={classes.appBar}>
 			<Toolbar className={classes.toolbar}>
 				<Typography variant="h6" color="textPrimary" noWrap className={classes.toolbarTitle}>
-					UniCS KB
+					<RouterLink style={{ color: 'inherit' }} to="/">UniCS KB</RouterLink>
 				</Typography>
 				<nav>
+					{
+						hasJWT
+							? <>
+								<Button color="inherit" component={RouterLink} to="/account">Account</Button>
+								<Button href="#" color="primary" variant="outlined" className={classes.link} onClick={logout}>
+								Logout
+								</Button>
+							</>
+							: <>
+								<Button color="inherit" component={RouterLink} to="/">About</Button>
+								<Button color="inherit" component={RouterLink} to="/register">Register</Button>
+								<Button href="#" color="primary" variant="contained" className={classes.link} component={RouterLink} to="/login">
+								Login
+								</Button>
+							</>
+					}
 				</nav>
-				<Button href="#" color="primary" variant="outlined" className={classes.link} onClick={logout}>
-					Logout
-				</Button>
 			</Toolbar>
-			<Backdrop open={loggingOut} className={classes.backdrop}>
+			<Backdrop open={loggingOut && hasJWT} className={classes.backdrop}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
 		</AppBar>
