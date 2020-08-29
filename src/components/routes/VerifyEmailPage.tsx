@@ -10,12 +10,7 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Box from '@material-ui/core/Box';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import Button from '@material-ui/core/Button';
+import NotificationDialog from '../util/NotificationDialog';
 
 import makeClient from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -91,23 +86,12 @@ export default function VerifyEmailPage() {
 				{ getVerifyMessage(verifyEmailState, classes) }
 			</Container>
 			{/* End hero unit */}
-			<Dialog
-				open={errorMessage.length > 0}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">Failed to verify your email</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						{ errorMessage }
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setErrorMessage('')} color="primary">
-						Ok
-					</Button>
-				</DialogActions>
-			</Dialog>
+			<NotificationDialog
+				title="Failed to verify your email"
+				message={errorMessage}
+				show={Boolean(errorMessage)}
+				onClose={() => setErrorMessage('')}
+			/>
 			<Footer />
 		</>
 	);
