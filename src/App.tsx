@@ -6,6 +6,7 @@ import LoginPage from './components/routes/LoginPage';
 import VerifyEmailPage from './components/routes/VerifyEmailPage';
 import AccountSettingsPage from './components/routes/AccountSettings';
 import ProtectedRoute from './components/util/ProtectedRoute';
+import PublicRoute from './components/util/PublicRoute';
 
 function App() {
 	return (
@@ -13,9 +14,9 @@ function App() {
 			<BrowserRouter>
 				<Switch>
 					<Route path="/" exact component={HomePage} />
-					<Route path="/register" exact component={RegistrationPage} />
-					<Route path="/login" exact component={LoginPage} />
-					<Route path="/verify" exact component={VerifyEmailPage} />
+					<PublicRoute path="/register" exact component={RegistrationPage} />
+					<PublicRoute path="/login" exact component={LoginPage} />
+					<PublicRoute path="/verify" exact component={VerifyEmailPage} />
 					<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
 					<Redirect to="/" />
 				</Switch>
