@@ -17,6 +17,7 @@ import NotificationDialog from '../util/NotificationDialog';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { useDispatch } from 'react-redux';
 import { setJWT } from '../../store/slices/AuthSlice';
+import { fetchMe } from '../../store/slices/UsersSlice';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -44,7 +45,7 @@ enum LoginPageState {
 
 type FormField = 'forename'|'surname'|'email'|'password';
 
-export default function LoginPage() {
+export default function LoginPage({ history }) {
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [state, setState] = useState({
@@ -85,7 +86,9 @@ export default function LoginPage() {
 			})
 				.then(jwt => {
 					dispatch(setJWT({ jwt }));
+					dispatch(fetchMe);
 					setState({ ...state, formState: LoginPageState.Success });
+					setTimeout(() => history.push('/account'), 1e3);
 				})
 				.catch(err => {
 					console.warn(err);
@@ -130,7 +133,7 @@ export default function LoginPage() {
 					<CardContent style={{ textAlign: 'center' }}>
 						<CheckCircleOutlineIcon fontSize="large" color="primary" className={classes.icon}/>
 						<Typography component="p" variant="body1" align="center" color="textPrimary">
-							Success! Once this is finished, this will actually lead somewhere :)
+							Success! Redirecting now...
 						</Typography>
 					</CardContent>
 				</Card>;

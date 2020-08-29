@@ -1,29 +1,59 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Footer from '../Footer';
-import useStyles from '../util/useStyles';
 import PublicAppBar from '../bars/PublicAppBar';
-import { useSelector } from 'react-redux';
-import { selectJWT } from '../../store/slices/AuthSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
+import { makeStyles, TextField, CircularProgress } from '@material-ui/core';
+
+const useStyles = makeStyles(theme => ({
+	heroContent: {
+		padding: theme.spacing(28, 2, 8, 2)
+	},
+	mainContent: {
+		padding: theme.spacing(8, 2, 28, 2),
+		textAlign: 'center'
+	},
+	form: {
+		'textAlign': 'center',
+		'& > *': {
+			margin: theme.spacing(1, 0, 2, 0)
+		}
+	}
+}));
 
 export default function AccountSettingsPage() {
 	const classes = useStyles();
-	const jwt = useSelector(selectJWT);
+	const dispatch = useDispatch();
+	const me = useSelector(selectMe);
+
+	useEffect(() => {
+		if (!me) dispatch(fetchMe());
+	});
 
 	return (
 		<>
 			<CssBaseline />
 			<PublicAppBar />
 			{/* Hero unit */}
-			<Container maxWidth="sm" component="main" className={classes.heroContent}>
+			<Container maxWidth="sm" component="header" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
 					Account Settings
 				</Typography>
-				<h1>Hi, {jwt}</h1>
 			</Container>
 			{/* End hero unit */}
+			<Container maxWidth="sm" component="main" className={classes.mainContent}>
+				{
+					me
+						? <form className={classes.form}>
+							<TextField fullWidth defaultValue={me.forename} label="Forename" variant="outlined" disabled />
+							<TextField fullWidth defaultValue={me.surname} label="Surname" variant="outlined" disabled />
+						</form>
+						: <CircularProgress />
+				}
+			</Container>
 			<Footer />
 		</>
 	);

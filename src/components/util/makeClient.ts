@@ -10,3 +10,6 @@ export default function makeClient() {
 		useWss
 	});
 }
+
+const client = makeClient();
+export { client };

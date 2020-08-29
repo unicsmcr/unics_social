@@ -2,12 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface AuthSliceState {
 	jwt: string|null;
-	userId: string|null;
 }
 
 const initialState: AuthSliceState = {
-	jwt: localStorage.getItem('jwt'),
-	userId: null
+	jwt: localStorage.getItem('jwt')
 };
 
 export const AuthSlice = createSlice({
@@ -18,7 +16,6 @@ export const AuthSlice = createSlice({
 			if (action.payload.jwt !== state.jwt) {
 				localStorage.setItem('jwt', action.payload.jwt);
 				state.jwt = action.payload.jwt;
-				state.userId = null;
 			}
 		}
 	}
