@@ -19,7 +19,7 @@ export default function PublicAppBar() {
 					<Button color="inherit" component={RouterLink} to="/">About</Button>
 					<Button color="inherit" component={RouterLink} to="/register">Register</Button>
 				</nav>
-				<Button href="#" color="primary" variant="outlined" className={classes.link} component={RouterLink} to="/login">
+				<Button href="#" color="primary" variant="contained" className={classes.link} component={RouterLink} to="/login">
 					Login
 				</Button>
 			</Toolbar>

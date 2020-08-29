@@ -11,10 +11,12 @@ import Box from '@material-ui/core/Box';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import makeClient from '../util/makeClient';
+import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
 import NotificationDialog from '../util/NotificationDialog';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { useDispatch } from 'react-redux';
+import { setJWT } from '../../store/slices/AuthSlice';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -42,7 +44,8 @@ enum LoginPageState {
 
 type FormField = 'forename'|'surname'|'email'|'password';
 
-export default function RegistrationPage() {
+export default function LoginPage() {
+	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [state, setState] = useState({
 		formState: LoginPageState.FillingForm,
@@ -74,13 +77,15 @@ export default function RegistrationPage() {
 		setState(newState);
 		if (newState.formState !== LoginPageState.LoggingIn) return;
 
-		const client = makeClient();
 		const { email, password } = newState;
 		const login = () => {
 			client.authenticate({
 				email, password
 			})
-				.then(() => setState({ ...state, formState: LoginPageState.Success }))
+				.then(jwt => {
+					setState({ ...state, formState: LoginPageState.Success });
+					setTimeout(() => dispatch(setJWT(jwt)), 1e3);
+				})
 				.catch(err => {
 					console.warn(err);
 					setState({
@@ -124,7 +129,7 @@ export default function RegistrationPage() {
 					<CardContent style={{ textAlign: 'center' }}>
 						<CheckCircleOutlineIcon fontSize="large" color="primary" className={classes.icon}/>
 						<Typography component="p" variant="body1" align="center" color="textPrimary">
-							Success! Once this is finished, this will actually lead somewhere :)
+							Success! Redirecting now...
 						</Typography>
 					</CardContent>
 				</Card>;
