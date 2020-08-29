@@ -43,6 +43,7 @@ export default function AutoAppBar() {
 		setLoggingOut(true);
 		setTimeout(() => {
 			dispatch(setJWT(null));
+			setLoggingOut(false);
 		}, 1000);
 	};
 
