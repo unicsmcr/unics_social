@@ -44,7 +44,7 @@ enum LoginPageState {
 
 type FormField = 'forename'|'surname'|'email'|'password';
 
-export default function LoginPage({ history }) {
+export default function LoginPage() {
 	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [state, setState] = useState({
