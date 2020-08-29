@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import { client } from '../../components/util/makeClient';
+import { setJWT } from './AuthSlice';
 
 interface UsersSliceState {
 	me: string|null;
@@ -37,6 +38,10 @@ export const UsersSlice = createSlice({
 			if (state.values[user.id]) Object.assign(state.values[user.id], user);
 			else state.values[user.id] = user;
 			state.me = user.id;
+		});
+
+		builder.addCase(setJWT, state => {
+			state.me = null;
 		});
 	}
 });
