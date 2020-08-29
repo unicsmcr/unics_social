@@ -6,7 +6,7 @@ import Footer from '../../components/Footer';
 import useStyles from '../../components/util/useStyles';
 import PublicAppBar from '../bars/PublicAppBar';
 import EventCard from '../EventCard';
-import LoadingEventCard from "../LoadingEventCard";
+import LoadingEventCard from '../LoadingEventCard';
 
 export default function Homepage() {
 	const classes = useStyles();
