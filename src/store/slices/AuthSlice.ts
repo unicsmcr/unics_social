@@ -14,8 +14,13 @@ export const AuthSlice = createSlice({
 	reducers: {
 		setJWT: (state, action) => {
 			if (action.payload !== state.jwt) {
-				localStorage.setItem('jwt', action.payload);
 				state.jwt = action.payload;
+
+				if (action.payload) {
+					localStorage.setItem('jwt', action.payload);
+				} else {
+					localStorage.removeItem('jwt');
+				}
 			}
 		}
 	}

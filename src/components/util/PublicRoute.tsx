@@ -10,10 +10,10 @@ const PublicRoute = props => {
 	return (
 		<Route
 			{...rest}
-			render={() =>
+			render={props =>
 				jwt
 					? <Redirect to="/account" />
-					: <Component />
+					: <Component {...props} />
 			}
 		/>
 	);

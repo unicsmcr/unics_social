@@ -10,9 +10,9 @@ const ProtectedRoute = props => {
 	return (
 		<Route
 			{...rest}
-			render={() =>
+			render={props =>
 				jwt
-					? <Component />
+					? <Component {...props} />
 					: <Redirect to="/login" />
 			}
 		/>

@@ -46,7 +46,7 @@ export default function ProtectedAppBar() {
 				</Typography>
 				<nav>
 				</nav>
-				<Button href="#" color="primary" variant="contained" className={classes.link} onClick={logout}>
+				<Button href="#" color="primary" variant="outlined" className={classes.link} onClick={logout}>
 					Logout
 				</Button>
 			</Toolbar>
