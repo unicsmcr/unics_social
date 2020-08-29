@@ -6,7 +6,7 @@ interface AuthSliceState {
 }
 
 const initialState: AuthSliceState = {
-	jwt: null,
+	jwt: localStorage.getItem('jwt'),
 	userId: null
 };
 
@@ -16,6 +16,7 @@ export const AuthSlice = createSlice({
 	reducers: {
 		setJWT: (state, action) => {
 			if (action.payload.jwt !== state.jwt) {
+				localStorage.setItem('jwt', action.payload.jwt);
 				state.jwt = action.payload.jwt;
 				state.userId = null;
 			}
@@ -25,6 +26,6 @@ export const AuthSlice = createSlice({
 
 export const { setJWT } = AuthSlice.actions;
 
-export const selectToken = (state: AuthSliceState) => state.jwt;
+export const selectJWT = (state: AuthSliceState) => state.jwt;
 
 export default AuthSlice.reducer;

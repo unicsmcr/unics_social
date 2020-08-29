@@ -15,6 +15,8 @@ import makeClient from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
 import NotificationDialog from '../util/NotificationDialog';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import { useDispatch } from 'react-redux';
+import { setJWT } from '../../store/slices/AuthSlice';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -42,7 +44,8 @@ enum LoginPageState {
 
 type FormField = 'forename'|'surname'|'email'|'password';
 
-export default function RegistrationPage() {
+export default function LoginPage() {
+	const dispatch = useDispatch();
 	const classes = useStyles();
 	const [state, setState] = useState({
 		formState: LoginPageState.FillingForm,
@@ -80,7 +83,10 @@ export default function RegistrationPage() {
 			client.authenticate({
 				email, password
 			})
-				.then(() => setState({ ...state, formState: LoginPageState.Success }))
+				.then(jwt => {
+					dispatch(setJWT({ jwt }));
+					setState({ ...state, formState: LoginPageState.Success });
+				})
 				.catch(err => {
 					console.warn(err);
 					setState({
