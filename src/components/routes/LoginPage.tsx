@@ -83,7 +83,7 @@ export default function LoginPage({ history }) {
 				email, password
 			})
 				.then(jwt => {
-					dispatch(setJWT({ jwt }));
+					dispatch(setJWT(jwt));
 					setState({ ...state, formState: LoginPageState.Success });
 					setTimeout(() => history.push('/account'), 1e3);
 				})

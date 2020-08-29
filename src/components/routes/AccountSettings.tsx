@@ -3,7 +3,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Footer from '../Footer';
-import PublicAppBar from '../bars/PublicAppBar';
+import ProtectedAppBar from '../bars/ProtectedAppBar';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { makeStyles, TextField, CircularProgress } from '@material-ui/core';
@@ -36,7 +36,7 @@ export default function AccountSettingsPage() {
 	return (
 		<>
 			<CssBaseline />
-			<PublicAppBar />
+			<ProtectedAppBar />
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="header" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
