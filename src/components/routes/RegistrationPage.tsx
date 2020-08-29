@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -7,6 +7,8 @@ import PublicAppBar from '../bars/PublicAppBar';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
+
+const EMAIL_REGEX = new RegExp(/^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~])*@(\w+\.)?manchester\.ac\.uk$/);
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -20,12 +22,39 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-function onSubmit(e: FormEvent) {
-	e.preventDefault();
-}
-
 export default function RegistrationPage() {
 	const classes = useStyles();
+	const [state, setState] = useState({
+		forename: '',
+		surname: '',
+		email: '',
+		password: '',
+		forenameError: '',
+		surnameError: '',
+		emailError: '',
+		passwordError: ''
+	});
+
+	const changeInput = (key: 'forename'|'surname'|'email'|'password', value: string) => {
+		setState({
+			...state,
+			[key]: value,
+			[`${key}Error`]: ''
+		});
+	};
+
+	const onSubmit = (e: FormEvent) => {
+		e.preventDefault();
+		const newState = { ...state };
+		newState.forenameError = state.forename ? '' : 'Required';
+		newState.surnameError = state.surname ? '' : 'Required';
+		newState.emailError = EMAIL_REGEX.exec(state.email) ? '' : 'Valid student email required';
+		newState.passwordError = state.password ? '' : 'Required';
+		setState(newState);
+		const { forenameError, surnameError, emailError, passwordError } = newState;
+		if (forenameError || surnameError || emailError || passwordError) return;
+		alert('test');
+	};
 
 	return (
 		<>
@@ -42,10 +71,10 @@ export default function RegistrationPage() {
 			</Container>
 			<Container maxWidth="sm" component="section">
 				<form noValidate autoComplete="off" className={classes.form} onSubmit={onSubmit}>
-					<TextField label="Forename" variant="outlined" fullWidth />
-					<TextField label="Surname" variant="outlined" fullWidth />
-					<TextField label="Email" variant="outlined" fullWidth InputProps={{ type: 'email' }} />
-					<TextField label="Password" variant="outlined" fullWidth InputProps={{ type: 'password' }} />
+					<TextField label="Forename" variant="outlined" fullWidth error={Boolean(state.forenameError)} helperText={state.forenameError} onChange={e => changeInput('forename', e.target.value)}/>
+					<TextField label="Surname" variant="outlined" fullWidth error={Boolean(state.surnameError)} helperText={state.surnameError} onChange={e => changeInput('surname', e.target.value)} />
+					<TextField label="Email" variant="outlined" fullWidth InputProps={{ type: 'email' }} error={Boolean(state.emailError)} helperText={state.emailError} onChange={e => changeInput('email', e.target.value)} />
+					<TextField label="Password" variant="outlined" fullWidth InputProps={{ type: 'password' }} error={Boolean(state.passwordError)} helperText={state.passwordError} onChange={e => changeInput('password', e.target.value)} />
 					<Button variant="contained" color="primary" type="submit">
 						Register
 					</Button>
