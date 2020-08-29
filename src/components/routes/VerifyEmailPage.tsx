@@ -86,7 +86,7 @@ export default function VerifyEmailPage() {
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-          Verify Email
+					Verify Email
 				</Typography>
 				{ getVerifyMessage(verifyEmailState, classes) }
 			</Container>
@@ -104,7 +104,7 @@ export default function VerifyEmailPage() {
 				</DialogContent>
 				<DialogActions>
 					<Button onClick={() => setErrorMessage('')} color="primary">
-            Ok
+						Ok
 					</Button>
 				</DialogActions>
 			</Dialog>
