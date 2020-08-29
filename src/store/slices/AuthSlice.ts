@@ -26,6 +26,6 @@ export const AuthSlice = createSlice({
 
 export const { setJWT } = AuthSlice.actions;
 
-export const selectJWT = (state: AuthSliceState) => state.jwt;
+export const selectJWT = state => state.auth.jwt;
 
 export default AuthSlice.reducer;
