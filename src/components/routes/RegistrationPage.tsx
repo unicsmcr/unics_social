@@ -8,12 +8,8 @@ import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import makeClient from '../util/makeClient';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import asAPIError from '../util/asAPIError';
+import NotificationDialog from '../util/NotificationDialog';
 
 const EMAIL_REGEX = new RegExp(/^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~])*@(\w+\.)?manchester\.ac\.uk$/);
 
@@ -114,23 +110,12 @@ export default function RegistrationPage() {
 				</form>
 			</Container>
 			{/* End hero unit */}
-			<Dialog
-				open={state.formError.length > 0}
-				aria-labelledby="alert-dialog-title"
-				aria-describedby="alert-dialog-description"
-			>
-				<DialogTitle id="alert-dialog-title">Failed to register your account</DialogTitle>
-				<DialogContent>
-					<DialogContentText id="alert-dialog-description">
-						{ state.formError }
-					</DialogContentText>
-				</DialogContent>
-				<DialogActions>
-					<Button onClick={() => setState({ ...state, formError: '' })} color="primary">
-						Ok
-					</Button>
-				</DialogActions>
-			</Dialog>
+			<NotificationDialog
+				title="Failed to register your account"
+				message={state.formError}
+				show={Boolean(state.formError)}
+				onClose={() => setState({ ...state, formError: '' })}
+			/>
 			<Footer />
 		</>
 	);
