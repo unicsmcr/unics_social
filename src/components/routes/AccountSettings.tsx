@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
+
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Footer from '../Footer';
-import ProtectedAppBar from '../bars/ProtectedAppBar';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Button from '@material-ui/core/Button';
+import { makeStyles } from '@material-ui/core/styles';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
-import { makeStyles, TextField, CircularProgress, Button } from '@material-ui/core';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
+import Page from '../Page';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -61,9 +64,7 @@ export default function AccountSettingsPage() {
 	};
 
 	return (
-		<>
-			<CssBaseline />
-			<ProtectedAppBar />
+		<Page>
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="header" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -76,8 +77,6 @@ export default function AccountSettingsPage() {
 					mainContent()
 				}
 			</Container>
-			<Footer />
-
 			<NotificationDialog
 				title="Failed to fetch account details"
 				message={fetchError}
@@ -87,6 +86,6 @@ export default function AccountSettingsPage() {
 					setPageState(PageState.Failed);
 				}}
 			/>
-		</>
+		</Page>
 	);
 }
