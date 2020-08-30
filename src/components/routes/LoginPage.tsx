@@ -1,9 +1,6 @@
 import React, { FormEvent, useState } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Footer from '../Footer';
-import PublicAppBar from '../bars/PublicAppBar';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -17,6 +14,7 @@ import NotificationDialog from '../util/NotificationDialog';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { useDispatch } from 'react-redux';
 import { setJWT } from '../../store/slices/AuthSlice';
+import Page from '../Page';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -137,9 +135,7 @@ export default function LoginPage() {
 	};
 
 	return (
-		<>
-			<CssBaseline />
-			<PublicAppBar />
+		<Page>
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -161,7 +157,6 @@ export default function LoginPage() {
 				show={Boolean(state.formError)}
 				onClose={() => setState({ ...state, formError: '' })}
 			/>
-			<Footer />
-		</>
+		</Page>
 	);
 }

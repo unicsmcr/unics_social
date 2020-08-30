@@ -1,18 +1,14 @@
 import React from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Footer from '../../components/Footer';
-import useStyles from '../../components/util/useStyles';
-import PublicAppBar from '../bars/PublicAppBar';
+import useStyles from '../util/useStyles';
+import Page from '../Page';
 
 export default function Homepage() {
 	const classes = useStyles();
 
 	return (
-		<>
-			<CssBaseline />
-			<PublicAppBar />
+		<Page>
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -23,7 +19,6 @@ export default function Homepage() {
 				</Typography>
 			</Container>
 			{/* End hero unit */}
-			<Footer />
-		</>
+		</Page>
 	);
 }

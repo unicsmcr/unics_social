@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Footer from '../Footer';
-import ProtectedAppBar from '../bars/ProtectedAppBar';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
-import { makeStyles, TextField, CircularProgress } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { makeStyles } from '@material-ui/core/styles';
+import Page from '../Page';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -34,9 +34,7 @@ export default function AccountSettingsPage() {
 	});
 
 	return (
-		<>
-			<CssBaseline />
-			<ProtectedAppBar />
+		<Page>
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="header" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -54,7 +52,6 @@ export default function AccountSettingsPage() {
 						: <CircularProgress />
 				}
 			</Container>
-			<Footer />
-		</>
+		</Page>
 	);
 }

@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
-import Footer from '../Footer';
 import useStyles from '../util/useStyles';
-import PublicAppBar from '../bars/PublicAppBar';
 import { useLocation } from 'react-router-dom';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
@@ -14,6 +11,7 @@ import NotificationDialog from '../util/NotificationDialog';
 
 import makeClient from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
+import Page from '../Page';
 
 enum VerifyEmailPageState {
 	MissingConfirmationId,
@@ -75,9 +73,7 @@ export default function VerifyEmailPage() {
 	}, [confirmationId]);
 
 	return (
-		<>
-			<CssBaseline />
-			<PublicAppBar />
+		<Page>
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
@@ -92,7 +88,6 @@ export default function VerifyEmailPage() {
 				show={Boolean(errorMessage)}
 				onClose={() => setErrorMessage('')}
 			/>
-			<Footer />
-		</>
+		</Page>
 	);
 }
