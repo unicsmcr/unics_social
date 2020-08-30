@@ -12,7 +12,8 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { Paper, Avatar } from '@material-ui/core';
+import { Paper, Avatar, Menu, MenuItem } from '@material-ui/core';
+import { APIUser } from '@unicsmcr/unics_social_api_client';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -35,7 +36,8 @@ const useStyles = makeStyles(theme => ({
 	avatar: {
 		display: 'inline-flex',
 		height: theme.spacing(16),
-		width: theme.spacing(16)
+		width: theme.spacing(16),
+		cursor: 'pointer'
 	}
 }));
 
@@ -43,6 +45,58 @@ enum PageState {
 	Loading,
 	Loaded,
 	Failed
+}
+
+function AccountSettings({ me }: { me: APIUser }) {
+	const classes = useStyles();
+	const [avatarMenuTarget, setAvatarMenuTarget] = useState<null | HTMLElement>(null);
+
+	const [userState, setUserState] = useState({
+		forename: me.forename,
+		surname: me.surname,
+		profile: {
+			course: me.profile?.course ?? '',
+			yearOfStudy: me.profile?.yearOfStudy ?? '',
+			profilePicture: me.profile?.profilePicture ?? '',
+			facebook: me.profile?.facebook ?? '',
+			twitter: me.profile?.twitter ?? '',
+			instagram: me.profile?.instagram ?? ''
+		}
+	});
+
+	const avatarClicked = e => setAvatarMenuTarget(e.target);
+	const accountSettingsChanged = e => setUserState({ ...userState, [e.target.name]: e.target.value });
+	const profileSettingsChanged = e => setUserState({ ...userState, profile: { ...userState.profile, [e.target.name]: e.target.value } });
+
+	return <>
+		<Paper elevation={2} className={classes.paper}>
+			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
+			<form className={classes.form}>
+				<TextField fullWidth label="Forename" name="forename" variant="outlined" onBlur={accountSettingsChanged} defaultValue={userState.forename}/>
+				<TextField fullWidth label="Surname" name="surname" variant="outlined" onBlur={accountSettingsChanged} defaultValue={userState.surname}/>
+			</form>
+		</Paper>
+		<Paper elevation={2} className={classes.paper}>
+			<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
+			<form className={classes.form}>
+				<Avatar alt={`${me.forename} ${me.surname}`} src="" className={classes.avatar} onClick={avatarClicked} />
+				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course}/>
+				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy}/>
+				<TextField fullWidth label="Instagram" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
+				<TextField fullWidth label="Facebook" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook}/>
+				<TextField fullWidth label="Twitter" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter}/>
+
+				<Menu
+					open={Boolean(avatarMenuTarget)}
+					onClose={() => setAvatarMenuTarget(null)}
+					anchorEl={avatarMenuTarget}
+					keepMounted>
+					<MenuItem>Select new avatar</MenuItem>
+					<MenuItem>Delete avatar</MenuItem>
+				</Menu>
+			</form>
+		</Paper>
+	</>;
 }
 
 export default function AccountSettingsPage() {
@@ -63,25 +117,7 @@ export default function AccountSettingsPage() {
 
 	const mainContent = () => {
 		if (me) {
-			return <>
-				<Paper elevation={2} className={classes.paper}>
-					<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
-					<form className={classes.form}>
-						<TextField fullWidth defaultValue={me.forename} label="Forename" variant="outlined" />
-						<TextField fullWidth defaultValue={me.surname} label="Surname" variant="outlined" />
-					</form>
-				</Paper>
-				<Paper elevation={2} className={classes.paper}>
-					<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
-					<form className={classes.form}>
-						<Avatar alt={`${me.forename} ${me.surname}`} src="" className={classes.avatar} />
-						<TextField fullWidth defaultValue={''} label="Course" variant="outlined" />
-						<TextField fullWidth defaultValue={''} label="Instagram" variant="outlined" />
-						<TextField fullWidth defaultValue={''} label="Facebook" variant="outlined" />
-						<TextField fullWidth defaultValue={''} label="Twitter" variant="outlined" />
-					</form>
-				</Paper>
-			</>;
+			return <AccountSettings me={me} />;
 		} else if (pageState === PageState.Loading) {
 			return <CircularProgress />;
 		}
