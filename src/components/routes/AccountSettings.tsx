@@ -6,13 +6,14 @@ import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
+import SaveIcon from '@material-ui/icons/Save';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { Paper, Avatar, Menu, MenuItem } from '@material-ui/core';
+import { Paper, Avatar, Menu, MenuItem, Fab } from '@material-ui/core';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 
@@ -21,7 +22,7 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(14, 2, 4, 2)
 	},
 	mainContent: {
-		padding: theme.spacing(8, 2, 14, 2),
+		padding: theme.spacing(4, 2, 14, 2),
 		textAlign: 'center'
 	},
 	paper: {
@@ -39,6 +40,12 @@ const useStyles = makeStyles(theme => ({
 		height: theme.spacing(16),
 		width: theme.spacing(16),
 		cursor: 'pointer'
+	},
+	saveButton: {
+		margin: theme.spacing(4, 0, 8, 0)
+	},
+	saveIcon: {
+		marginRight: theme.spacing(1)
 	}
 }));
 
@@ -50,6 +57,7 @@ enum PageState {
 
 function AccountSettings({ me }: { me: APIUser }) {
 	const classes = useStyles();
+	const [hasChanged, setHasChanged] = useState(false);
 	const [avatarMenuTarget, setAvatarMenuTarget] = useState<null | HTMLElement>(null);
 
 	const [userState, setUserState] = useState({
@@ -78,16 +86,29 @@ function AccountSettings({ me }: { me: APIUser }) {
 	const deleteAvatar = () => {
 		setAvatarMenuTarget(null);
 		setProfilePicture('');
+		setHasChanged(true);
 	};
 
 	const fileUploaded = e => {
 		setProfilePicture(URL.createObjectURL(e.target.files[0]));
+		setHasChanged(true);
 	};
 
-	const accountSettingsChanged = e => setUserState({ ...userState, [e.target.name]: e.target.value });
-	const profileSettingsChanged = e => setUserState({ ...userState, profile: { ...userState.profile, [e.target.name]: e.target.value } });
+	const accountSettingsChanged = e => {
+		setUserState({ ...userState, [e.target.name]: e.target.value });
+		setHasChanged(true);
+	};
+
+	const profileSettingsChanged = e => {
+		setUserState({ ...userState, profile: { ...userState.profile, [e.target.name]: e.target.value } });
+		setHasChanged(true);
+	};
 
 	return <>
+		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged}>
+			<SaveIcon className={classes.saveIcon} />
+			Save Changes
+		</Fab> }
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
 			<form className={classes.form}>
