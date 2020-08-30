@@ -13,10 +13,11 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { Paper, Avatar, Menu, MenuItem, Fab } from '@material-ui/core';
+import { Paper, Avatar, Menu, MenuItem, Fab, Backdrop } from '@material-ui/core';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
+import asAPIError from '../util/asAPIError';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -50,6 +51,10 @@ const useStyles = makeStyles(theme => ({
 	},
 	margin: {
 		margin: theme.spacing(4, 1)
+	},
+	backdrop: {
+		zIndex: theme.zIndex.drawer + 1,
+		color: '#fff'
 	}
 }));
 
@@ -59,8 +64,17 @@ enum PageState {
 	Failed
 }
 
+enum SaveState {
+	Idle,
+	Saving
+}
+
 function AccountSettings({ me }: { me: APIUser }) {
 	const classes = useStyles();
+
+	const [saveState, setSaveState] = useState(SaveState.Idle);
+	const [saveMessage, setSaveMessage] = useState<{ title: string; message: string }|null>(null);
+
 	const [hasChanged, setHasChanged] = useState(false);
 	const [avatarMenuTarget, setAvatarMenuTarget] = useState<null | HTMLElement>(null);
 
@@ -113,10 +127,23 @@ function AccountSettings({ me }: { me: APIUser }) {
 			avatarAttachment = true;
 		}
 
+		setSaveState(SaveState.Saving);
 		client.editProfile({
 			...userState.profile,
 			avatar: avatarAttachment as any
-		}).then(console.log, console.warn);
+		}).then(() => {
+			setSaveState(SaveState.Idle);
+			setSaveMessage({
+				title: 'Saved!',
+				message: 'Your profile has been updated'
+			});
+		}).catch(err => {
+			setSaveState(SaveState.Idle);
+			setSaveMessage({
+				title: 'Error updating your profile',
+				message: asAPIError(err) ?? 'Unexpect error updating your profile'
+			});
+		});
 	};
 
 	return <>
@@ -153,6 +180,19 @@ function AccountSettings({ me }: { me: APIUser }) {
 				</Menu>
 			</form>
 		</Paper>
+
+		<Backdrop open={saveState === SaveState.Saving} className={classes.backdrop}>
+			<CircularProgress color="inherit" />
+		</Backdrop>
+
+		<NotificationDialog
+			title={saveMessage?.title ?? ''}
+			message={saveMessage?.message ?? ''}
+			show={Boolean(saveMessage)}
+			onClose={() => {
+				setSaveMessage(null);
+			}}
+		/>
 	</>;
 }
 
