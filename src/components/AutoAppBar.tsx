@@ -42,8 +42,8 @@ export default function AutoAppBar() {
 	const logout = () => {
 		setLoggingOut(true);
 		setTimeout(() => {
-			dispatch(setJWT(null));
 			setLoggingOut(false);
+			dispatch(setJWT(null));
 		}, 1000);
 	};
 
