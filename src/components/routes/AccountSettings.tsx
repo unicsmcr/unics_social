@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -6,7 +6,9 @@ import Footer from '../Footer';
 import ProtectedAppBar from '../bars/ProtectedAppBar';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
-import { makeStyles, TextField, CircularProgress } from '@material-ui/core';
+import { makeStyles, TextField, CircularProgress, Button } from '@material-ui/core';
+import { unwrapResult } from '@reduxjs/toolkit';
+import NotificationDialog from '../util/NotificationDialog';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -24,14 +26,39 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
+enum PageState {
+	Loading,
+	Loaded,
+	Failed
+}
+
 export default function AccountSettingsPage() {
+	const me = useSelector(selectMe);
+	const [fetchError, setFetchError] = useState('');
+	const [pageState, setPageState] = useState(me ? PageState.Loaded : PageState.Loading);
 	const classes = useStyles();
 	const dispatch = useDispatch();
-	const me = useSelector(selectMe);
 
 	useEffect(() => {
-		if (!me) dispatch(fetchMe());
-	});
+		if (!me && pageState === PageState.Loading) {
+			(dispatch(fetchMe()) as any)
+				.then(unwrapResult)
+				.then(() => setPageState(PageState.Loaded))
+				.catch(error => setFetchError(error.message ?? 'Unexpected error fetching account details'));
+		}
+	}, [me, pageState, dispatch]);
+
+	const mainContent = () => {
+		if (me) {
+			return <form className={classes.form}>
+				<TextField fullWidth defaultValue={me.forename} label="Forename" variant="outlined" disabled />
+				<TextField fullWidth defaultValue={me.surname} label="Surname" variant="outlined" disabled />
+			</form>;
+		} else if (pageState === PageState.Loading) {
+			return <CircularProgress />;
+		}
+		return <Button variant="contained" color="primary" onClick={() => setPageState(PageState.Loading)}>Retry</Button>;
+	};
 
 	return (
 		<>
@@ -46,15 +73,20 @@ export default function AccountSettingsPage() {
 			{/* End hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.mainContent}>
 				{
-					me
-						? <form className={classes.form}>
-							<TextField fullWidth defaultValue={me.forename} label="Forename" variant="outlined" disabled />
-							<TextField fullWidth defaultValue={me.surname} label="Surname" variant="outlined" disabled />
-						</form>
-						: <CircularProgress />
+					mainContent()
 				}
 			</Container>
 			<Footer />
+
+			<NotificationDialog
+				title="Failed to fetch account details"
+				message={fetchError}
+				show={Boolean(fetchError)}
+				onClose={() => {
+					setFetchError('');
+					setPageState(PageState.Failed);
+				}}
+			/>
 		</>
 	);
 }

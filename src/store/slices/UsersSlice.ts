@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import { client } from '../../components/util/makeClient';
 import { setJWT } from './AuthSlice';
+import asAPIError from '../../components/util/asAPIError';
 
 interface UsersSliceState {
 	me: string|null;
@@ -15,8 +16,16 @@ const initialState: UsersSliceState = {
 	values: {}
 };
 
-export const fetchMe = createAsyncThunk('users/fetchMe', () => client.getMe());
-export const fetchUser = createAsyncThunk('users/fetchUser', (id: string) => client.getUser(id));
+const wrapApiError = error => {
+	const apiError = asAPIError(error);
+	if (apiError) {
+		return Promise.reject(new Error(apiError));
+	}
+	return Promise.reject(error);
+};
+
+export const fetchMe = createAsyncThunk('users/fetchMe', () => client.getMe().catch(wrapApiError));
+export const fetchUser = createAsyncThunk('users/fetchUser', (id: string) => client.getUser(id).catch(wrapApiError));
 
 export const UsersSlice = createSlice({
 	name: 'users',
