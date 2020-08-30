@@ -72,7 +72,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 		}
 	});
 
-	const [profilePicture, setProfilePicture] = useState(me.profile?.profilePicture ? `${API_HOST}/assets/${me.id}.png` : '');
+	const [avatar, setAvatar] = useState(me.profile?.avatar ? `${API_HOST}/assets/${me.id}.png` : '');
 
 	const inputFile = createRef<HTMLInputElement>();
 
@@ -85,12 +85,12 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 	const deleteAvatar = () => {
 		setAvatarMenuTarget(null);
-		setProfilePicture('');
+		setAvatar('');
 		setHasChanged(true);
 	};
 
 	const fileUploaded = e => {
-		setProfilePicture(URL.createObjectURL(e.target.files[0]));
+		setAvatar(URL.createObjectURL(e.target.files[0]));
 		setHasChanged(true);
 	};
 
@@ -120,7 +120,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 			<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
 			<form className={classes.form}>
 				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*"/>
-				<Avatar alt={`${me.forename} ${me.surname}`} src={profilePicture} className={classes.avatar} onClick={avatarClicked} />
+				<Avatar alt={`${me.forename} ${me.surname}`} src={avatar} className={classes.avatar} onClick={avatarClicked} />
 				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course}/>
 				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy}/>
 				<TextField fullWidth label="Instagram" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
