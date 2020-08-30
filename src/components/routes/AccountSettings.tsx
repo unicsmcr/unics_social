@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createRef } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -14,6 +14,7 @@ import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
 import { Paper, Avatar, Menu, MenuItem } from '@material-ui/core';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
+import API_HOST from '../util/APIHost';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -57,14 +58,32 @@ function AccountSettings({ me }: { me: APIUser }) {
 		profile: {
 			course: me.profile?.course ?? '',
 			yearOfStudy: me.profile?.yearOfStudy ?? '',
-			profilePicture: me.profile?.profilePicture ?? '',
 			facebook: me.profile?.facebook ?? '',
 			twitter: me.profile?.twitter ?? '',
 			instagram: me.profile?.instagram ?? ''
 		}
 	});
 
+	const [profilePicture, setProfilePicture] = useState(me.profile?.profilePicture ? `${API_HOST}/assets/${me.id}.png` : '');
+
+	const inputFile = createRef<HTMLInputElement>();
+
 	const avatarClicked = e => setAvatarMenuTarget(e.target);
+
+	const selectAvatar = () => {
+		setAvatarMenuTarget(null);
+		inputFile.current?.click();
+	};
+
+	const deleteAvatar = () => {
+		setAvatarMenuTarget(null);
+		setProfilePicture('');
+	};
+
+	const fileUploaded = e => {
+		setProfilePicture(URL.createObjectURL(e.target.files[0]));
+	};
+
 	const accountSettingsChanged = e => setUserState({ ...userState, [e.target.name]: e.target.value });
 	const profileSettingsChanged = e => setUserState({ ...userState, profile: { ...userState.profile, [e.target.name]: e.target.value } });
 
@@ -79,7 +98,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
 			<form className={classes.form}>
-				<Avatar alt={`${me.forename} ${me.surname}`} src="" className={classes.avatar} onClick={avatarClicked} />
+				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*"/>
+				<Avatar alt={`${me.forename} ${me.surname}`} src={profilePicture} className={classes.avatar} onClick={avatarClicked} />
 				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course}/>
 				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy}/>
 				<TextField fullWidth label="Instagram" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
@@ -91,8 +111,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 					onClose={() => setAvatarMenuTarget(null)}
 					anchorEl={avatarMenuTarget}
 					keepMounted>
-					<MenuItem>Select new avatar</MenuItem>
-					<MenuItem>Delete avatar</MenuItem>
+					<MenuItem onClick={selectAvatar}>Select new avatar</MenuItem>
+					<MenuItem onClick={deleteAvatar}>Delete avatar</MenuItem>
 				</Menu>
 			</form>
 		</Paper>
