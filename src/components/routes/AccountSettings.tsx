@@ -16,6 +16,7 @@ import Page from '../Page';
 import { Paper, Avatar, Menu, MenuItem, Fab } from '@material-ui/core';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
+import { client } from '../util/makeClient';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -46,6 +47,9 @@ const useStyles = makeStyles(theme => ({
 	},
 	saveIcon: {
 		marginRight: theme.spacing(1)
+	},
+	margin: {
+		margin: theme.spacing(4, 1)
 	}
 }));
 
@@ -94,26 +98,38 @@ function AccountSettings({ me }: { me: APIUser }) {
 		setHasChanged(true);
 	};
 
-	const accountSettingsChanged = e => {
-		setUserState({ ...userState, [e.target.name]: e.target.value });
-		setHasChanged(true);
-	};
-
 	const profileSettingsChanged = e => {
 		setUserState({ ...userState, profile: { ...userState.profile, [e.target.name]: e.target.value } });
 		setHasChanged(true);
 	};
 
+	const updateProfile = () => {
+		let avatarAttachment: File|boolean;
+		if (avatar === '') {
+			avatarAttachment = false;
+		} else if (inputFile.current?.files) {
+			avatarAttachment = inputFile.current.files[0];
+		} else {
+			avatarAttachment = true;
+		}
+
+		client.editProfile({
+			...userState.profile,
+			avatar: avatarAttachment as any
+		}).then(console.log, console.warn);
+	};
+
 	return <>
-		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged}>
-			<SaveIcon className={classes.saveIcon} />
+		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged} onClick={updateProfile}>
+			<SaveIcon className={classes.saveIcon}/>
 			Save Changes
 		</Fab> }
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
+			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>To change any of the information here, please contact us directly.</Typography>
 			<form className={classes.form}>
-				<TextField fullWidth label="Forename" name="forename" variant="outlined" onBlur={accountSettingsChanged} defaultValue={userState.forename}/>
-				<TextField fullWidth label="Surname" name="surname" variant="outlined" onBlur={accountSettingsChanged} defaultValue={userState.surname}/>
+				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename}/>
+				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname}/>
 			</form>
 		</Paper>
 		<Paper elevation={2} className={classes.paper}>
@@ -123,9 +139,9 @@ function AccountSettings({ me }: { me: APIUser }) {
 				<Avatar alt={`${me.forename} ${me.surname}`} src={avatar} className={classes.avatar} onClick={avatarClicked} />
 				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course}/>
 				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy}/>
-				<TextField fullWidth label="Instagram" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
-				<TextField fullWidth label="Facebook" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook}/>
-				<TextField fullWidth label="Twitter" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter}/>
+				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
+				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook}/>
+				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter}/>
 
 				<Menu
 					open={Boolean(avatarMenuTarget)}
