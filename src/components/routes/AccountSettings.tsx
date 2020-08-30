@@ -71,6 +71,7 @@ enum SaveState {
 
 function AccountSettings({ me }: { me: APIUser }) {
 	const classes = useStyles();
+	const dispatch = useDispatch();
 
 	const [saveState, setSaveState] = useState(SaveState.Idle);
 	const [saveMessage, setSaveMessage] = useState<{ title: string; message: string }|null>(null);
@@ -131,7 +132,11 @@ function AccountSettings({ me }: { me: APIUser }) {
 		client.editProfile({
 			...userState.profile,
 			avatar: avatarAttachment as any
-		}).then(() => {
+		}).then(me => {
+			dispatch({
+				type: 'users/fetchMe/fulfilled',
+				payload: me
+			});
 			setSaveState(SaveState.Idle);
 			setSaveMessage({
 				title: 'Saved!',
@@ -147,7 +152,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 	};
 
 	return <>
-		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged} onClick={updateProfile}>
+		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
 			<SaveIcon className={classes.saveIcon}/>
 			Save Changes
 		</Fab> }
