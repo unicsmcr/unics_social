@@ -12,20 +12,30 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
+import { Paper, Avatar } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
-		padding: theme.spacing(28, 2, 8, 2)
+		padding: theme.spacing(14, 2, 4, 2)
 	},
 	mainContent: {
-		padding: theme.spacing(8, 2, 28, 2),
+		padding: theme.spacing(8, 2, 14, 2),
 		textAlign: 'center'
+	},
+	paper: {
+		padding: theme.spacing(2),
+		marginBottom: theme.spacing(8)
 	},
 	form: {
 		'textAlign': 'center',
 		'& > *': {
 			margin: theme.spacing(1, 0, 2, 0)
 		}
+	},
+	avatar: {
+		display: 'inline-flex',
+		height: theme.spacing(16),
+		width: theme.spacing(16)
 	}
 }));
 
@@ -53,10 +63,25 @@ export default function AccountSettingsPage() {
 
 	const mainContent = () => {
 		if (me) {
-			return <form className={classes.form}>
-				<TextField fullWidth defaultValue={me.forename} label="Forename" variant="outlined" disabled />
-				<TextField fullWidth defaultValue={me.surname} label="Surname" variant="outlined" disabled />
-			</form>;
+			return <>
+				<Paper elevation={2} className={classes.paper}>
+					<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
+					<form className={classes.form}>
+						<TextField fullWidth defaultValue={me.forename} label="Forename" variant="outlined" />
+						<TextField fullWidth defaultValue={me.surname} label="Surname" variant="outlined" />
+					</form>
+				</Paper>
+				<Paper elevation={2} className={classes.paper}>
+					<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
+					<form className={classes.form}>
+						<Avatar alt={`${me.forename} ${me.surname}`} src="" className={classes.avatar} />
+						<TextField fullWidth defaultValue={''} label="Course" variant="outlined" />
+						<TextField fullWidth defaultValue={''} label="Instagram" variant="outlined" />
+						<TextField fullWidth defaultValue={''} label="Facebook" variant="outlined" />
+						<TextField fullWidth defaultValue={''} label="Twitter" variant="outlined" />
+					</form>
+				</Paper>
+			</>;
 		} else if (pageState === PageState.Loading) {
 			return <CircularProgress />;
 		}
