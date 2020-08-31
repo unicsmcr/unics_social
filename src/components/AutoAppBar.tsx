@@ -57,6 +57,7 @@ export default function AutoAppBar() {
 					{
 						hasJWT
 							? <>
+								<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
 								<Button color="inherit" component={RouterLink} to="/account">Account</Button>
 								<Button href="#" color="primary" variant="outlined" className={classes.link} onClick={logout}>
 								Logout
