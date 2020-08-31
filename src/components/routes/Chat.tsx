@@ -16,6 +16,12 @@ const dummyUsers = [
 	{ name: 'Luigi', src: 'https://www.mariowiki.com/images/thumb/5/53/Luigi_Mario_Party.png/158px-Luigi_Mario_Party.png' }
 ];
 
+const dummyEvents = [
+	{ name: 'Barack Obama', src: 'https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg' },
+	{ name: 'Azealia Banks', src: 'https://lh3.googleusercontent.com/proxy/4gdPHEtUwkjRLpp08zdJbTPE2Bh8XOwJY_rPpoSl43aqrvMHFdoaIBhq3BYpC4Na6mjbqFB1Zop_1rL6RCi2tcoI7FtLK4vRdb0MKu1Ia9FSPdWI3oohcmoUwm8' },
+	{ name: 'Mario', src: 'https://sickr.files.wordpress.com/2017/07/mario.jpg' }
+];
+
 const useStyles = makeStyles(theme => ({
 	mainContent: {
 		padding: theme.spacing(6, 2, 14, 2),
@@ -51,6 +57,8 @@ export function ChannelsPanel() {
 
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
 
+	const channelList = chatPanelValue === 0 ? dummyUsers : dummyEvents;
+
 	return <Paper elevation={2}>
 		<div className={classes.channelsPanel}>
 			<AppBar position="static" color="primary">
@@ -60,7 +68,7 @@ export function ChannelsPanel() {
 				</Tabs>
 			</AppBar>
 			<List component="nav" aria-label="main mailbox folders" className={classes.channelsList} >
-				{dummyUsers.map(user => <UserListItem {...user} />)}
+				{channelList.map(user => <UserListItem {...user} />)}
 			</List>
 		</div>
 	</Paper>;
