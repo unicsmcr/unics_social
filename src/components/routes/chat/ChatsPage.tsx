@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Page from '../../Page';
 import { Paper } from '@material-ui/core';
 import ChannelsPanel from './ChannelsPanel';
+import ChatPanel from './ChatPanel';
 
 const useStyles = makeStyles(theme => ({
 	mainContent: {
@@ -22,15 +23,17 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChatsPage() {
 	const classes = useStyles();
+	const [channel, setChannel] = useState<{ name: string; avatar: string }>({
+		name: 'Blank',
+		avatar: ''
+	});
 
 	return (
 		<Page>
 			<Container maxWidth="xl" component="main" className={classes.mainContent}>
 				<Paper elevation={3} className={classes.chatsRoot}>
-					<ChannelsPanel onChannelSelected={channel => console.log(channel)}/>
-					<div className={classes.flexGrow}>
-						<Typography>hi</Typography>
-					</div>
+					<ChannelsPanel onChannelSelected={channel => setChannel(channel)}/>
+					<ChatPanel channel={channel} />
 				</Paper>
 			</Container>
 		</Page>

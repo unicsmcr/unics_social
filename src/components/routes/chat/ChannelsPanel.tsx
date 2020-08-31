@@ -25,11 +25,14 @@ const useStyles = makeStyles(theme => ({
 		minHeight: '80vh',
 		maxHeight: '80vh',
 		overflow: 'auto'
+	},
+	tab: {
+		height: theme.spacing(8)
 	}
 }));
 
 interface ChannelsPanelProps {
-	onChannelSelected: (channel: string) => void;
+	onChannelSelected: (channel: { name: string; avatar: string }) => void;
 }
 
 export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps) {
@@ -43,12 +46,15 @@ export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps)
 		<div className={classes.channelsPanel}>
 			<AppBar position="static" color="primary">
 				<Tabs variant="fullWidth" value={chatPanelValue} onChange={(_, v) => setChatPanelValue(v)} indicatorColor="secondary" textColor="inherit">
-					<Tab label="Users" />
-					<Tab label="Events" />
+					<Tab label="Users" className={classes.tab}/>
+					<Tab label="Events" className={classes.tab} />
 				</Tabs>
 			</AppBar>
 			<List component="nav" aria-label="channels" className={classes.channelsList} >
-				{channelList.map((channel, index) => <ChannelListItem key={index} {...channel} onClick={() => onChannelSelected(channel.name)} />)}
+				{channelList.map((channel, index) => <ChannelListItem key={index} {...channel} onClick={() => onChannelSelected({
+					name: channel.name,
+					avatar: channel.src
+				})} />)}
 			</List>
 		</div>
 	</Paper>;
