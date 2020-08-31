@@ -36,7 +36,6 @@ function ListItemLink(props: ListItemProps<'a', { button?: true }>) {
 
 export default function ChatPage() {
 	const classes = useStyles();
-	const theme = useTheme();
 
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
 
