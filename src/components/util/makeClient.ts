@@ -1,8 +1,9 @@
 import { APIClient } from '@unicsmcr/unics_social_api_client';
+import API_HOST from './APIHost';
 
 export default function makeClient() {
 	const token = localStorage.getItem('jwt');
-	const apiBase = process.env.NODE_ENV === 'production' ? 'https://kb-api.unicsmcr.com/api/v1' : 'http://localhost:8060/api/v1';
+	const apiBase = `${API_HOST}/api/v1`;
 	const useWss = process.env.NODE_ENV === 'production';
 	return new APIClient({
 		token: token ?? undefined,
