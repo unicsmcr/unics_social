@@ -81,7 +81,6 @@ export default function ChatPage() {
 					<div className={classes.flexGrow}>
 						<Typography>hi</Typography>
 					</div>
-					{ chatsPanel }
 				</Paper>
 			</Container>
 		</Page>
