@@ -16,3 +16,11 @@ code {
 h1 {
   margin-top: 0;
 }
+.card-top-element {
+  display: inline-block;
+  position: relative;
+
+}
+.card-top-element-disabled {
+  background-color: grey;
+  opacity: 0.6}

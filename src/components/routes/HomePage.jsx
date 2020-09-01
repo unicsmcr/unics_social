@@ -25,6 +25,7 @@ export default function Homepage() {
 				</Typography>
 				<EventCard title="Event" description="dsdsd" startDate="23/12" endDate="12/12"/>
 				<LoadingEventCard/>
+				<EventCard title="Event" description="dsds" startDate="22/12" endDate="12/12" expired={true}/>
 			</Container>
 			{/* End hero unit */}
 			<Footer />

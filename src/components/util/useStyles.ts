@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 			paddingTop: theme.spacing(6),
 			paddingBottom: theme.spacing(6)
 		}
-	}
+	},
 }));
 
 export default useStyles;
