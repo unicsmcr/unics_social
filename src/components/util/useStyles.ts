@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	'cardHeader': {
 		backgroundColor:
-      theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700]
+            theme.palette.type === 'light' ? theme.palette.grey[200] : theme.palette.grey[700]
 	},
 	'cardPricing': {
 		display: 'flex',
@@ -34,7 +34,7 @@ const useStyles = makeStyles(theme => ({
 		marginBottom: theme.spacing(2)
 	},
 	'eventCard': {
-		width: 300
+		width: 345
 	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
@@ -46,6 +46,9 @@ const useStyles = makeStyles(theme => ({
 			paddingBottom: theme.spacing(6)
 		}
 	},
+	'media': {
+		height: 140
+	}
 }));
 
 export default useStyles;
