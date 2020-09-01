@@ -19,6 +19,7 @@ h1 {
 .card-top-element {
   display: inline-block;
   position: relative;
+  border-radius: 4px
 
 }
 .card-top-element-disabled {
