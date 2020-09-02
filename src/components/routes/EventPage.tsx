@@ -67,12 +67,6 @@ function EventPage() {
 					<Button variant="contained" color="primary">
                             Go to group chat
 					</Button>
-					<Typography variant="h5" className={classes.eventOptionText}>
-                            Match with a cs student
-					</Typography>
-					<Button variant="contained" color="secondary">
-                            Go to random chat
-					</Button>
 				</Container>
 			</Paper>
 		</Container>
