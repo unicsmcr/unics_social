@@ -4,15 +4,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Box, AppBar, Toolbar, colors, Avatar, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
+import Message from './Message';
+import MessageGroup, { Align } from './MessageGroup';
 
 const useStyles = makeStyles(theme => ({
-	mainContent: {
-		padding: theme.spacing(6, 2, 14, 2),
-		textAlign: 'center'
-	},
-	chatsRoot: {
-		display: 'flex'
-	},
 	flexGrow: {
 		flexGrow: 1
 	},
@@ -26,8 +21,22 @@ const useStyles = makeStyles(theme => ({
 	menuButton: {
 		marginRight: theme.spacing(1),
 		cursor: 'pointer'
+	},
+	chatArea: {
+		padding: theme.spacing(2)
 	}
 }));
+
+const messages = [
+	{
+		content: 'Hi!',
+		id: '1'
+	},
+	{
+		content: 'Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum for use in a type specimen book.',
+		id: '2'
+	}
+];
 
 interface ChatPanelProps {
 	channel: {
@@ -53,8 +62,9 @@ export default function ChatPanel({ channel, onChannelsMenuClicked }: ChatPanelP
 					</Typography>
 				</Toolbar>
 			</AppBar>
-			<Box>
-
+			<Box className={classes.chatArea}>
+				<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
+				<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
 			</Box>
 		</Box>
 	);

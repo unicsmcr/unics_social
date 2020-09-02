@@ -22,8 +22,6 @@ const useStyles = makeStyles(theme => ({
 		width: theme.spacing(40)
 	},
 	channelsList: {
-		minHeight: '80vh',
-		maxHeight: '80vh',
 		overflow: 'auto'
 	},
 	tab: {
