@@ -40,7 +40,7 @@ function EventPage() {
                 {loading ? <LinearProgress/> : null}
                     <img src={image} alt="" style={{width: '100%', height: '30vh', objectFit: 'cover'}}/>
 
-                    <Container>
+                    <Container style={{marginTop: 3}}>
                         <Typography component="h2" variant="h2" color="textPrimary">
                             {name}
                         </Typography>
