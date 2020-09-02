@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChatsPage() {
 	const classes = useStyles();
+	const [channelsPanelOpen, setChannelsPanelOpen] = useState(false);
 	const [channel, setChannel] = useState<{ name: string; avatar: string }>({
 		name: 'Blank',
 		avatar: ''
@@ -29,10 +30,10 @@ export default function ChatsPage() {
 
 	return (
 		<Page>
-			<Container maxWidth="xl" component="main" className={classes.mainContent}>
+			<Container maxWidth="lg" component="main" className={classes.mainContent}>
 				<Paper elevation={3} className={classes.chatsRoot}>
-					<ChannelsPanel onChannelSelected={channel => setChannel(channel)}/>
-					<ChatPanel channel={channel} />
+					<ChannelsPanel onChannelSelected={channel => setChannel(channel)} open={channelsPanelOpen} onClose={() => setChannelsPanelOpen(false)}/>
+					<ChatPanel channel={channel} onChannelsMenuClicked={() => setChannelsPanelOpen(true)} />
 				</Paper>
 			</Container>
 		</Page>

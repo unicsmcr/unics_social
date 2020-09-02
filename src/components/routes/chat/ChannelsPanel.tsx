@@ -1,7 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import { Paper, AppBar, Tabs, Tab } from '@material-ui/core';
+import { AppBar, Tabs, Tab, Drawer } from '@material-ui/core';
 import ChannelListItem from './ChannelListItem';
 
 const dummyUsers = [
@@ -33,16 +33,18 @@ const useStyles = makeStyles(theme => ({
 
 interface ChannelsPanelProps {
 	onChannelSelected: (channel: { name: string; avatar: string }) => void;
+	open: boolean;
+	onClose: Function;
 }
 
-export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps) {
+export default function ChannelsPanel({ onChannelSelected, open, onClose }: ChannelsPanelProps) {
 	const classes = useStyles();
 
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
 
 	const channelList = chatPanelValue === 0 ? dummyUsers : dummyEvents;
 
-	return <Paper elevation={2}>
+	return <Drawer anchor="left" variant="temporary" open={open} onClose={() => onClose()}>
 		<div className={classes.channelsPanel}>
 			<AppBar position="static" color="primary">
 				<Tabs variant="fullWidth" value={chatPanelValue} onChange={(_, v) => setChatPanelValue(v)} indicatorColor="secondary" textColor="inherit">
@@ -57,5 +59,5 @@ export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps)
 				})} />)}
 			</List>
 		</div>
-	</Paper>;
+	</Drawer>;
 }
