@@ -9,7 +9,7 @@ import ProtectedRoute from './components/util/ProtectedRoute';
 import PublicRoute from './components/util/PublicRoute';
 import { Provider } from 'react-redux';
 import store from './store';
-import EventPage from "./components/routes/EventPage";
+import EventPage from './components/routes/EventPage';
 
 function App() {
 	return (
