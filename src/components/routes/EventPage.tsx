@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {withRouter} from 'react-router-dom';
-import {Container, Divider, Grid, LinearProgress, Paper, Typography} from '@material-ui/core';
+import {Button, Container, Divider, Grid, LinearProgress, Paper, Typography} from '@material-ui/core';
 import * as stockImage from '../../res/stockEventPhoto.jpg';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import Url from '../Url';
+import useStyles from "../util/useStyles";
 
 function EventPage() {
     const [loading, setLoading] = useState<boolean>(false);
@@ -22,6 +22,8 @@ function EventPage() {
         '                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laboru');
     const [image, setImage] = useState(stockImage);
     const [channelID, setChannelID] = useState<string>('ggg');
+    const classes = useStyles();
+
     useEffect(() => {
         // expecting API CALL
         setLoading(true);
@@ -34,13 +36,13 @@ function EventPage() {
     }, []);
 
     return (
-        <Container style={{display: 'flex', justifyContent: 'center'}}>
+        <Container className={classes.eventContainer}>
             <Paper
-                elevation={10} style={{height: '98vh', width: '70vh', alignSelf: 'center', overflow: 'auto'}}>
+                elevation={10} className={classes.eventPaper}>
                 {loading ? <LinearProgress/> : null}
                     <img src={image} alt="" style={{width: '100%', height: '30vh', objectFit: 'cover'}}/>
 
-                    <Container style={{marginTop: 3}}>
+                    <Container className={classes.eventInnerContainer}>
                         <Typography component="h2" variant="h2" color="textPrimary">
                             {name}
                         </Typography>
@@ -48,25 +50,29 @@ function EventPage() {
                             {description}
                         </Typography>
                         <Grid
-                            style={{paddingTop: 4}}
+                            className={classes.eventGrid}
                             container
                             direction="row"
                             alignItems="center"
                         >
-                            <AccessTimeIcon style={{paddingRight: '0.4rem'}} color="disabled"/>
+                            <AccessTimeIcon className={classes.iconMargin} color="disabled"/>
                             <Typography>{`${startDate} - ${endDate}`}</Typography>
                         </Grid>
                     </Container>
-                    <Divider light style={{marginTop: '2rem', marginBottom: '2rem'}}/>
-                    <Container>
-                        <Typography variant="h5">
+                    <Divider light/>
+                    <Container className={classes.eventInnerContainer}>
+                        <Typography variant="h5" className={classes.eventOptionText}>
                             What are you waiting for? Go to the group chat
                         </Typography>
-                        <Url link="google.com"/>
-                        <Typography variant="h5">
+                        <Button variant="contained" color="primary">
+                            Go to group chat
+                        </Button>
+                        <Typography variant="h5" className={classes.eventOptionText}>
                             Match with a cs student
                         </Typography>
-                        <Url link={channelID}/>
+                        <Button variant="contained" color="secondary">
+                            Go to random chat
+                        </Button>
                     </Container>
             </Paper>
         </Container>
