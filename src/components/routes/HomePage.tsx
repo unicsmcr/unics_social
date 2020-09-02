@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import useStyles from '../util/useStyles';
 import Page from '../Page';
+import EventCard from "../EventCard";
 export default function Homepage() {
 	const classes = useStyles();
 

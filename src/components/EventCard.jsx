@@ -25,8 +25,8 @@ const EventCard = ({ title, description, startDate, endDate, expired = false, im
 					<Typography variant={'h3'}>
 						{title}
 					</Typography>
-					<Typography variant={'h5'} color="textSecondary">
-						{description.substring(0, 50)}
+					<Typography variant={'h5'} color="textSecondary" noWrap={true}>
+						{description}
 					</Typography>
 					<Typography variant={'subtitle2'} color="secondary">
 						{startDate} - {endDate}
