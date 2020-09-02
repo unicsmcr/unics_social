@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(2, 0, 2, 0)
 	},
 	'eventCard': {
-		width: "25em"
+		width: '25em'
 	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	'media': {
-		height: "13em"
+		height: '13em'
 	}
 }));
 
