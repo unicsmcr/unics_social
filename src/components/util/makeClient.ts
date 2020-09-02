@@ -18,14 +18,15 @@ export default function makeClient() {
 }
 
 function addQueueListeners(apiClient: APIClient) {
-	apiClient.gateway?.on(GatewayPacketType.JoinDiscoveryQueue, () => {
+	if (apiClient.gateway == null) return;
+	apiClient.gateway.on(GatewayPacketType.JoinDiscoveryQueue, () => {
 		store.dispatch(setQueueStatus(QueueStatus.InQueue));
 	});
-	apiClient.gateway?.on(GatewayPacketType.LeaveDiscoveryQueue, () => {
+	apiClient.gateway.on(GatewayPacketType.LeaveDiscoveryQueue, () => {
 		store.dispatch(setQueueStatus(QueueStatus.Idle));
 	});
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	apiClient.gateway?.on(GatewayPacketType.DiscoveryQueueMatch, channel => {
+	apiClient.gateway.on(GatewayPacketType.DiscoveryQueueMatch, channel => {
 		// TODO: navigate user to channel
 		store.dispatch(setQueueStatus(QueueStatus.Idle));
 	});

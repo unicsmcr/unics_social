@@ -12,7 +12,7 @@ export enum QueueStatus {
 	Leaving,
 }
 
-interface QueueState {
+export interface QueueState {
 	status: QueueStatus;
 	errorMessage: string;
 }
