@@ -26,6 +26,10 @@ const useStyles = makeStyles(theme => ({
 	'paddedCaption': {
 		padding: theme.spacing(2, 0, 2, 0)
 	},
+	eventContainer: {
+		height: "100vh",
+		paddingTop: "3vh"
+	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
 		marginTop: theme.spacing(8),
