@@ -14,21 +14,21 @@ import asAPIError from '../util/asAPIError';
 import Page from '../Page';
 
 enum VerifyEmailPageState {
-	MissingConfirmationId,
+	MissingToken,
 	Verifying,
 	Verified,
 	Failure
 }
 
 function getVerifyMessage(state: VerifyEmailPageState, classes: Record<string, string>) {
-	if (state === VerifyEmailPageState.MissingConfirmationId) {
+	if (state === VerifyEmailPageState.MissingToken) {
 		return <Typography component="p" variant="body1" align="center" color="textPrimary">
 			Oops! You've landed on this page without an email address to verify!
 		</Typography>;
 	} else if (state === VerifyEmailPageState.Verifying) {
 		return <Box textAlign="center">
 			<Typography component="p" variant="body1" align="center" color="textPrimary" className={classes.paddedCaption}>
-				Verifying your account...
+					Verifying your account...
 			</Typography>
 			<CircularProgress />
 		</Box>;
@@ -36,14 +36,14 @@ function getVerifyMessage(state: VerifyEmailPageState, classes: Record<string, s
 		return <Box textAlign="center">
 			<CheckCircleOutlineIcon fontSize="large" color="primary" />
 			<Typography component="p" variant="body1" align="center" color="textPrimary">
-		Your account has been verified!
+				Your account has been verified!
 			</Typography>
 		</Box>;
 	}
 	return <Box textAlign="center">
 		<ErrorOutlineIcon fontSize="large" color="primary" />
 		<Typography component="p" variant="body1" align="center" color="textPrimary">
-		Failed to verify the given email address.
+			Failed to verify the given email address.
 		</Typography>
 	</Box>;
 }
@@ -54,12 +54,12 @@ export default function VerifyEmailPage() {
 
 	const classes = useStyles();
 	const location = useLocation();
-	const confirmationId = new URLSearchParams(location.search).get('confirmationId');
+	const token = new URLSearchParams(location.search).get('token');
 
 	useEffect(() => {
-		if (confirmationId) {
+		if (token) {
 			const client = makeClient();
-			client.verifyEmail(confirmationId)
+			client.verifyEmail(token)
 				.then(() => setVerifyEmailState(VerifyEmailPageState.Verified))
 				.catch(err => {
 					console.warn(err);
@@ -68,9 +68,9 @@ export default function VerifyEmailPage() {
 					setVerifyEmailState(VerifyEmailPageState.Failure);
 				});
 		} else {
-			setVerifyEmailState(VerifyEmailPageState.MissingConfirmationId);
+			setVerifyEmailState(VerifyEmailPageState.MissingToken);
 		}
-	}, [confirmationId]);
+	}, [token]);
 
 	return (
 		<Page>
