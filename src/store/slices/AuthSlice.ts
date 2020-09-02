@@ -7,8 +7,7 @@ export enum QueueStatus {
 	InQueue,
 	Idle,
 	Joining,
-	FailedLeaving,
-	FailedJoining,
+	Failed,
 	Leaving,
 }
 
@@ -68,7 +67,7 @@ export const AuthSlice = createSlice({
 		});
 
 		builder.addCase(joinDiscoveryQueue.rejected, (state, action) => {
-			state.queue.status = QueueStatus.FailedJoining;
+			state.queue.status = QueueStatus.Failed;
 			state.queue.errorMessage = action.error.message as string;
 		});
 
@@ -77,7 +76,7 @@ export const AuthSlice = createSlice({
 		});
 
 		builder.addCase(leaveDiscoveryQueue.rejected, (state, action) => {
-			state.queue.status = QueueStatus.FailedLeaving;
+			state.queue.status = QueueStatus.Failed;
 			state.queue.errorMessage = action.error.message as string;
 		});
 	}

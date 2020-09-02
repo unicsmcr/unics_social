@@ -18,8 +18,9 @@ export default function makeClient() {
 }
 
 function addQueueListeners(apiClient: APIClient) {
-	if (apiClient.gateway == null) return;
+	if (!apiClient.gateway) return;
 	apiClient.gateway.on(GatewayPacketType.JoinDiscoveryQueue, () => {
+		console.log('Joined');
 		store.dispatch(setQueueStatus(QueueStatus.InQueue));
 	});
 	apiClient.gateway.on(GatewayPacketType.LeaveDiscoveryQueue, () => {
