@@ -16,23 +16,18 @@ const useStyles = makeStyles(theme => ({
 	},
 	root: {
 		position: 'absolute',
-		top: theme.spacing(4),
-		bottom: theme.spacing(4),
-		left: '10vw',
-		right: '10vw',
-		[theme.breakpoints.down('sm')]: {
-			top: 0,
-			bottom: 0,
-			left: 0,
-			right: 0
-		}
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
+		borderRadius: '0 !important'
 	},
 	avatar: {
 		marginRight: theme.spacing(2)
 	},
 	appBar: {
 		background: colors.grey[700],
-		color: theme.palette.getContrastText(colors.grey[700])
+		color: theme.palette.getContrastText(colors.grey[700]),
 	},
 	menuButton: {
 		marginRight: theme.spacing(1),
@@ -46,7 +41,6 @@ const useStyles = makeStyles(theme => ({
 		top: 0,
 		bottom: 0,
 		right: 0,
-		zIndex: 0,
 		transition: theme.transitions.create(['left', 'right'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen

@@ -9,10 +9,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { setJWT, selectJWT } from '../store/slices/AuthSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
+import { colors } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
-		borderBottom: `1px solid ${theme.palette.divider}`
+		borderBottom: `1px solid ${theme.palette.divider}`,
+		background: colors.grey[800],
+		color: theme.palette.getContrastText(colors.grey[800])
 	},
 	toolbar: {
 		'flexWrap': 'wrap',
@@ -50,7 +53,7 @@ export default function AutoAppBar() {
 	return (
 		<AppBar position="static" color="default" elevation={0} className={classes.appBar}>
 			<Toolbar className={classes.toolbar}>
-				<Typography variant="h6" color="textPrimary" noWrap className={classes.toolbarTitle}>
+				<Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
 					<RouterLink style={{ color: 'inherit' }} to="/">UniCS KB</RouterLink>
 				</Typography>
 				<nav>
@@ -59,7 +62,7 @@ export default function AutoAppBar() {
 							? <>
 								<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
 								<Button color="inherit" component={RouterLink} to="/account">Account</Button>
-								<Button href="#" color="primary" variant="outlined" className={classes.link} onClick={logout}>
+								<Button href="#" color="inherit" variant="outlined" className={classes.link} onClick={logout}>
 								Logout
 								</Button>
 							</>

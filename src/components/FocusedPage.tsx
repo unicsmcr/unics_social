@@ -32,7 +32,6 @@ export default function FocusedPage({ children }) {
 					{ children }
 				</div>
 			</div>
-			<Footer />
 		</>
 	);
 }
