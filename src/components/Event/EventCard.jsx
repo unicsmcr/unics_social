@@ -4,9 +4,9 @@ import Typography from '@material-ui/core/Typography';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Button from '@material-ui/core/Button';
-import useStyles from './util/useStyles';
+import useStyles from '../util/useStyles';
 import CardMedia from '@material-ui/core/CardMedia';
-import stockEvent from '../res/stockEventPhoto.jpg';
+import stockEvent from '../../res/stockEventPhoto.jpg';
 
 const EventCard = ({ title, description, startDate, endDate, expired = false, img = stockEvent }) => {
 	const classes = useStyles();
