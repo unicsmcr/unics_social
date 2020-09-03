@@ -23,7 +23,10 @@ const useStyles = makeStyles(theme => ({
 		cursor: 'pointer'
 	},
 	chatArea: {
-		padding: theme.spacing(2)
+		padding: theme.spacing(2),
+		minHeight: '70vh',
+		maxHeight: '70vh',
+		overflow: 'auto'
 	}
 }));
 
@@ -31,6 +34,10 @@ const messages = [
 	{
 		content: 'Hi!',
 		id: '1'
+	},
+	{
+		content: 'My name is Test 😄',
+		id: '2'
 	},
 	{
 		content: 'Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum for use in a type specimen book.',
@@ -63,6 +70,8 @@ export default function ChatPanel({ channel, onChannelsMenuClicked }: ChatPanelP
 				</Toolbar>
 			</AppBar>
 			<Box className={classes.chatArea}>
+				<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
+				<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
 				<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
 				<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
 			</Box>
