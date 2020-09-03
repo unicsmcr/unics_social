@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 		background: colors.grey[200],
 		borderRadius: theme.spacing(0, 4, 4, 4),
 		marginBottom: theme.spacing(1),
-		maxWidth: '50ch'
+		maxWidth: '70ch'
 	},
 	ownMessage: {
 		background: theme.palette.primary.light,
