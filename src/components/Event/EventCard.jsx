@@ -22,13 +22,13 @@ const EventCard = ({ title, description, startDate, endDate, expired = false, im
 					title={title}
 				/>
 				<CardContent>
-					<Typography variant='h3'>
+					<Typography variant="h3">
 						{title}
 					</Typography>
-					<Typography variant='h5' color="textSecondary" noWrap={true}>
+					<Typography variant="h5" color="textSecondary" noWrap={true}>
 						{description}
 					</Typography>
-					<Typography variant='subtitle2' color="secondary">
+					<Typography variant="subtitle2" color="secondary">
 						{startDate} - {endDate}
 					</Typography>
 				</CardContent>
