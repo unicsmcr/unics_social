@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	tab: {
 		height: theme.spacing(8),
-		[theme.breakpoints.down('sm')]: {
+		[theme.breakpoints.down('xs')]: {
 			height: theme.spacing(7)
 		}
 	},
