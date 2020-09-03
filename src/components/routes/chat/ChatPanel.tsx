@@ -11,6 +11,21 @@ const useStyles = makeStyles(theme => ({
 	flexGrow: {
 		flexGrow: 1
 	},
+	root: {
+		display: 'flex',
+		flexDirection: 'column',
+		position: 'absolute',
+		top: theme.spacing(4),
+		bottom: theme.spacing(4),
+		left: '10vw',
+		right: '10vw',
+		[theme.breakpoints.down('sm')]: {
+			top: 0,
+			bottom: 0,
+			left: 0,
+			right: 0
+		}
+	},
 	avatar: {
 		marginRight: theme.spacing(2)
 	},
@@ -24,15 +39,15 @@ const useStyles = makeStyles(theme => ({
 	},
 	chatArea: {
 		padding: theme.spacing(2),
-		minHeight: '70vh',
-		maxHeight: '70vh',
 		overflow: 'auto',
-		background: '#fafafa'
+		background: '#fafafa',
+		flexGrow: 1
 	},
 	chatBox: {
 		'borderTop': '1px solid',
 		'borderColor': colors.grey[400],
 		'padding': theme.spacing(2),
+		'overflow': 'initial',
 		'& > form': {
 			display: 'flex',
 			alignItems: 'flex-start'
@@ -70,7 +85,7 @@ export default function ChatPanel({ channel, onChannelsMenuClicked }: ChatPanelP
 	const classes = useStyles();
 
 	return (
-		<Box className={classes.flexGrow}>
+		<Card className={[classes.flexGrow, classes.root].join(' ')}>
 			<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 				<Toolbar>
 					<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => onChannelsMenuClicked()} >
@@ -88,7 +103,7 @@ export default function ChatPanel({ channel, onChannelsMenuClicked }: ChatPanelP
 				<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
 				<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
 			</Box>
-			<Card className={classes.chatBox} elevation={4}>
+			<Card className={classes.chatBox}>
 				<form className={classes.flexGrow}>
 					<TextField label="Type a message" variant="filled" className={classes.flexGrow}/>
 					<Fab aria-label="send" className={classes.sendIcon} color="primary" >
@@ -96,6 +111,6 @@ export default function ChatPanel({ channel, onChannelsMenuClicked }: ChatPanelP
 					</Fab>
 				</form>
 			</Card>
-		</Box>
+		</Card>
 	);
 }
