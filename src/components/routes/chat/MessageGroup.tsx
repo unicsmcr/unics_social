@@ -48,7 +48,7 @@ export default function MessageGroup({ messages, align, author }: MessageGroupPr
 		</Box>
 		}
 		{
-			messages.map(message => <Message content={message.content} id={message.id} isOwn={align === Align.Right}/>)
+			messages.map(message => <Message content={message.content} id={message.id} isOwn={align === Align.Right} key={message.id} />)
 		}
 	</Box>;
 }
