@@ -69,7 +69,7 @@ export default function AutoAppBar() {
 							: <>
 								<Button color="inherit" component={RouterLink} to="/">About</Button>
 								<Button color="inherit" component={RouterLink} to="/register">Register</Button>
-								<Button href="#" color="primary" variant="contained" className={classes.link} component={RouterLink} to="/login">
+								<Button href="#" color="inherit" variant="outlined" className={classes.link} component={RouterLink} to="/login">
 								Login
 								</Button>
 							</>
