@@ -2,9 +2,9 @@ import React from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, AppBar, Toolbar, colors, Avatar, IconButton } from '@material-ui/core';
+import { Box, AppBar, Toolbar, colors, Avatar, IconButton, TextField, Card, Fab } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
-import Message from './Message';
+import SendIcon from '@material-ui/icons/Send';
 import MessageGroup, { Align } from './MessageGroup';
 
 const useStyles = makeStyles(theme => ({
@@ -26,7 +26,20 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(2),
 		minHeight: '70vh',
 		maxHeight: '70vh',
-		overflow: 'auto'
+		overflow: 'auto',
+		background: '#fafafa'
+	},
+	chatBox: {
+		'borderTop': '1px solid',
+		'borderColor': colors.grey[400],
+		'padding': theme.spacing(2),
+		'& > form': {
+			display: 'flex',
+			alignItems: 'flex-start'
+		}
+	},
+	sendIcon: {
+		marginLeft: theme.spacing(2)
 	}
 }));
 
@@ -75,6 +88,14 @@ export default function ChatPanel({ channel, onChannelsMenuClicked }: ChatPanelP
 				<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
 				<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
 			</Box>
+			<Card className={classes.chatBox} elevation={4}>
+				<form className={classes.flexGrow}>
+					<TextField label="Type a message" variant="filled" className={classes.flexGrow}/>
+					<Fab aria-label="send" className={classes.sendIcon} color="primary" >
+						<SendIcon />
+					</Fab>
+				</form>
+			</Card>
 		</Box>
 	);
 }
