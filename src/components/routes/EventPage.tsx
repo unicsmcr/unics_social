@@ -5,12 +5,28 @@ import * as stockImage from '../../res/stockEventPhoto.jpg';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import useStyles from '../util/useStyles';
 
+interface EventSkeleton {
+	name: string;
+	startDate: Date | string;
+	endDate: Date | string;
+	description: string;
+	image: string;
+	channelID: string;
+}
+
 function EventPage() {
+	const [event, setEvent] = useState<EventSkeleton>({
+		name: '',
+		startDate: '',
+		endDate: '',
+		description: '',
+		image: '',
+		channelID: ''
+	});
 	const [loading, setLoading] = useState<boolean>(false);
-	const [name, setName] = useState<string>('');
-	const [startDate, setStartDate] = useState<Date | string>('');
-	const [endDate, setEndDate] = useState<Date | string>('');
-	const [description, setDescription] = useState<string>('Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n' +
+	const { name, startDate, endDate, description, image, channelID } = event;
+	const classes = useStyles();
+	const stock = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n' +
         '                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco\n' +
         '                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in\n' +
         '                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat\n' +
@@ -19,21 +35,17 @@ function EventPage() {
         '                            labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco\n' +
         '                            laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in\n' +
         '                            voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat\n' +
-        '                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laboru');
-	const [image, setImage] = useState(stockImage);
-	const [channelID, setChannelID] = useState<string>('ggg');
-	const classes = useStyles();
-
+        '                            cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laboru';
 	useEffect(() => {
 		// expecting API CALL
 		setLoading(true);
-		setName('Hello');
-		setStartDate('2/12');
-		setEndDate('23/12');
-		// setDescription('An Amazing event');
-		setChannelID('eeee');
+		// API CALL
+		setEvent({
+			name: 'Event', startDate: '12/1', endDate: '12/2',
+			description: stock, image: stockImage, channelID: '121'
+		});
 		setLoading(false);
-	}, []);
+	}, [stock]);
 
 	return (
 		<Container className={classes.eventContainer}>
@@ -62,10 +74,10 @@ function EventPage() {
 				<Divider light/>
 				<Container className={classes.eventInnerContainer}>
 					<Typography variant="h5" className={classes.eventOptionText}>
-                            What are you waiting for? Go to the group chat
+                        What are you waiting for? Go to the group chat
 					</Typography>
 					<Button variant="contained" color="primary">
-                            Go to group chat
+                        Go to group chat {channelID}
 					</Button>
 				</Container>
 			</Paper>
