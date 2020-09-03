@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
 		})
 	},
 	shiftLeft: {
-		left: DRAWER_WIDTH,
+		left: `min(${DRAWER_WIDTH}, calc(100vw - 3rem))`,
 		[theme.breakpoints.down('sm')]: {
 			right: `-${DRAWER_WIDTH}`
 		}
