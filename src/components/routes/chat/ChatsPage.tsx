@@ -22,18 +22,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChatsPage() {
 	const classes = useStyles();
-	const [channelsPanelOpen, setChannelsPanelOpen] = useState(false);
-	const [channel, setChannel] = useState<{ name: string; avatar: string }>({
-		name: 'Blank',
-		avatar: ''
-	});
-
 	return (
 		<FocusedPage>
 			<Container maxWidth="lg" component="main" className={classes.mainContent}>
 				<Paper elevation={3} className={classes.chatsRoot}>
-					<ChannelsPanel onChannelSelected={channel => setChannel(channel)} open={channelsPanelOpen} onClose={() => setChannelsPanelOpen(false)}/>
-					<ChatPanel channel={channel} onChannelsMenuClicked={() => setChannelsPanelOpen(true)} />
+					<ChatPanel />
 				</Paper>
 			</Container>
 		</FocusedPage>
