@@ -26,30 +26,6 @@ const useStyles = makeStyles(theme => ({
 	'paddedCaption': {
 		padding: theme.spacing(2, 0, 2, 0)
 	},
-	'eventContainer': {
-		display: 'flex', justifyContent: 'center'
-	},
-	'eventPaper': {
-		height: '98vh', width: '70vh', alignSelf: 'center', overflow: 'auto'
-	},
-	'iconMargin': {
-		margin: theme.spacing(0, 1, 0, 0)
-	},
-	'eventInnerContainer': {
-		margin: theme.spacing(2, 0),
-		display: 'flex',
-		flexDirection: 'column'
-	},
-	'eventButton': {
-		alignSelf: 'center',
-		margin: 2
-	},
-	'eventOptionText': {
-		margin: theme.spacing(3, 0)
-	},
-	'eventGrid': {
-		margin: theme.spacing(2, 0, 0, 0)
-	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
 		marginTop: theme.spacing(8),

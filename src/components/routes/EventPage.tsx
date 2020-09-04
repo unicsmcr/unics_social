@@ -3,7 +3,34 @@ import { withRouter } from 'react-router-dom';
 import { Button, Container, Divider, Grid, LinearProgress, Paper, Typography } from '@material-ui/core';
 import * as stockImage from '../../res/stockEventPhoto.jpg';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
-import useStyles from '../util/useStyles';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+	eventContainer: {
+		display: 'flex', justifyContent: 'center'
+	},
+	eventPaper: {
+		height: '98vh', width: '70vh', alignSelf: 'center', overflow: 'auto'
+	},
+	eventInnerContainer: {
+		margin: theme.spacing(2, 0),
+		display: 'flex',
+		flexDirection: 'column'
+	},
+	iconMargin: {
+		margin: theme.spacing(0, 1, 0, 0)
+	},
+	eventButton: {
+		alignSelf: 'center',
+		margin: 2
+	},
+	eventOptionText: {
+		margin: theme.spacing(3, 0)
+	},
+	eventGrid: {
+		margin: theme.spacing(2, 0, 0, 0)
+	}
+}));
 
 interface EventSkeleton {
 	name: string;
@@ -13,7 +40,6 @@ interface EventSkeleton {
 	image: string;
 	channelID: string;
 }
-
 function EventPage() {
 	const [event, setEvent] = useState<EventSkeleton>({
 		name: '',
