@@ -108,7 +108,7 @@ export default function ChatPanel() {
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 
-	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(!isMobile);
+	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const [channel, setChannel] = useState<{ name: string; avatar: string }|null>(null);
 
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
