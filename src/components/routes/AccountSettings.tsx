@@ -13,8 +13,8 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { Paper, Avatar, Menu, MenuItem, Fab, Backdrop } from '@material-ui/core';
-import { APIUser } from '@unicsmcr/unics_social_api_client';
+import { Paper, Avatar, Menu, MenuItem, Fab, Backdrop, FormControl, InputLabel, Select, Box } from '@material-ui/core';
+import { APIUser, Year, Course } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -55,6 +55,10 @@ const useStyles = makeStyles(theme => ({
 	backdrop: {
 		zIndex: theme.zIndex.drawer + 1,
 		color: '#fff'
+	},
+	formControl: {
+		minWidth: '100%',
+		textAlign: 'left'
 	}
 }));
 
@@ -83,7 +87,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 		forename: me.forename,
 		surname: me.surname,
 		profile: {
-			course: me.profile?.course ?? '',
+			course: me.profile?.course,
 			yearOfStudy: me.profile?.yearOfStudy ?? '',
 			facebook: me.profile?.facebook ?? '',
 			twitter: me.profile?.twitter ?? '',
@@ -130,7 +134,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 		setSaveState(SaveState.Saving);
 		client.editProfile({
-			...userState.profile,
+			...userState.profile as any,
 			avatar: avatarAttachment as any
 		}).then(me => {
 			dispatch({
@@ -169,8 +173,43 @@ function AccountSettings({ me }: { me: APIUser }) {
 			<form className={classes.form}>
 				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*"/>
 				<Avatar alt={`${me.forename} ${me.surname}`} src={avatar} className={classes.avatar} onClick={avatarClicked} />
-				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course}/>
-				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy}/>
+
+				<Box>
+					<FormControl variant="outlined" className={classes.formControl}>
+						<InputLabel id="form-label-course">Course</InputLabel>
+						<Select
+							labelId="form-label-course"
+							id="form-course"
+							name="course"
+							defaultValue={userState.profile.course}
+							onBlur={profileSettingsChanged}
+							label="Course"
+						>
+							{
+								[...Object.values(Course)].map(course => <MenuItem value={course} key={course}>{course}</MenuItem>)
+							}
+						</Select>
+					</FormControl>
+				</Box>
+
+				<Box>
+					<FormControl variant="outlined" className={classes.formControl}>
+						<InputLabel id="form-label-year-of-study">Year of Study</InputLabel>
+						<Select
+							labelId="form-label-year-of-study"
+							id="form-year-of-study"
+							name="yearOfStudy"
+							defaultValue={userState.profile.yearOfStudy}
+							onBlur={profileSettingsChanged}
+							label="Year of Study"
+						>
+							{
+								[...Object.values(Year)].map(year => <MenuItem value={year} key={year}>{year}</MenuItem>)
+							}
+						</Select>
+					</FormControl>
+				</Box>
+
 				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
 				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook}/>
 				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter}/>
