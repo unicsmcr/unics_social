@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useState } from 'react';
 
@@ -66,6 +67,11 @@ const useStyles = makeStyles(theme => ({
 		),
 		url(${require('../../../assets/chat_bg.jpg')})`
 	},
+	emptyChatArea: {
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
 	chatBox: {
 		'borderTop': '1px solid',
 		'borderColor': colors.grey[400],
@@ -110,10 +116,7 @@ export default function ChatPanel() {
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 
 	const [channelsPanelOpen, setChannelsPanelOpen] = useState(!isMobile);
-	const [channel, setChannel] = useState<{ name: string; avatar: string }>({
-		name: 'Blank',
-		avatar: ''
-	});
+	const [channel, setChannel] = useState<{ name: string; avatar: string }|null>(null);
 
 	return (
 		<Card className={[classes.flexGrow, classes.root].join(' ')}>
@@ -127,26 +130,36 @@ export default function ChatPanel() {
 						<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => setChannelsPanelOpen(!channelsPanelOpen)} >
 							{ channelsPanelOpen ? <ChevronLeftIcon /> : <MenuIcon /> }
 						</IconButton>
-						<Avatar className={classes.avatar} src={channel.avatar} alt={channel.name}></Avatar>
-						<Typography variant="h6">
-							{channel.name}
-						</Typography>
+						{ channel && <>
+							<Avatar className={classes.avatar} src={channel.avatar} alt={channel.name}></Avatar>
+							<Typography variant="h6">
+								{channel.name}
+							</Typography>
+						</>
+						}
 					</Toolbar>
 				</AppBar>
-				<Box className={classes.chatArea}>
-					<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
-					<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
-					<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
-					<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
-				</Box>
-				<Card className={classes.chatBox}>
-					<form className={classes.flexGrow}>
-						<TextField label="Type a message" variant="filled" className={classes.flexGrow}/>
-						<Fab aria-label="send" className={classes.sendIcon} color="primary" >
-							<SendIcon />
-						</Fab>
-					</form>
-				</Card>
+				{ channel
+					? <>
+						<Box className={classes.chatArea}>
+							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
+							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
+							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
+							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
+						</Box>
+						<Card className={classes.chatBox}>
+							<form className={classes.flexGrow}>
+								<TextField label="Type a message" variant="filled" className={classes.flexGrow}/>
+								<Fab aria-label="send" className={classes.sendIcon} color="primary" >
+									<SendIcon />
+								</Fab>
+							</form>
+						</Card>
+					</>
+					: <Box className={clsx(classes.chatArea, classes.emptyChatArea)}>
+						<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+					</Box>
+				}
 			</Box>
 		</Card>
 	);
