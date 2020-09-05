@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
 	messageBubble: {
 		display: 'inline-block',
 		padding: theme.spacing(2),
-		background: colors.grey[200],
+		background: colors.grey[100],
 		borderRadius: theme.spacing(0, 4, 4, 4),
 		marginBottom: theme.spacing(1),
 		maxWidth: '70ch'

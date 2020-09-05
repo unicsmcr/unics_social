@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Box, AppBar, Toolbar, colors, Avatar, IconButton, TextField, Card, Fab } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
@@ -9,6 +10,7 @@ import MessageGroup, { Align } from './MessageGroup';
 import ChannelsPanel, { DRAWER_WIDTH } from './ChannelsPanel';
 import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
+import { useMediaQuery } from 'react-responsive';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -55,8 +57,14 @@ const useStyles = makeStyles(theme => ({
 	chatArea: {
 		padding: theme.spacing(2),
 		overflow: 'auto',
-		background: '#fafafa',
-		flexGrow: 1
+		backgroundColor: '#fafafa',
+		flexGrow: 1,
+		background: `
+		linear-gradient(
+			rgba(255, 255, 255, 0.7),
+			rgba(255, 255, 255, 0.7)
+		),
+		url(${require('../../../assets/chat_bg.jpg')})`
 	},
 	chatBox: {
 		'borderTop': '1px solid',
@@ -98,8 +106,10 @@ interface ChatPanelProps {
 
 export default function ChatPanel() {
 	const classes = useStyles();
+	const theme = useTheme();
+	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 
-	const [channelsPanelOpen, setChannelsPanelOpen] = useState(false);
+	const [channelsPanelOpen, setChannelsPanelOpen] = useState(!isMobile);
 	const [channel, setChannel] = useState<{ name: string; avatar: string }>({
 		name: 'Blank',
 		avatar: ''
@@ -107,7 +117,10 @@ export default function ChatPanel() {
 
 	return (
 		<Card className={[classes.flexGrow, classes.root].join(' ')}>
-			<ChannelsPanel onChannelSelected={channel => setChannel(channel)} open={channelsPanelOpen} onClose={() => setChannelsPanelOpen(false)}/>
+			<ChannelsPanel onChannelSelected={channel => {
+				setChannel(channel);
+				if (isMobile) setChannelsPanelOpen(false);
+			}} open={channelsPanelOpen} onClose={() => setChannelsPanelOpen(false)}/>
 			<Box className={clsx(classes.chatPanel, channelsPanelOpen && classes.shiftLeft)}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
