@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
 		top: 0,
 		bottom: 0,
 		right: 0,
+		background: `url(${require('../../../assets/chat_bg.png')})`,
 		transition: theme.transitions.create(['left', 'right'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen
@@ -58,14 +59,7 @@ const useStyles = makeStyles(theme => ({
 	chatArea: {
 		padding: theme.spacing(2),
 		overflow: 'auto',
-		backgroundColor: '#fafafa',
-		flexGrow: 1,
-		background: `
-		linear-gradient(
-			rgba(255, 255, 255, 0.7),
-			rgba(255, 255, 255, 0.7)
-		),
-		url(${require('../../../assets/chat_bg.jpg')})`
+		flexGrow: 1
 	},
 	emptyChatArea: {
 		display: 'flex',
@@ -77,6 +71,7 @@ const useStyles = makeStyles(theme => ({
 		'borderColor': colors.grey[400],
 		'padding': theme.spacing(2),
 		'overflow': 'initial',
+		'background': colors.grey[300],
 		'& > form': {
 			display: 'flex',
 			alignItems: 'flex-start'
@@ -115,8 +110,10 @@ export default function ChatPanel() {
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 
-	const [channelsPanelOpen, setChannelsPanelOpen] = useState(!isMobile);
+	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(!isMobile);
 	const [channel, setChannel] = useState<{ name: string; avatar: string }|null>(null);
+
+	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 
 	return (
 		<Card className={[classes.flexGrow, classes.root].join(' ')}>
@@ -127,9 +124,11 @@ export default function ChatPanel() {
 			<Box className={clsx(classes.chatPanel, channelsPanelOpen && classes.shiftLeft)}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
+						{ isMobile &&
 						<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => setChannelsPanelOpen(!channelsPanelOpen)} >
 							{ channelsPanelOpen ? <ChevronLeftIcon /> : <MenuIcon /> }
 						</IconButton>
+						}
 						{ channel && <>
 							<Avatar className={classes.avatar} src={channel.avatar} alt={channel.name}></Avatar>
 							<Typography variant="h6">
