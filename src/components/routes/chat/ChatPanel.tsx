@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/no-require-imports */
 import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';

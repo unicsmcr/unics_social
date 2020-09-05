@@ -64,16 +64,15 @@ export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps)
 			</AppBar>
 			<List component="nav" aria-label="channels" className={classes.channelsList} >
 				{channelList.map((channel, index) => (
-					<>
+					<div key={channel.name}>
 						{
-							// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 							index !== 0 && <Divider />
 						}
 						<ChannelListItem key={index} {...channel} onClick={() => onChannelSelected({
 							name: channel.name,
 							avatar: channel.src
 						})} />
-					</>
+					</div>
 				))}
 			</List>
 		</div>
