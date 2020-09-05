@@ -40,7 +40,7 @@ enum RegistrationState {
 	Success
 }
 
-type FormField = 'forename'|'surname'|'email'|'password';
+type FormField = 'forename'|'surname'|'email'|'password'|'confirmPassword';
 
 export default function RegistrationPage() {
 	const classes = useStyles();
@@ -50,11 +50,13 @@ export default function RegistrationPage() {
 		surname: '',
 		email: '',
 		password: '',
+		confirmPassword: '',
 		forenameError: '',
 		surnameError: '',
 		emailError: '',
 		passwordError: '',
-		formError: ''
+		formError: '',
+		confirmPasswordError: ''
 	});
 
 	const inputChanged = (key: FormField) => {
@@ -72,9 +74,10 @@ export default function RegistrationPage() {
 		newState.surnameError = newState.surname ? '' : 'Required';
 		newState.emailError = EMAIL_REGEX.exec(newState.email) ? '' : 'Valid student email required';
 		newState.passwordError = newState.password ? '' : 'Required';
+		newState.confirmPasswordError = newState.password === newState.confirmPassword ? '' : 'Passwords do not match';
 
-		const { forenameError, surnameError, emailError, passwordError } = newState;
-		if (!(forenameError || surnameError || emailError || passwordError)) newState.formState = RegistrationState.Registering;
+		const { forenameError, surnameError, emailError, passwordError, confirmPasswordError } = newState;
+		if (!(forenameError || surnameError || emailError || passwordError || confirmPasswordError)) newState.formState = RegistrationState.Registering;
 
 		setState(newState);
 		if (newState.formState !== RegistrationState.Registering) return;
@@ -114,6 +117,7 @@ export default function RegistrationPage() {
 					<TextField variant="outlined" { ...buildProps('surname', 'Surname') } />
 					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('email', 'Email') }/>
 					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('password', 'Password') } />
+					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('confirmPassword', 'Confirm Password') } />
 					<Button variant="contained" color="primary" type="submit">
 						Register
 					</Button>
