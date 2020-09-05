@@ -57,22 +57,21 @@ export default function RegistrationPage() {
 		formError: ''
 	});
 
-	const changeInput = (key: FormField, value: string) => {
-		setState({
-			...state,
-			[key]: value,
-			[`${key}Error`]: ''
-		});
+	const inputChanged = (key: FormField) => {
+		const errorKey = `${key}Error`;
+		if (state[errorKey]) {
+			setState({ ...state, [errorKey]: '' });
+		}
 	};
 
-	const onSubmit = (e: FormEvent) => {
+	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (state.formState !== RegistrationState.FillingForm) return;
-		const newState = { ...state };
-		newState.forenameError = state.forename ? '' : 'Required';
-		newState.surnameError = state.surname ? '' : 'Required';
-		newState.emailError = EMAIL_REGEX.exec(state.email) ? '' : 'Valid student email required';
-		newState.passwordError = state.password ? '' : 'Required';
+		const newState = { ...state, ...Object.fromEntries(new FormData(e.target as any).entries()) };
+		newState.forenameError = newState.forename ? '' : 'Required';
+		newState.surnameError = newState.surname ? '' : 'Required';
+		newState.emailError = EMAIL_REGEX.exec(newState.email) ? '' : 'Valid student email required';
+		newState.passwordError = newState.password ? '' : 'Required';
 
 		const { forenameError, surnameError, emailError, passwordError } = newState;
 		if (!(forenameError || surnameError || emailError || passwordError)) newState.formState = RegistrationState.Registering;
@@ -101,12 +100,12 @@ export default function RegistrationPage() {
 
 	const mainContent = () => {
 		const buildProps = (key: FormField, label: string) => ({
+			name: key,
 			label,
 			fullWidth: true,
 			error: Boolean(state[`${key}Error`]),
 			helperText: state[`${key}Error`],
-			onChange: (e: React.ChangeEvent<HTMLInputElement>) => changeInput(key, e.target.value),
-			value: state[key]
+			onChange: () => inputChanged(key)
 		});
 		switch (state.formState) {
 			case RegistrationState.FillingForm:
