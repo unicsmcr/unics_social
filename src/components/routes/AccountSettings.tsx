@@ -201,13 +201,14 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 				<Box>
 					<FormControl variant="outlined" className={classes.formControl}>
-						<InputLabel id="form-label-course">Course</InputLabel>
+						<InputLabel id="form-label-course" required>Course</InputLabel>
 						<Select
 							labelId="form-label-course"
 							id="form-course"
 							name="course"
 							defaultValue={userState.profile.course}
-							label="Course"
+							label="Course *"
+							required
 							onChange={() => profileSettingsChanged()}
 						>
 							{
@@ -219,14 +220,15 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 				<Box>
 					<FormControl variant="outlined" className={classes.formControl}>
-						<InputLabel id="form-label-year-of-study">Year of Study</InputLabel>
+						<InputLabel id="form-label-year-of-study" required>Year of Study</InputLabel>
 						<Select
 							labelId="form-label-year-of-study"
 							id="form-year-of-study"
 							name="yearOfStudy"
 							defaultValue={userState.profile.yearOfStudy}
-							label="Year of Study"
+							label="Year of Study *"
 							onChange={() => profileSettingsChanged()}
+							required
 						>
 							{
 								[...Object.values(Year)].map(year => <MenuItem value={year} key={year}>{year}</MenuItem>)
