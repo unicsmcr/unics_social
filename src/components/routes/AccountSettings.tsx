@@ -137,7 +137,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 		client.editProfile({
 			...userState.profile,
 			avatar: avatarAttachment as any
-		}).then(me => {
+		} as any).then(me => {
 			dispatch({
 				type: 'users/fetchMe/fulfilled',
 				payload: me
