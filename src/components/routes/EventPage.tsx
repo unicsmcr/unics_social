@@ -4,13 +4,18 @@ import { Button, Container, Divider, Grid, LinearProgress, Paper, Typography } f
 import * as stockImage from '../../res/stockEventPhoto.jpg';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import { makeStyles } from '@material-ui/core/styles';
+import Page from '../Page';
 
 const useStyles = makeStyles(theme => ({
 	eventContainer: {
 		display: 'flex', justifyContent: 'center'
 	},
 	eventPaper: {
-		height: '98vh', width: '70vh', alignSelf: 'center', overflow: 'auto'
+		height: '98vh',
+		width: '70vh',
+		alignSelf: 'center',
+		overflow: 'auto',
+		margin: theme.spacing(1,0,0,0)
 	},
 	eventInnerContainer: {
 		margin: theme.spacing(2, 0),
@@ -40,6 +45,7 @@ interface EventSkeleton {
 	image: string;
 	channelID: string;
 }
+
 function EventPage() {
 	const [event, setEvent] = useState<EventSkeleton>({
 		name: '',
@@ -74,40 +80,42 @@ function EventPage() {
 	}, [stock]);
 
 	return (
-		<Container className={classes.eventContainer}>
-			<Paper
-				elevation={10} className={classes.eventPaper}>
-				{loading ? <LinearProgress/> : null}
-				<img src={image} alt="" style={{ width: '100%', height: '30vh', objectFit: 'cover' }}/>
+		<Page>
+			<Container className={classes.eventContainer}>
+				<Paper
+					elevation={15} className={classes.eventPaper}>
+					{loading ? <LinearProgress/> : null}
+					<img src={image} alt="" style={{ width: '100%', height: '30vh', objectFit: 'cover' }}/>
 
-				<Container className={classes.eventInnerContainer}>
-					<Typography component="h2" variant="h2" color="textPrimary">
-						{name}
-					</Typography>
-					<Typography color="textSecondary">
-						{description}
-					</Typography>
-					<Grid
-						className={classes.eventGrid}
-						container
-						direction="row"
-						alignItems="center"
-					>
-						<AccessTimeIcon className={classes.iconMargin} color="disabled"/>
-						<Typography>{`${startDate} - ${endDate}`}</Typography>
-					</Grid>
-				</Container>
-				<Divider light/>
-				<Container className={classes.eventInnerContainer}>
-					<Typography variant="h5" className={classes.eventOptionText}>
-                        What are you waiting for? Go to the group chat
-					</Typography>
-					<Button variant="contained" color="primary">
-                        Go to group chat {channelID}
-					</Button>
-				</Container>
-			</Paper>
-		</Container>
+					<Container className={classes.eventInnerContainer}>
+						<Typography component="h2" variant="h2" color="textPrimary">
+							{name}
+						</Typography>
+						<Typography color="textSecondary">
+							{description}
+						</Typography>
+						<Grid
+							className={classes.eventGrid}
+							container
+							direction="row"
+							alignItems="center"
+						>
+							<AccessTimeIcon className={classes.iconMargin} color="disabled"/>
+							<Typography>{`${startDate} - ${endDate}`}</Typography>
+						</Grid>
+					</Container>
+					<Divider light/>
+					<Container className={classes.eventInnerContainer}>
+						<Typography variant="h5" className={classes.eventOptionText}>
+                            What are you waiting for? Go to the group chat
+						</Typography>
+						<Button variant="contained" color="primary">
+                            Go to group chat {channelID}
+						</Button>
+					</Container>
+				</Paper>
+			</Container>
+		</Page>
 	);
 }
 
