@@ -39,7 +39,6 @@ export default function MessageGroup({ messages, align, author }: MessageGroupPr
 	const classes = useStyles();
 
 	return <Box style={{ textAlign: align === Align.Left ? 'left' : 'right' }}>
-		{/* eslint-disable-next-line @typescript-eslint/no-unnecessary-condition */}
 		{ align === Align.Left && <Box className={classes.userInfo} >
 			<Avatar src={author.avatar} className={classes.avatar} />
 			<Typography variant="subtitle2">
