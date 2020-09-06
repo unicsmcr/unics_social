@@ -1,7 +1,12 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
-import { AppBar, Tabs, Tab, Box, Divider, colors } from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Box from '@material-ui/core/Box';
+import Divider from '@material-ui/core/Divider';
+import grey from '@material-ui/core/colors/grey';
 import ChannelListItem from './ChannelListItem';
 
 const dummyUsers = [
@@ -37,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	appBar: {
-		background: colors.grey[800]
+		background: grey[800]
 	}
 }));
 

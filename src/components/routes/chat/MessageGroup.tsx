@@ -1,5 +1,9 @@
 import React from 'react';
-import { Typography, Box, colors, makeStyles, Avatar } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import Avatar from '@material-ui/core/Avatar';
+import grey from '@material-ui/core/colors/grey';
+import { makeStyles } from '@material-ui/core/styles';
 import Message, { MessageProps } from './Message';
 
 export enum Align {
@@ -20,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 	messageGroup: {
 		display: 'block',
 		padding: theme.spacing(2),
-		background: colors.grey[200],
+		background: grey[200],
 		borderRadius: theme.spacing(4)
 	},
 	avatar: {

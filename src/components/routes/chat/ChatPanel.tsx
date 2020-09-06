@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Avatar from '@material-ui/core/Avatar';
+import grey from '@material-ui/core/colors/grey';
+import IconButton from '@material-ui/core/IconButton';
+import TextField from '@material-ui/core/TextField';
+import Card from '@material-ui/core/Card';
+import Fab from '@material-ui/core/Fab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Box, AppBar, Toolbar, colors, Avatar, IconButton, TextField, Card, Fab } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
 import MessageGroup, { Align } from './MessageGroup';
@@ -27,8 +35,8 @@ const useStyles = makeStyles(theme => ({
 		marginRight: theme.spacing(2)
 	},
 	appBar: {
-		background: colors.grey[700],
-		color: theme.palette.getContrastText(colors.grey[700])
+		background: grey[700],
+		color: theme.palette.getContrastText(grey[700])
 	},
 	menuButton: {
 		marginRight: theme.spacing(1),
@@ -66,10 +74,10 @@ const useStyles = makeStyles(theme => ({
 	},
 	chatBox: {
 		'borderTop': '1px solid',
-		'borderColor': colors.grey[400],
+		'borderColor': grey[400],
 		'padding': theme.spacing(2),
 		'overflow': 'initial',
-		'background': colors.grey[300],
+		'background': grey[300],
 		'& > form': {
 			display: 'flex',
 			alignItems: 'flex-start'

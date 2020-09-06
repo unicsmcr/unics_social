@@ -1,5 +1,8 @@
 import React from 'react';
-import { Typography, Box, colors, makeStyles } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import grey from '@material-ui/core/colors/grey';
+import { makeStyles } from '@material-ui/core/styles';
 
 export interface MessageProps {
 	content: string;
@@ -11,7 +14,7 @@ const useStyles = makeStyles(theme => ({
 	messageBubble: {
 		display: 'inline-block',
 		padding: theme.spacing(2),
-		background: colors.grey[100],
+		background: grey[100],
 		borderRadius: theme.spacing(0, 4, 4, 4),
 		marginBottom: theme.spacing(1),
 		maxWidth: '70ch'

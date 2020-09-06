@@ -1,7 +1,8 @@
 import React from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Avatar, ListItemAvatar } from '@material-ui/core';
+import Avatar from '@material-ui/core/Avatar';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 
 export interface ChannelListItemProps {
 	name: string;
