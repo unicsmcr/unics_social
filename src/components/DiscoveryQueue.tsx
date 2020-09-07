@@ -47,7 +47,6 @@ function IdleQueue(props: { errorMessage?: string }) {
 			spacing={3}
 		>
 			{props.errorMessage !== undefined &&
-				// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 				<Grid item>
 					<Typography color="error">{props.errorMessage}</Typography>
 				</Grid>}
