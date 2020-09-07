@@ -15,7 +15,7 @@ const useStyles = makeStyles(theme => ({
 		width: '70vh',
 		alignSelf: 'center',
 		overflow: 'auto',
-		margin: theme.spacing(1,0,0,0)
+		margin: theme.spacing(1, 0, 0, 0)
 	},
 	eventInnerContainer: {
 		margin: theme.spacing(2, 0),
