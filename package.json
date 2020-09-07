@@ -10,10 +10,12 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.53",
-    "@unicsmcr/unics_social_api_client": "0.0.4",
+    "@unicsmcr/unics_social_api_client": "0.0.6",
+    "clsx": "^1.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
+    "react-responsive": "^8.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "redux": "^4.0.5",
@@ -32,7 +34,11 @@
     "extends": [
       "react-app",
       "@unicsmcr"
-    ]
+    ],
+    "rules": {
+      "@typescript-eslint/no-unnecessary-condition": "off",
+      "@typescript-eslint/no-require-imports": "off"
+    }
   },
   "browserslist": {
     "production": [
