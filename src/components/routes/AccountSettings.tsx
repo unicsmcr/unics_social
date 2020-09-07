@@ -7,13 +7,18 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/Save';
+import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Fab from '@material-ui/core/Fab';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { Paper, Avatar, Menu, MenuItem, Fab, Backdrop } from '@material-ui/core';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
@@ -132,7 +137,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 		client.editProfile({
 			...userState.profile,
 			avatar: avatarAttachment as any
-		}).then(me => {
+		} as any).then(me => {
 			dispatch({
 				type: 'users/fetchMe/fulfilled',
 				payload: me
