@@ -3,14 +3,12 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import useStyles from '../util/useStyles';
 import Page from '../Page';
-import DiscoveryQueue from '../DiscoveryQueue';
 
 export default function Homepage() {
 	const classes = useStyles();
 
 	return (
 		<Page>
-			<DiscoveryQueue />
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
