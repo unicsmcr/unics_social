@@ -9,7 +9,6 @@ import AccountSettingsPage from './components/routes/AccountSettings';
 import ProtectedRoute from './components/util/ProtectedRoute';
 import PublicRoute from './components/util/PublicRoute';
 import { Provider } from 'react-redux';
-import store from './store';
 import EventPage from './components/routes/EventPage';
 import ChatPage from './components/routes/chat/ChatsPage';
 
