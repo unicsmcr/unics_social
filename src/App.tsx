@@ -1,4 +1,5 @@
 import React from 'react';
+import store from './store';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 import HomePage from './components/routes/HomePage';
 import RegistrationPage from './components/routes/RegistrationPage';
@@ -8,7 +9,7 @@ import AccountSettingsPage from './components/routes/AccountSettings';
 import ProtectedRoute from './components/util/ProtectedRoute';
 import PublicRoute from './components/util/PublicRoute';
 import { Provider } from 'react-redux';
-import store from './store';
+import ChatPage from './components/routes/chat/ChatsPage';
 
 function App() {
 	return (
@@ -21,6 +22,7 @@ function App() {
 						<PublicRoute path="/login" exact component={LoginPage} />
 						<PublicRoute path="/verify" exact component={VerifyEmailPage} />
 						<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
+						<ProtectedRoute path="/chats" exact component={ChatPage} />
 						<Redirect to="/" />
 					</Switch>
 				</BrowserRouter>
