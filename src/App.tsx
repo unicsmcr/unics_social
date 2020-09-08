@@ -9,6 +9,7 @@ import AccountSettingsPage from './components/routes/AccountSettings';
 import ProtectedRoute from './components/util/ProtectedRoute';
 import PublicRoute from './components/util/PublicRoute';
 import { Provider } from 'react-redux';
+import EventPage from './components/routes/EventPage';
 import ChatPage from './components/routes/chat/ChatsPage';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
 						<PublicRoute path="/login" exact component={LoginPage} />
 						<PublicRoute path="/verify" exact component={VerifyEmailPage} />
 						<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
+						<ProtectedRoute path="/events/:id" exact component={EventPage}/>
 						<ProtectedRoute path="/chats" exact component={ChatPage} />
 						<Redirect to="/" />
 					</Switch>
