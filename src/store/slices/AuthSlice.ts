@@ -56,6 +56,8 @@ export const AuthSlice = createSlice({
 				if (action.payload) {
 					localStorage.setItem('jwt', action.payload);
 				} else {
+					client.destroy();
+					state.connected = false;
 					localStorage.removeItem('jwt');
 				}
 			}
