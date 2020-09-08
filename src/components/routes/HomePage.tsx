@@ -4,7 +4,6 @@ import Container from '@material-ui/core/Container';
 import useStyles from '../util/useStyles';
 import Page from '../Page';
 import DiscoveryQueue from '../DiscoveryQueue';
-
 export default function Homepage() {
 	const classes = useStyles();
 
