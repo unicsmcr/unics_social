@@ -23,8 +23,12 @@ const useStyles = makeStyles(theme => ({
 	'heroContent': {
 		padding: theme.spacing(28, 2, 28, 2)
 	},
+
 	'paddedCaption': {
 		padding: theme.spacing(2, 0, 2, 0)
+	},
+	'eventCard': {
+		width: '25em'
 	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
@@ -35,6 +39,9 @@ const useStyles = makeStyles(theme => ({
 			paddingTop: theme.spacing(6),
 			paddingBottom: theme.spacing(6)
 		}
+	},
+	'media': {
+		height: '13em'
 	}
 }));
 
