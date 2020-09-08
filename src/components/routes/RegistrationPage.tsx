@@ -40,7 +40,7 @@ enum RegistrationState {
 	Success
 }
 
-type FormField = 'forename'|'surname'|'email'|'password';
+type FormField = 'forename'|'surname'|'email'|'password'|'confirmPassword';
 
 export default function RegistrationPage() {
 	const classes = useStyles();
@@ -50,32 +50,34 @@ export default function RegistrationPage() {
 		surname: '',
 		email: '',
 		password: '',
+		confirmPassword: '',
 		forenameError: '',
 		surnameError: '',
 		emailError: '',
 		passwordError: '',
-		formError: ''
+		formError: '',
+		confirmPasswordError: ''
 	});
 
-	const changeInput = (key: FormField, value: string) => {
-		setState({
-			...state,
-			[key]: value,
-			[`${key}Error`]: ''
-		});
+	const inputChanged = (key: FormField) => {
+		const errorKey = `${key}Error`;
+		if (state[errorKey]) {
+			setState({ ...state, [errorKey]: '' });
+		}
 	};
 
-	const onSubmit = (e: FormEvent) => {
+	const onSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		if (state.formState !== RegistrationState.FillingForm) return;
-		const newState = { ...state };
-		newState.forenameError = state.forename ? '' : 'Required';
-		newState.surnameError = state.surname ? '' : 'Required';
-		newState.emailError = EMAIL_REGEX.exec(state.email) ? '' : 'Valid student email required';
-		newState.passwordError = state.password ? '' : 'Required';
+		const newState = { ...state, ...Object.fromEntries(new FormData(e.target as any).entries()) };
+		newState.forenameError = newState.forename ? '' : 'Required';
+		newState.surnameError = newState.surname ? '' : 'Required';
+		newState.emailError = EMAIL_REGEX.exec(newState.email) ? '' : 'Valid student email required';
+		newState.passwordError = newState.password ? '' : 'Required';
+		newState.confirmPasswordError = newState.password === newState.confirmPassword ? '' : 'Passwords do not match';
 
-		const { forenameError, surnameError, emailError, passwordError } = newState;
-		if (!(forenameError || surnameError || emailError || passwordError)) newState.formState = RegistrationState.Registering;
+		const { forenameError, surnameError, emailError, passwordError, confirmPasswordError } = newState;
+		if (!(forenameError || surnameError || emailError || passwordError || confirmPasswordError)) newState.formState = RegistrationState.Registering;
 
 		setState(newState);
 		if (newState.formState !== RegistrationState.Registering) return;
@@ -101,12 +103,12 @@ export default function RegistrationPage() {
 
 	const mainContent = () => {
 		const buildProps = (key: FormField, label: string) => ({
+			name: key,
 			label,
 			fullWidth: true,
 			error: Boolean(state[`${key}Error`]),
 			helperText: state[`${key}Error`],
-			onChange: (e: React.ChangeEvent<HTMLInputElement>) => changeInput(key, e.target.value),
-			value: state[key]
+			onChange: () => inputChanged(key)
 		});
 		switch (state.formState) {
 			case RegistrationState.FillingForm:
@@ -115,6 +117,7 @@ export default function RegistrationPage() {
 					<TextField variant="outlined" { ...buildProps('surname', 'Surname') } />
 					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('email', 'Email') }/>
 					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('password', 'Password') } />
+					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('confirmPassword', 'Confirm Password') } />
 					<Button variant="contained" color="primary" type="submit">
 						Register
 					</Button>

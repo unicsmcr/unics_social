@@ -87,7 +87,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 	const dispatch = useDispatch();
 
 	const [saveState, setSaveState] = useState(SaveState.Idle);
-	const [saveMessage, setSaveMessage] = useState<{ title: string; message: string }|null>(null);
+	const [saveMessage, setSaveMessage] = useState<{ title: string; message: string } | null>(null);
 
 	const [hasChanged, setHasChanged] = useState(false);
 	const [avatarMenuTarget, setAvatarMenuTarget] = useState<null | HTMLElement>(null);
@@ -135,7 +135,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 	const formRef = createRef<HTMLFormElement>();
 
 	const updateProfile = () => {
-		let avatarAttachment: File|boolean;
+		let avatarAttachment: File | boolean;
 		if (avatar === '') {
 			avatarAttachment = false;
 		} else if (inputFile.current?.files) {
@@ -181,16 +181,16 @@ function AccountSettings({ me }: { me: APIUser }) {
 	};
 
 	return <>
-		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
-			<SaveIcon className={classes.saveIcon}/>
+		{<Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
+			<SaveIcon className={classes.saveIcon} />
 			Save Changes
-		</Fab> }
+		</Fab>}
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
 			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>To change any of the information here, please contact us directly.</Typography>
 			<form className={classes.form}>
-				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename}/>
-				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname}/>
+				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename} />
+				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname} />
 			</form>
 		</Paper>
 		<Paper elevation={2} className={classes.paper}>
