@@ -29,7 +29,7 @@ const ProtectedRoute = props => {
 	} else if (!connected) {
 		initClientGateway(client);
 		fallback = <Backdrop open={true} className={classes.backdrop}>
-			<Typography variant="h4">Connecting...</Typography>
+			<Typography variant="h4">Connecting to UniCS KB</Typography>
 			<Box>
 				<CircularProgress color="inherit" />
 			</Box>
