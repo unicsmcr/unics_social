@@ -7,13 +7,18 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
 import SaveIcon from '@material-ui/icons/Save';
+import Paper from '@material-ui/core/Paper';
+import Avatar from '@material-ui/core/Avatar';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
+import Fab from '@material-ui/core/Fab';
+import Backdrop from '@material-ui/core/Backdrop';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { Paper, Avatar, Menu, MenuItem, Fab, Backdrop } from '@material-ui/core';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
@@ -74,7 +79,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 	const dispatch = useDispatch();
 
 	const [saveState, setSaveState] = useState(SaveState.Idle);
-	const [saveMessage, setSaveMessage] = useState<{ title: string; message: string }|null>(null);
+	const [saveMessage, setSaveMessage] = useState<{ title: string; message: string } | null>(null);
 
 	const [hasChanged, setHasChanged] = useState(false);
 	const [avatarMenuTarget, setAvatarMenuTarget] = useState<null | HTMLElement>(null);
@@ -119,7 +124,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 	};
 
 	const updateProfile = () => {
-		let avatarAttachment: File|boolean;
+		let avatarAttachment: File | boolean;
 		if (avatar === '') {
 			avatarAttachment = false;
 		} else if (inputFile.current?.files) {
@@ -132,7 +137,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 		client.editProfile({
 			...userState.profile,
 			avatar: avatarAttachment as any
-		}).then(me => {
+		} as any).then(me => {
 			dispatch({
 				type: 'users/fetchMe/fulfilled',
 				payload: me
@@ -152,28 +157,28 @@ function AccountSettings({ me }: { me: APIUser }) {
 	};
 
 	return <>
-		{ <Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
-			<SaveIcon className={classes.saveIcon}/>
+		{<Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
+			<SaveIcon className={classes.saveIcon} />
 			Save Changes
-		</Fab> }
+		</Fab>}
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
 			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>To change any of the information here, please contact us directly.</Typography>
 			<form className={classes.form}>
-				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename}/>
-				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname}/>
+				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename} />
+				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname} />
 			</form>
 		</Paper>
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
 			<form className={classes.form}>
-				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*"/>
+				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*" />
 				<Avatar alt={`${me.forename} ${me.surname}`} src={avatar} className={classes.avatar} onClick={avatarClicked} />
-				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course}/>
-				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy}/>
-				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram}/>
-				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook}/>
-				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter}/>
+				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course} />
+				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy} />
+				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram} />
+				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook} />
+				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter} />
 
 				<Menu
 					open={Boolean(avatarMenuTarget)}
