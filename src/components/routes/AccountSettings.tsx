@@ -13,13 +13,17 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Fab from '@material-ui/core/Fab';
 import Backdrop from '@material-ui/core/Backdrop';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import Box from '@material-ui/core/Box';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { APIUser } from '@unicsmcr/unics_social_api_client';
+import { APIUser, Year, Course } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -60,6 +64,10 @@ const useStyles = makeStyles(theme => ({
 	backdrop: {
 		zIndex: theme.zIndex.drawer + 1,
 		color: '#fff'
+	},
+	formControl: {
+		minWidth: '100%',
+		textAlign: 'left'
 	}
 }));
 
@@ -88,7 +96,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 		forename: me.forename,
 		surname: me.surname,
 		profile: {
-			course: me.profile?.course ?? '',
+			course: me.profile?.course,
 			yearOfStudy: me.profile?.yearOfStudy ?? '',
 			facebook: me.profile?.facebook ?? '',
 			twitter: me.profile?.twitter ?? '',
@@ -118,10 +126,13 @@ function AccountSettings({ me }: { me: APIUser }) {
 		setHasChanged(true);
 	};
 
-	const profileSettingsChanged = e => {
-		setUserState({ ...userState, profile: { ...userState.profile, [e.target.name]: e.target.value } });
-		setHasChanged(true);
+	const profileSettingsChanged = () => {
+		if (!hasChanged) {
+			setHasChanged(true);
+		}
 	};
+
+	const formRef = createRef<HTMLFormElement>();
 
 	const updateProfile = () => {
 		let avatarAttachment: File | boolean;
@@ -133,15 +144,28 @@ function AccountSettings({ me }: { me: APIUser }) {
 			avatarAttachment = true;
 		}
 
+		if (!formRef.current) return;
+
+		const profile = Object.fromEntries(new FormData(formRef.current).entries());
+		const newUserState = {
+			...userState,
+			profile: {
+				...userState.profile,
+				...profile
+			}
+		};
+		setUserState(newUserState);
+
 		setSaveState(SaveState.Saving);
 		client.editProfile({
-			...userState.profile,
-			avatar: avatarAttachment as any
+			...newUserState.profile,
+			avatar: avatarAttachment
 		} as any).then(me => {
 			dispatch({
 				type: 'users/fetchMe/fulfilled',
 				payload: me
 			});
+			setHasChanged(false);
 			setSaveState(SaveState.Idle);
 			setSaveMessage({
 				title: 'Saved!',
@@ -171,14 +195,51 @@ function AccountSettings({ me }: { me: APIUser }) {
 		</Paper>
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="inherit" align="left" gutterBottom>Profile Settings</Typography>
-			<form className={classes.form}>
-				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*" />
+			<form ref={formRef} className={classes.form} onChange={() => profileSettingsChanged()}>
+				<input type="file" id="file" ref={inputFile} style={{ display: 'none' }} onChange={fileUploaded} accept="image/*"/>
 				<Avatar alt={`${me.forename} ${me.surname}`} src={avatar} className={classes.avatar} onClick={avatarClicked} />
-				<TextField fullWidth label="Course" name="course" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.course} />
-				<TextField fullWidth label="Year of Study" name="yearOfStudy" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.yearOfStudy} />
-				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.instagram} />
-				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.facebook} />
-				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" onBlur={profileSettingsChanged} defaultValue={userState.profile.twitter} />
+
+				<Box>
+					<FormControl variant="outlined" className={classes.formControl}>
+						<InputLabel id="form-label-course" required>Course</InputLabel>
+						<Select
+							labelId="form-label-course"
+							id="form-course"
+							name="course"
+							defaultValue={userState.profile.course}
+							label="Course *"
+							required
+							onChange={() => profileSettingsChanged()}
+						>
+							{
+								[...Object.values(Course)].map(course => <MenuItem value={course} key={course}>{course}</MenuItem>)
+							}
+						</Select>
+					</FormControl>
+				</Box>
+
+				<Box>
+					<FormControl variant="outlined" className={classes.formControl}>
+						<InputLabel id="form-label-year-of-study" required>Year of Study</InputLabel>
+						<Select
+							labelId="form-label-year-of-study"
+							id="form-year-of-study"
+							name="yearOfStudy"
+							defaultValue={userState.profile.yearOfStudy}
+							label="Year of Study *"
+							onChange={() => profileSettingsChanged()}
+							required
+						>
+							{
+								[...Object.values(Year)].map(year => <MenuItem value={year} key={year}>{year}</MenuItem>)
+							}
+						</Select>
+					</FormControl>
+				</Box>
+
+				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" defaultValue={userState.profile.instagram}/>
+				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" defaultValue={userState.profile.facebook}/>
+				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" defaultValue={userState.profile.twitter}/>
 
 				<Menu
 					open={Boolean(avatarMenuTarget)}
