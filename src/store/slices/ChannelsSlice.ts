@@ -5,7 +5,7 @@ import { wrapAPIError } from './util';
 
 export interface ChannelsSliceState {
 	values: {
-		[id: string]: APIDMChannel|APIEventChannel|undefined;
+		[id: string]: APIDMChannel|APIEventChannel;
 	};
 }
 
@@ -39,7 +39,10 @@ export const ChannelsSlice = createSlice({
 
 export const { addChannel, removeChannel } = ChannelsSlice.actions;
 
-export const selectChannels = state => state.channels;
-export const selectChannel = id => state => state.channels[id];
+export const selectChannels = (state: ChannelsSliceState) => state.values;
+export const selectChannel = (id: string) => (state: ChannelsSliceState) => state.values[id];
+
+export const selectDMChannels = (state: ChannelsSliceState) => Object.values(state.values).filter(channel => channel?.type === 'dm');
+export const selectEventChannels = (state: ChannelsSliceState) => Object.values(state.values).filter(channel => channel?.type === 'event');
 
 export default ChannelsSlice.reducer;

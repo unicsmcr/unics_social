@@ -8,6 +8,10 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import grey from '@material-ui/core/colors/grey';
 import ChannelListItem from './ChannelListItem';
+import { useSelector, useDispatch } from 'react-redux';
+import { selectChannels } from '../../../store/slices/ChannelsSlice';
+import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
+import { fetchUser } from '../../../store/slices/UsersSlice';
 
 const dummyUsers = [
 	{ name: 'Barack Obama', src: 'https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg' },
@@ -54,8 +58,22 @@ interface ChannelsPanelProps {
 
 export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps) {
 	const classes = useStyles();
-
+	const dispatch = useDispatch();
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
+
+	const channels = Object.values(useSelector(selectChannels)).sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
+
+	const eventChannels: APIEventChannel[] = [];
+	const dmChannels: APIDMChannel[] = [];
+
+	for (const channel of channels) {
+		if (channel.type === 'dm') {
+			dmChannels.push(channel);
+			// dispatch(fetchUser(channel.users));
+		} else {
+			eventChannels.push(channel);
+		}
+	}
 
 	const channelList = chatPanelValue === 0 ? dummyUsers : dummyEvents;
 
