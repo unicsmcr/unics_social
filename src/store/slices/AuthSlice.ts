@@ -15,9 +15,11 @@ export interface QueueState {
 	status: QueueStatus;
 	errorMessage: string;
 }
+
 interface AuthSliceState {
 	jwt: string | null;
 	queue: QueueState;
+	connected: boolean;
 }
 
 const initialState: AuthSliceState = {
@@ -25,7 +27,8 @@ const initialState: AuthSliceState = {
 	queue: {
 		status: QueueStatus.Idle,
 		errorMessage: ''
-	}
+	},
+	connected: false
 };
 
 const wrapApiError = error => {
@@ -53,12 +56,17 @@ export const AuthSlice = createSlice({
 				if (action.payload) {
 					localStorage.setItem('jwt', action.payload);
 				} else {
+					client.destroy();
+					state.connected = false;
 					localStorage.removeItem('jwt');
 				}
 			}
 		},
 		setQueueStatus: (state, action) => {
 			state.queue.status = action.payload;
+		},
+		setConnected: (state, action) => {
+			state.connected = action.payload;
 		}
 	},
 	extraReducers(builder) {
@@ -82,9 +90,11 @@ export const AuthSlice = createSlice({
 	}
 });
 
-export const { setJWT, setQueueStatus } = AuthSlice.actions;
+export const { setJWT, setQueueStatus, setConnected } = AuthSlice.actions;
 
 export const selectJWT = state => state.auth.jwt;
+
+export const selectConnected = state => state.auth.connected;
 
 export const selectQueueState = state => state.auth.queue;
 

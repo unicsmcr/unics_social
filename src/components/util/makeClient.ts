@@ -1,6 +1,6 @@
 import { APIClient, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
 import API_HOST from './APIHost';
-import { setQueueStatus, QueueStatus } from '../../store/slices/AuthSlice';
+import { setQueueStatus, QueueStatus, setConnected } from '../../store/slices/AuthSlice';
 import store from '../../store';
 
 export default function makeClient() {
@@ -12,22 +12,29 @@ export default function makeClient() {
 		apiBase,
 		useWss
 	});
-	apiClient.initGateway();
-	addQueueListeners(apiClient);
 	return apiClient;
 }
 
-function addQueueListeners(apiClient: APIClient) {
-	if (!apiClient.gateway) return;
-	apiClient.gateway.on(GatewayPacketType.JoinDiscoveryQueue, () => {
+export function initClientGateway(apiClient: APIClient) {
+	if (apiClient.gateway || !apiClient.token) return;
+	apiClient.initGateway();
+
+	const gateway = apiClient.gateway!;
+	gateway.on(GatewayPacketType.Hello, () => {
+		store.dispatch(setConnected(true));
+	});
+	gateway.on('reconnecting', () => {
+		store.dispatch(setConnected(false));
+	});
+	gateway.on(GatewayPacketType.JoinDiscoveryQueue, () => {
 		console.log('Joined');
 		store.dispatch(setQueueStatus(QueueStatus.InQueue));
 	});
-	apiClient.gateway.on(GatewayPacketType.LeaveDiscoveryQueue, () => {
+	gateway.on(GatewayPacketType.LeaveDiscoveryQueue, () => {
 		store.dispatch(setQueueStatus(QueueStatus.Idle));
 	});
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	apiClient.gateway.on(GatewayPacketType.DiscoveryQueueMatch, channel => {
+	gateway.on(GatewayPacketType.DiscoveryQueueMatch, channel => {
 		// TODO: navigate user to channel
 		store.dispatch(setQueueStatus(QueueStatus.Idle));
 	});
