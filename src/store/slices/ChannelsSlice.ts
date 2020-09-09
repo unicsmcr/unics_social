@@ -28,10 +28,18 @@ export const ChannelsSlice = createSlice({
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
 			delete state[channelID];
 		}
+	},
+	extraReducers(builder) {
+		builder.addCase(fetchChannels.fulfilled, (state, action) => {
+			state.values = Object.fromEntries(action.payload.map(channel => ([channel.id, channel])));
+			console.log(state.values);
+		});
 	}
 });
 
 export const { addChannel, removeChannel } = ChannelsSlice.actions;
+
 export const selectChannels = state => state.channels;
 export const selectChannel = id => state => state.channels[id];
+
 export default ChannelsSlice.reducer;
