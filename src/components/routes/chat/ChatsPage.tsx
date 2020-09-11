@@ -7,6 +7,7 @@ import ChatPanel from './ChatPanel';
 import FocusedPage from '../../FocusedPage';
 import { useDispatch } from 'react-redux';
 import { fetchChannels } from '../../../store/slices/ChannelsSlice';
+import ChannelsPanel from './ChannelsPanel';
 
 const useStyles = makeStyles(theme => ({
 	mainContent: {
@@ -14,7 +15,13 @@ const useStyles = makeStyles(theme => ({
 		textAlign: 'center'
 	},
 	chatsRoot: {
-		display: 'flex'
+		display: 'flex',
+		position: 'absolute',
+		top: 0,
+		bottom: 0,
+		left: 0,
+		right: 0,
+		borderRadius: '0 !important'
 	},
 	flexGrow: {
 		flexGrow: 1
@@ -34,6 +41,10 @@ export default function ChatsPage() {
 		<FocusedPage>
 			<Container maxWidth="lg" component="main" className={classes.mainContent}>
 				<Paper elevation={3} className={classes.chatsRoot}>
+					<ChannelsPanel onChannelSelected={channel => {
+						// setChannel(channel);
+						// if (isMobile) setChannelsPanelOpen(false);
+					}} onClose={() => {}}/>
 					<ChatPanel />
 				</Paper>
 			</Container>

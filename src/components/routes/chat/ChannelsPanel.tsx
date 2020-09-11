@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
 
 interface ChannelsPanelProps {
 	onChannelSelected: (channel: { id: string }) => void;
-	open: boolean;
 	onClose: Function;
 }
 

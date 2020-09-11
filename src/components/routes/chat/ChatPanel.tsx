@@ -23,14 +23,6 @@ const useStyles = makeStyles(theme => ({
 	flexGrow: {
 		flexGrow: 1
 	},
-	root: {
-		position: 'absolute',
-		top: 0,
-		bottom: 0,
-		left: 0,
-		right: 0,
-		borderRadius: '0 !important'
-	},
 	avatar: {
 		marginRight: theme.spacing(2)
 	},
@@ -122,11 +114,7 @@ export default function ChatPanel() {
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 
 	return (
-		<Card className={[classes.flexGrow, classes.root].join(' ')}>
-			<ChannelsPanel onChannelSelected={channel => {
-				setChannel(channel);
-				if (isMobile) setChannelsPanelOpen(false);
-			}} open={channelsPanelOpen} onClose={() => setChannelsPanelOpen(false)}/>
+		<Card className={classes.flexGrow}>
 			<Box className={clsx(classes.chatPanel, channelsPanelOpen && classes.shiftLeft)}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
