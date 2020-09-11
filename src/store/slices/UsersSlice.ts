@@ -49,7 +49,7 @@ export const UsersSlice = createSlice({
 
 export const { addUser } = UsersSlice.actions;
 
-export const selectUserById = (id: string) => state => state.users.values[id];
+export const selectUserById = (id: string) => state => state.users.values[id] as APIUser;
 export const selectMe = state => state.users.values[state.users.me] as APIUser|undefined;
 
 export default UsersSlice.reducer;

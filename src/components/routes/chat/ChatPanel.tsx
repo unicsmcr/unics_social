@@ -117,7 +117,7 @@ export default function ChatPanel() {
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
-	const [channel, setChannel] = useState<{ name: string; avatar: string }|null>(null);
+	const [channel, setChannel] = useState<{ id: string }|null>(null);
 
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 
@@ -136,9 +136,9 @@ export default function ChatPanel() {
 						</IconButton>
 						}
 						{ channel && <>
-							<Avatar className={classes.avatar} src={channel.avatar} alt={channel.name}></Avatar>
+							<Avatar className={classes.avatar} src={undefined} alt={"test"}></Avatar>
 							<Typography variant="h6">
-								{channel.name}
+								Test
 							</Typography>
 						</>
 						}
