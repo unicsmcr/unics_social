@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -18,6 +18,10 @@ import ChannelsPanel, { DRAWER_WIDTH } from './ChannelsPanel';
 import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
+import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -77,6 +81,10 @@ const useStyles = makeStyles(theme => ({
 	},
 	sendIcon: {
 		marginLeft: theme.spacing(2)
+	},
+	skeletonText: {
+		marginLeft: theme.spacing(2),
+		width: 'min(300px, 50vw)'
 	}
 }));
 
@@ -95,22 +103,20 @@ const messages = [
 	}
 ];
 
-interface ChatPanelProps {
-	channel: {
-		name: string;
-		avatar: string;
-	};
-	onChannelsMenuClicked: Function;
-}
-
-export default function ChatPanel() {
+export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
+	const dispatch = useDispatch();
+
+	const channelId = props.match.params.id;
+	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelId));
+
+	useEffect(() => {
+		if (channelId && !channel) dispatch(fetchChannels());
+	}, [channel, channelId, dispatch]);
 
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
-	const [channel, setChannel] = useState<{ id: string }|null>(null);
-
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 
 	return (
@@ -123,16 +129,24 @@ export default function ChatPanel() {
 							{ channelsPanelOpen ? <ChevronLeftIcon /> : <MenuIcon /> }
 						</IconButton>
 						}
-						{ channel && <>
-							<Avatar className={classes.avatar} src={undefined} alt={"test"}></Avatar>
+						{ channelId && <>
+							{
+								channel
+									? <Avatar className={classes.avatar} src={undefined} alt={'test'}></Avatar>
+									: <Skeleton animation="wave" variant="circle" width={40} height={40} />
+							}
 							<Typography variant="h6">
-								Test
+								{
+									channel
+										? channel.id
+										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
+								}
 							</Typography>
 						</>
 						}
 					</Toolbar>
 				</AppBar>
-				{ channel
+				{ channelId
 					? <>
 						<Box className={classes.chatArea}>
 							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>

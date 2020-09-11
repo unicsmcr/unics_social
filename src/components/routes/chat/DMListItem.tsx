@@ -9,6 +9,7 @@ import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { makeStyles, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
+import { useHistory } from 'react-router-dom';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
@@ -29,6 +30,7 @@ export default function DMListItem({ channel, onClick }: DMListItemProps) {
 	const recipientID = channel.users.find(userID => userID !== me!.id);
 	if (!recipientID) throw new Error('Recipient not found!');
 	const recipient = useSelector(selectUserById(recipientID));
+	const history = useHistory();
 
 	const dispatch = useDispatch();
 	useEffect(() => {
@@ -42,7 +44,7 @@ export default function DMListItem({ channel, onClick }: DMListItemProps) {
 		</ListItem>;
 	}
 
-	return <ListItem button onClick={() => onClick()}>
+	return <ListItem button onClick={() => history.push(`/chats/${channel.id}`)}>
 		<ListItemAvatar>
 			<Avatar alt={recipient.forename} src={getIcon(recipient)}/>
 		</ListItemAvatar>

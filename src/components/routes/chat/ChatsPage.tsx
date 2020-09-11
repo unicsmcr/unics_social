@@ -8,6 +8,7 @@ import FocusedPage from '../../FocusedPage';
 import { useDispatch } from 'react-redux';
 import { fetchChannels } from '../../../store/slices/ChannelsSlice';
 import ChannelsPanel from './ChannelsPanel';
+import { Route } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	mainContent: {
@@ -41,11 +42,9 @@ export default function ChatsPage() {
 		<FocusedPage>
 			<Container maxWidth="lg" component="main" className={classes.mainContent}>
 				<Paper elevation={3} className={classes.chatsRoot}>
-					<ChannelsPanel onChannelSelected={channel => {
-						// setChannel(channel);
-						// if (isMobile) setChannelsPanelOpen(false);
-					}} onClose={() => {}}/>
-					<ChatPanel />
+					<ChannelsPanel />
+					<Route path="/chats/:id" component={ChatPanel} />
+					<Route exact path="/chats" component={ChatPanel} />
 				</Paper>
 			</Container>
 		</FocusedPage>

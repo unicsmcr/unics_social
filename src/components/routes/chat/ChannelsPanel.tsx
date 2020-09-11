@@ -7,11 +7,9 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import grey from '@material-ui/core/colors/grey';
-import ChannelListItem from './ChannelListItem';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectChannels } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
-import { fetchUser, selectMe } from '../../../store/slices/UsersSlice';
 import DMListItem from './DMListItem';
 import EventListItem from './EventListItem';
 
@@ -41,12 +39,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-interface ChannelsPanelProps {
-	onChannelSelected: (channel: { id: string }) => void;
-	onClose: Function;
-}
-
-export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps) {
+export default function ChannelsPanel() {
 	const classes = useStyles();
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
 
