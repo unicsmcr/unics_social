@@ -32,8 +32,8 @@ export default function DMListItem({ channel, onClick }: DMListItemProps) {
 
 	const dispatch = useDispatch();
 	useEffect(() => {
-		dispatch(fetchUser(recipientID));
-	}, []);
+		if (!recipient) dispatch(fetchUser(recipientID));
+	}, [recipient]);
 
 	if (!recipient) {
 		return <ListItem className={classes.loadingContainer}>

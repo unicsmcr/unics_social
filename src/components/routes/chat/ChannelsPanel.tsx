@@ -13,6 +13,7 @@ import { selectChannels } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
 import { fetchUser, selectMe } from '../../../store/slices/UsersSlice';
 import DMListItem from './DMListItem';
+import EventListItem from './EventListItem';
 
 export const DRAWER_WIDTH = '20rem';
 
@@ -70,11 +71,18 @@ export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps)
 					{
 						index !== 0 && <Divider />
 					}
-					<DMListItem key={channel.id} onClick={console.log} channel={channel} />
+					<DMListItem onClick={console.log} channel={channel} />
 				</div>
 			));
 		}
-		return <h2>nope</h2>;
+		return eventChannels.map((channel, index) => (
+			<div key={channel.id}>
+				{
+					index !== 0 && <Divider />
+				}
+				<EventListItem onClick={console.log} channel={channel} />
+			</div>
+		));
 	};
 
 	return <Box className={classes.root}>

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { APIEvent } from '@unicsmcr/unics_social_api_client';
+import { APIEvent, APIEventChannel } from '@unicsmcr/unics_social_api_client';
 import { client } from '../../components/util/makeClient';
+import { fetchChannels } from './ChannelsSlice';
 import { wrapAPIError } from './util';
 
 export interface EventsSliceState {
@@ -33,6 +34,11 @@ export const EventsSlice = createSlice({
 		builder.addCase(fetchEvents.fulfilled, (state, action) => {
 			state.values = Object.fromEntries(action.payload.map(event => ([event.id, event])));
 			console.log(state.values);
+		});
+		builder.addCase(fetchChannels.fulfilled, (state, action) => {
+			for (const channel of action.payload.filter(channel => channel.type === 'event') as APIEventChannel[]) {
+				state.values[channel.event.id] = channel.event;
+			}
 		});
 	}
 });
