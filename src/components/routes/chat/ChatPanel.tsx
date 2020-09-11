@@ -14,7 +14,7 @@ import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
 import MessageGroup, { Align } from './MessageGroup';
-import ChannelsPanel, { DRAWER_WIDTH } from './ChannelsPanel';
+import { DRAWER_WIDTH } from './ChannelsPanel';
 import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
@@ -133,8 +133,12 @@ export default function ChatPanel(props) {
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
 
 	useEffect(() => {
+		setChannelsPanelOpen(false);
+	}, [channelId]);
+
+	useEffect(() => {
 		if (channelId && !channel) dispatch(fetchChannels());
-	}, [channel, channelId]);
+	}, [channel, channelId, dispatch]);
 
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
