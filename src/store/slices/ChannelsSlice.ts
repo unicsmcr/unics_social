@@ -26,7 +26,7 @@ export const ChannelsSlice = createSlice({
 		removeChannel: (state, action) => {
 			const channelID: string = action.payload;
 			// eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-			delete state[channelID];
+			delete state.values[channelID];
 		}
 	},
 	extraReducers(builder) {
