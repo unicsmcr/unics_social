@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
 
 export interface DMListItemProps {
@@ -46,6 +46,6 @@ export default function DMListItem({ channel, onClick }: DMListItemProps) {
 		<ListItemAvatar>
 			<Avatar alt={recipient.forename} src={getIcon(recipient)}/>
 		</ListItemAvatar>
-		<ListItemText primary={`${recipient.forename} ${recipient.surname}`} />
+		<ListItemText primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}/>
 	</ListItem>;
 }
