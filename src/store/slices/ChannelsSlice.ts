@@ -39,10 +39,10 @@ export const ChannelsSlice = createSlice({
 
 export const { addChannel, removeChannel } = ChannelsSlice.actions;
 
-export const selectChannels = (state: ChannelsSliceState) => state.values;
-export const selectChannel = (id: string) => (state: ChannelsSliceState) => state.values[id];
+export const selectChannels = (state: { channels: ChannelsSliceState }) => state.channels.values;
+export const selectChannel = (id: string) => (state: { channels: ChannelsSliceState }) => state.channels.values[id];
 
-export const selectDMChannels = (state: ChannelsSliceState) => Object.values(state.values).filter(channel => channel?.type === 'dm');
-export const selectEventChannels = (state: ChannelsSliceState) => Object.values(state.values).filter(channel => channel?.type === 'event');
+export const selectDMChannels = (state: { channels: ChannelsSliceState }) => Object.values(state.channels.values).filter(channel => channel.type === 'dm');
+export const selectEventChannels = (state: { channels: ChannelsSliceState }) => Object.values(state.channels.values).filter(channel => channel.type === 'event');
 
 export default ChannelsSlice.reducer;
