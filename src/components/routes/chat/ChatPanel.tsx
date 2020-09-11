@@ -20,8 +20,11 @@ import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
-import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEvent, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
+import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
+import { selectEvent } from '../../../store/slices/EventsSlice';
+import getIcon from '../../util/getAvatar';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -103,21 +106,55 @@ const messages = [
 	}
 ];
 
+interface ChannelDisplayData {
+	title: string;
+	image?: string;
+}
+
+const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, meId: string) => {
+	if (!channel) return () => undefined;
+	if (channel.type === 'dm') {
+		return selectUserById(channel.users.find(userId => userId !== meId)!);
+	}
+	return selectEvent(channel.event.id);
+};
+
 export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const dispatch = useDispatch();
 
+	const me = useSelector(selectMe);
+
 	const channelId = props.match.params.id;
 	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelId));
 
+	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
+
 	useEffect(() => {
 		if (channelId && !channel) dispatch(fetchChannels());
-	}, [channel, channelId, dispatch]);
+	}, [channel, channelId]);
 
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
+
+	let displayData: ChannelDisplayData|undefined;
+	if (resource) {
+		if (resource.hasOwnProperty('forename')) {
+			const user = resource as APIUser;
+			displayData = {
+				title: `${user.forename} ${user.surname}`,
+				image: getIcon(user)
+			};
+		} else {
+			const event = resource as APIEvent;
+			displayData = {
+				title: event.title,
+				image: getIcon(event)
+			};
+		}
+	}
 
 	return (
 		<Card className={classes.flexGrow}>
@@ -131,14 +168,14 @@ export default function ChatPanel(props) {
 						}
 						{ channelId && <>
 							{
-								channel
-									? <Avatar className={classes.avatar} src={undefined} alt={'test'}></Avatar>
+								displayData
+									? <Avatar className={classes.avatar} src={displayData.image} alt={'test'}></Avatar>
 									: <Skeleton animation="wave" variant="circle" width={40} height={40} />
 							}
-							<Typography variant="h6">
+							<Typography variant="h6" noWrap>
 								{
-									channel
-										? channel.id
+									displayData
+										? displayData.title
 										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
 								}
 							</Typography>

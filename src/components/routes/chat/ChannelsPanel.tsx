@@ -63,7 +63,7 @@ export default function ChannelsPanel() {
 					{
 						index !== 0 && <Divider />
 					}
-					<DMListItem onClick={console.log} channel={channel} />
+					<DMListItem channel={channel} />
 				</div>
 			));
 		}
@@ -72,7 +72,7 @@ export default function ChannelsPanel() {
 				{
 					index !== 0 && <Divider />
 				}
-				<EventListItem onClick={console.log} channel={channel} />
+				<EventListItem channel={channel} />
 			</div>
 		));
 	};

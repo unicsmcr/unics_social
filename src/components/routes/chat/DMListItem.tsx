@@ -13,7 +13,6 @@ import { useHistory } from 'react-router-dom';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
-	onClick: Function;
 }
 
 const useStyles = makeStyles(() => ({
@@ -24,7 +23,7 @@ const useStyles = makeStyles(() => ({
 	}
 }));
 
-export default function DMListItem({ channel, onClick }: DMListItemProps) {
+export default function DMListItem({ channel }: DMListItemProps) {
 	const classes = useStyles();
 	const me = useSelector(selectMe);
 	const recipientID = channel.users.find(userID => userID !== me!.id);
