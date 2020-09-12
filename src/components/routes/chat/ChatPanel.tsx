@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -127,6 +127,7 @@ export default function ChatPanel() {
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const dispatch = useDispatch();
 	const { id: channelID } = useParams();
+	const [scrollSynced, setScrollSynced] = useState(true);
 
 	const me = useSelector(selectMe);
 
@@ -148,6 +149,12 @@ export default function ChatPanel() {
 		}
 	}, [channel]);
 
+	useEffect(() => {
+		if (messages && chatBoxRef.current && scrollSynced) {
+			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+		}
+	}, [messages]);
+
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 
@@ -167,6 +174,8 @@ export default function ChatPanel() {
 			};
 		}
 	}
+
+	const chatBoxRef = createRef<HTMLDivElement>();
 
 	return (
 		<Card className={classes.flexGrow}>
@@ -197,11 +206,18 @@ export default function ChatPanel() {
 				</AppBar>
 				{ channelID
 					? <>
-						<Box className={classes.chatArea}>
+						<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
+							const target = e.target as any;
+							if (target.scrollTop === target.scrollTopMax && !scrollSynced) {
+								setScrollSynced(true);
+							} else if (target.scrollTop !== target.scrollTopMax && scrollSynced) {
+								setScrollSynced(false);
+							}
+						}}>
 							{
 								createGroups(messages, me!.id)
 							}
-						</Box>
+						</div>
 						<Card className={classes.chatBox}>
 							<form className={classes.flexGrow} onSubmit={e => {
 								e.preventDefault();
