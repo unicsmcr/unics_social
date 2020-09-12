@@ -26,6 +26,7 @@ import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
+import { createMessage, fetchMessages } from '../../../store/slices/MessagesSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -125,21 +126,27 @@ export default function ChatPanel() {
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const dispatch = useDispatch();
-	const { id: channelId } = useParams();
+	const { id: channelID } = useParams();
 
 	const me = useSelector(selectMe);
 
-	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelId));
+	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
 
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
 
 	useEffect(() => {
 		setChannelsPanelOpen(false);
-	}, [channelId]);
+	}, [channelID]);
 
 	useEffect(() => {
-		if (channelId && !channel) dispatch(fetchChannels());
-	}, [channel, channelId, dispatch]);
+		if (channelID && !channel) dispatch(fetchChannels());
+	}, [channel, channelID, dispatch]);
+
+	useEffect(() => {
+		if (channel) {
+			dispatch(fetchMessages(channel.id));
+		}
+	}, [channel]);
 
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
@@ -161,6 +168,14 @@ export default function ChatPanel() {
 		}
 	}
 
+	const sendMessage = (content: string) => {
+		if (!channelID) return;
+		dispatch(createMessage({
+			channelID,
+			content
+		}));
+	};
+
 	return (
 		<Card className={classes.flexGrow}>
 			<Box className={clsx(classes.chatPanel, channelsPanelOpen && classes.shiftLeft)}>
@@ -171,7 +186,7 @@ export default function ChatPanel() {
 							{ channelsPanelOpen ? <ChevronLeftIcon /> : <MenuIcon /> }
 						</IconButton>
 						}
-						{ channelId && <>
+						{ channelID && <>
 							{
 								displayData
 									? <Avatar className={classes.avatar} src={displayData.image} alt={'test'}></Avatar>
@@ -188,7 +203,7 @@ export default function ChatPanel() {
 						}
 					</Toolbar>
 				</AppBar>
-				{ channelId
+				{ channelID
 					? <>
 						<Box className={classes.chatArea}>
 							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
@@ -197,9 +212,18 @@ export default function ChatPanel() {
 							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
 						</Box>
 						<Card className={classes.chatBox}>
-							<form className={classes.flexGrow}>
-								<TextField label="Type a message" variant="filled" className={classes.flexGrow}/>
-								<Fab aria-label="send" className={classes.sendIcon} color="primary" >
+							<form className={classes.flexGrow} onSubmit={e => {
+								e.preventDefault();
+								const form = e.target as any;
+								const message = String(new FormData(form).get('message'));
+								form.reset();
+								dispatch(createMessage({
+									content: message,
+									channelID
+								}));
+							}}>
+								<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" />
+								<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
 									<SendIcon />
 								</Fab>
 							</form>
