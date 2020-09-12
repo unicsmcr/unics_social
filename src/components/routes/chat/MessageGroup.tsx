@@ -5,6 +5,8 @@ import Avatar from '@material-ui/core/Avatar';
 import grey from '@material-ui/core/colors/grey';
 import { makeStyles } from '@material-ui/core/styles';
 import Message, { MessageProps } from './Message';
+import { OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
+import { APIMessage } from '@unicsmcr/unics_social_api_client';
 
 export enum Align {
 	Left,
@@ -16,7 +18,7 @@ interface MessageGroupProps {
 		name: string;
 		avatar?: string;
 	};
-	messages: Pick<MessageProps, 'content' | 'id'>[];
+	messages: OptimisedAPIMessage[];
 	align: Align;
 }
 
@@ -38,6 +40,29 @@ const useStyles = makeStyles(theme => ({
 		marginBottom: theme.spacing(1)
 	}
 }));
+
+export function createGroups(messages: OptimisedAPIMessage[], relativeTo: string) {
+	const groups: OptimisedAPIMessage[][] = [];
+	let currentGroup: OptimisedAPIMessage[] = [];
+	for (const message of messages) {
+		if (currentGroup.length === 0) {
+			currentGroup.push(message);
+			continue;
+		}
+		if (message.authorID === currentGroup[0].authorID) {
+			currentGroup.push(message);
+		} else {
+			groups.push(currentGroup);
+			currentGroup = [message];
+		}
+	}
+	groups.push(currentGroup);
+	return groups.filter(group => group.length > 0).map((group, index) => <MessageGroup
+		key={index}
+		align={group[0].authorID === relativeTo ? Align.Right : Align.Left}
+		messages={group} author={{ name: 'Bob' }}
+	/>);
+}
 
 export default function MessageGroup({ messages, align, author }: MessageGroupProps) {
 	const classes = useStyles();

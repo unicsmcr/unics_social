@@ -13,7 +13,7 @@ import Fab from '@material-ui/core/Fab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
-import MessageGroup, { Align } from './MessageGroup';
+import MessageGroup, { Align, createGroups } from './MessageGroup';
 import { DRAWER_WIDTH } from './ChannelsPanel';
 import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
@@ -26,7 +26,7 @@ import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
-import { createMessage, fetchMessages } from '../../../store/slices/MessagesSlice';
+import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -148,6 +148,8 @@ export default function ChatPanel() {
 		}
 	}, [channel]);
 
+	const messages = useSelector(selectMessages(channelID));
+
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 
@@ -167,14 +169,6 @@ export default function ChatPanel() {
 			};
 		}
 	}
-
-	const sendMessage = (content: string) => {
-		if (!channelID) return;
-		dispatch(createMessage({
-			channelID,
-			content
-		}));
-	};
 
 	return (
 		<Card className={classes.flexGrow}>
@@ -206,10 +200,9 @@ export default function ChatPanel() {
 				{ channelID
 					? <>
 						<Box className={classes.chatArea}>
-							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
-							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
-							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
-							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
+							{
+								createGroups(messages, me!.id)
+							}
 						</Box>
 						<Card className={classes.chatBox}>
 							<form className={classes.flexGrow} onSubmit={e => {
