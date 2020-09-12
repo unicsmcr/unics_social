@@ -131,8 +131,8 @@ export default function ChatPanel() {
 	const me = useSelector(selectMe);
 
 	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
-
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
+	const messages = useSelector(selectMessages(channelID));
 
 	useEffect(() => {
 		setChannelsPanelOpen(false);
@@ -143,12 +143,10 @@ export default function ChatPanel() {
 	}, [channel, channelID, dispatch]);
 
 	useEffect(() => {
-		if (channel) {
+		if (channel && messages.length === 0) {
 			dispatch(fetchMessages(channel.id));
 		}
 	}, [channel]);
-
-	const messages = useSelector(selectMessages(channelID));
 
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
