@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Avatar from '@material-ui/core/Avatar';
@@ -7,6 +7,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Message, { MessageProps } from './Message';
 import { OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
 import { APIMessage } from '@unicsmcr/unics_social_api_client';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchUser, selectUserById } from '../../../store/slices/UsersSlice';
+import getIcon from '../../util/getAvatar';
 
 export enum Align {
 	Left,
@@ -14,10 +17,7 @@ export enum Align {
 }
 
 interface MessageGroupProps {
-	author: {
-		name: string;
-		avatar?: string;
-	};
+	authorID: string;
 	messages: OptimisedAPIMessage[];
 	align: Align;
 }
@@ -60,18 +60,29 @@ export function createGroups(messages: OptimisedAPIMessage[], relativeTo: string
 	return groups.filter(group => group.length > 0).map((group, index) => <MessageGroup
 		key={index}
 		align={group[0].authorID === relativeTo ? Align.Right : Align.Left}
-		messages={group} author={{ name: 'Bob' }}
+		messages={group}
+		authorID={group[0].authorID}
 	/>);
 }
 
-export default function MessageGroup({ messages, align, author }: MessageGroupProps) {
+export default function MessageGroup({ messages, align, authorID }: MessageGroupProps) {
 	const classes = useStyles();
+	const author = useSelector(selectUserById(authorID));
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		if (!author) dispatch(fetchUser(authorID));
+	}, []);
+
+	if (!author) {
+		return <h2>wait...</h2>;
+	}
 
 	return <Box style={{ textAlign: align === Align.Left ? 'left' : 'right' }}>
 		{ align === Align.Left && <Box className={classes.userInfo} >
-			<Avatar src={author.avatar} className={classes.avatar} />
+			<Avatar src={getIcon(author)} className={classes.avatar} />
 			<Typography variant="subtitle2">
-				{author.name}
+				{author.forename}
 			</Typography>
 		</Box>
 		}
