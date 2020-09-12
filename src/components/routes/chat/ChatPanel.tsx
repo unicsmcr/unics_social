@@ -214,7 +214,7 @@ export default function ChatPanel() {
 									channelID
 								}));
 							}}>
-								<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" />
+								<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autocomplete: 'off' }} />
 								<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
 									<SendIcon />
 								</Fab>
