@@ -9,10 +9,12 @@ import { OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, selectUserById } from '../../../store/slices/UsersSlice';
 import getIcon from '../../util/getAvatar';
+import { Skeleton } from '@material-ui/lab';
+import clsx from 'clsx';
 
 export enum Align {
-	Left,
-	Right
+	Left = 'left',
+	Right = 'right'
 }
 
 interface MessageGroupProps {
@@ -37,6 +39,16 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		alignItems: 'center',
 		marginBottom: theme.spacing(1)
+	},
+	skeletonBlock: {
+		'display': 'grid',
+		'gridTemplateColumns': '40px auto',
+		'gap': '0.5rem',
+		'width': '100%',
+		'maxWidth': '40ch',
+		'& > *:last-child': {
+			gridColumn: '1 / -1'
+		}
 	}
 }));
 
@@ -74,10 +86,16 @@ export default function MessageGroup({ messages, align, authorID }: MessageGroup
 	}, []);
 
 	if (!author) {
-		return <h2>wait...</h2>;
+		return <Box style={{ textAlign: align }}>
+			<Box className={clsx(classes.userInfo, classes.skeletonBlock)} >
+				<Skeleton variant="circle" width={40} height={40} />
+				<Skeleton variant="text" />
+				<Skeleton variant="rect" height={Math.max(Math.min(200, messages.length * 50), 100)} />
+			</Box>
+		</Box>;
 	}
 
-	return <Box style={{ textAlign: align === Align.Left ? 'left' : 'right' }}>
+	return <Box style={{ textAlign: align }}>
 		{ align === Align.Left && <Box className={classes.userInfo} >
 			<Avatar src={getIcon(author)} className={classes.avatar} />
 			<Typography variant="subtitle2">
