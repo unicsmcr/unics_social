@@ -13,7 +13,7 @@ import Fab from '@material-ui/core/Fab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
-import MessageGroup, { Align, createGroups } from './MessageGroup';
+import { createGroups } from './MessageGroup';
 import { DRAWER_WIDTH } from './ChannelsPanel';
 import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
@@ -92,21 +92,6 @@ const useStyles = makeStyles(theme => ({
 		width: 'min(300px, 50vw)'
 	}
 }));
-
-const messages = [
-	{
-		content: 'Hi!',
-		id: '1'
-	},
-	{
-		content: 'My name is Test 😄',
-		id: '2'
-	},
-	{
-		content: 'Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum for use in a type specimen book.',
-		id: '3'
-	}
-];
 
 interface ChannelDisplayData {
 	title: string;
