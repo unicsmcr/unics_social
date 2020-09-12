@@ -32,9 +32,8 @@ export const createMessage = createAsyncThunk('messages/createMessage', (data: {
  */
 function insertMessagesToList(_messages: OptimisedAPIMessage[], state: OptimisedAPIMessage[]): OptimisedAPIMessage[] {
 	const existing = new Set(state.map(msg => msg.id));
-	const messages = _messages.filter(msg => !existing.has(msg.id));
+	const messages = _messages.filter(msg => !existing.has(msg.id)).reverse();
 	let index = state.length - 1;
-	messages.reverse();
 	while (index >= 0 && messages.length > 0) {
 		const entryCandidate = messages[0];
 		const existingCandidate = state[index];
