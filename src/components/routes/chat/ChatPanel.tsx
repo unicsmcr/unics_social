@@ -193,9 +193,10 @@ export default function ChatPanel() {
 					? <>
 						<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
 							const target = e.target as any;
-							if (target.scrollTop === target.scrollTopMax && !scrollSynced) {
+							const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
+							if (scrolledToBottom && !scrollSynced) {
 								setScrollSynced(true);
-							} else if (target.scrollTop !== target.scrollTopMax && scrollSynced) {
+							} else if (!scrolledToBottom && scrollSynced) {
 								setScrollSynced(false);
 							}
 						}}>
@@ -214,7 +215,7 @@ export default function ChatPanel() {
 									channelID
 								}));
 							}}>
-								<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autocomplete: 'off' }} />
+								<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }} />
 								<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
 									<SendIcon />
 								</Fab>
