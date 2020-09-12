@@ -42,8 +42,12 @@ export default function ChatsPage() {
 		<FocusedPage>
 			<Container maxWidth="lg" component="main" className={classes.mainContent}>
 				<Paper elevation={3} className={classes.chatsRoot}>
-					<ChannelsPanel />
-					<Route path="/chats/:id" component={ChatPanel} />
+					<Route path="/chats/:id" render={props => (
+						<>
+							<ChannelsPanel {...props} />
+							<ChatPanel {...props} />
+						</>
+					)} />
 					<Route exact path="/chats" component={ChatPanel} />
 				</Paper>
 			</Container>

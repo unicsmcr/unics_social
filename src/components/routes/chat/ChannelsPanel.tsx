@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import AppBar from '@material-ui/core/AppBar';
@@ -8,10 +8,11 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import grey from '@material-ui/core/colors/grey';
 import { useSelector } from 'react-redux';
-import { selectChannels } from '../../../store/slices/ChannelsSlice';
+import { selectChannel, selectChannels } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
 import DMListItem from './DMListItem';
 import EventListItem from './EventListItem';
+import { useParams } from 'react-router-dom';
 
 export const DRAWER_WIDTH = '20rem';
 
@@ -41,7 +42,14 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChannelsPanel() {
 	const classes = useStyles();
+	const { id } = useParams();
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
+
+	const selectedChannel = useSelector(selectChannel(id));
+
+	useEffect(() => {
+		setChatPanelValue(selectedChannel && selectedChannel.type === 'event' ? 1 : 0);
+	}, [selectedChannel]);
 
 	const channels = Object.values(useSelector(selectChannels)).sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
 
