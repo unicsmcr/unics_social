@@ -32,7 +32,6 @@ export const ChannelsSlice = createSlice({
 	extraReducers(builder) {
 		builder.addCase(fetchChannels.fulfilled, (state, action) => {
 			state.values = Object.fromEntries(action.payload.map(channel => ([channel.id, channel])));
-			console.log(state.values);
 		});
 	}
 });
