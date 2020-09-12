@@ -8,7 +8,6 @@ import FocusedPage from '../../FocusedPage';
 import { useDispatch } from 'react-redux';
 import { fetchChannels } from '../../../store/slices/ChannelsSlice';
 import ChannelsPanel from './ChannelsPanel';
-import { Route } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	mainContent: {
@@ -35,7 +34,6 @@ export default function ChatsPage() {
 
 	useEffect(() => {
 		dispatch(fetchChannels());
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
