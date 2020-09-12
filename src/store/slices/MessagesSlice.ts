@@ -25,6 +25,34 @@ const initialState: MessagesSliceState = {
 export const fetchMessages = createAsyncThunk('messages/fetchMessages', (channelID: string) => client.getMessages(channelID).catch(wrapAPIError));
 export const createMessage = createAsyncThunk('messages/createMessage', (data: { content: string; channelID: string }) => client.createMessage(data).catch(wrapAPIError));
 
+/**
+ * Inserts messages into a list of existing messages
+ * @param messages Newest messages should be first in list
+ * @param state Existing state
+ */
+function insertMessagesToList(_messages: OptimisedAPIMessage[], state: OptimisedAPIMessage[]): OptimisedAPIMessage[] {
+	const existing = new Set(state.map(msg => msg.id));
+	const messages = _messages.filter(msg => !existing.has(msg.id));
+	let index = state.length - 1;
+	messages.reverse();
+	while (index >= 0 && messages.length > 0) {
+		const entryCandidate = messages[0];
+		const existingCandidate = state[index];
+		if (entryCandidate.id === existingCandidate.id) {
+			messages.shift();
+			continue;
+		}
+		if (entryCandidate.time > existingCandidate.time) {
+			state.splice(index + 1, 0, entryCandidate);
+			messages.shift();
+			continue;
+		}
+		index--;
+	}
+	state.unshift(...messages);
+	return state;
+}
+
 export const MessagesSlice = createSlice({
 	name: 'messages',
 	initialState,
@@ -35,21 +63,7 @@ export const MessagesSlice = createSlice({
 			const channelID = message.channelID;
 			if (!state.values[channelID]) state.values[channelID] = [];
 			const messages = state.values[channelID];
-			let index = messages.length - 1;
-			while (index >= 0) {
-				const candidate = messages[index];
-				if (candidate.time <= message.time) {
-					messages.splice(index + 1, 0, message);
-					index--;
-					break;
-				}
-				index--;
-			}
-
-			// Message never inserted
-			if (index === -1) {
-				messages.unshift(message);
-			}
+			insertMessagesToList([message], messages);
 		},
 		deleteMessage: (state, action) => {
 			const { channelID, messageID }: { channelID: string; messageID: string } = action.payload;
@@ -66,20 +80,14 @@ export const MessagesSlice = createSlice({
 			const channelID = action.meta.arg;
 			if (!state.values[channelID]) state.values[channelID] = [];
 			const messages = state.values[channelID];
-			let index = messages.length - 1;
-			// todo: This implementation is flawed, redo it at some point!!
-			while (index >= 0) {
-				const candidate = messages[index];
-				if (candidate.time <= newMessages[0].time) {
-					messages.splice(index + 1, 0, ...newMessages);
-					index--;
-					break;
-				}
-				index--;
-			}
-			if (index === -1) {
-				messages.unshift(...newMessages);
-			}
+			insertMessagesToList(newMessages, messages);
+		});
+		builder.addCase(createMessage.fulfilled, (state, action) => {
+			const message = optimiseAPIMessage(action.payload);
+			const channelID = message.channelID;
+			if (!state.values[channelID]) state.values[channelID] = [];
+			const messages = state.values[channelID];
+			insertMessagesToList([message], messages);
 		});
 	}
 });
