@@ -25,6 +25,7 @@ import { Skeleton } from '@material-ui/lab';
 import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -119,15 +120,15 @@ const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, 
 	return selectEvent(channel.event.id);
 };
 
-export default function ChatPanel(props) {
+export default function ChatPanel() {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const dispatch = useDispatch();
+	const { id: channelId } = useParams();
 
 	const me = useSelector(selectMe);
 
-	const channelId = props.match.params.id;
 	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelId));
 
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
