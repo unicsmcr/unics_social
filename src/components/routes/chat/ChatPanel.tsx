@@ -27,6 +27,7 @@ import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
+import UserInfoPanel from './UserInfoPanel';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -63,8 +64,20 @@ const useStyles = makeStyles(theme => ({
 			right: `-${DRAWER_WIDTH}`
 		}
 	},
+	mainContent: {
+		overflow: 'auto',
+		flexGrow: 1,
+		display: 'grid',
+		gridTemplateColumns: 'auto 320px'
+	},
 	chatArea: {
 		padding: theme.spacing(2),
+		overflow: 'auto',
+		flexGrow: 1
+	},
+	chatHolder: {
+		display: 'flex',
+		flexDirection: 'column',
 		overflow: 'auto',
 		flexGrow: 1
 	},
@@ -93,7 +106,7 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-interface ChannelDisplayData {
+export interface ChannelDisplayData {
 	title: string;
 	image?: string;
 }
@@ -189,43 +202,50 @@ export default function ChatPanel() {
 						}
 					</Toolbar>
 				</AppBar>
-				{ channelID
-					? <>
-						<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
-							const target = e.target as any;
-							const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
-							if (scrolledToBottom && !scrollSynced) {
-								setScrollSynced(true);
-							} else if (!scrolledToBottom && scrollSynced) {
-								setScrollSynced(false);
-							}
-						}}>
-							{
-								createGroups(messages, me!.id)
-							}
-						</div>
-						<Card className={classes.chatBox}>
-							<form className={classes.flexGrow} onSubmit={e => {
-								e.preventDefault();
-								const form = e.target as any;
-								const message = String(new FormData(form).get('message'));
-								form.reset();
-								dispatch(createMessage({
-									content: message,
-									channelID
-								}));
-							}}>
-								<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }} />
-								<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
-									<SendIcon />
-								</Fab>
-							</form>
-						</Card>
-					</>
-					: <Box className={clsx(classes.chatArea, classes.emptyChatArea)}>
-						<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+				<Box className={classes.mainContent}>
+					<Box className={classes.chatHolder}>
+						{ channelID
+							? <>
+								<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
+									const target = e.target as any;
+									const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
+									if (scrolledToBottom && !scrollSynced) {
+										setScrollSynced(true);
+									} else if (!scrolledToBottom && scrollSynced) {
+										setScrollSynced(false);
+									}
+								}}>
+									{
+										createGroups(messages, me!.id)
+									}
+								</div>
+								<Card className={classes.chatBox}>
+									<form className={classes.flexGrow} onSubmit={e => {
+										e.preventDefault();
+										const form = e.target as any;
+										const message = String(new FormData(form).get('message'));
+										form.reset();
+										dispatch(createMessage({
+											content: message,
+											channelID
+										}));
+									}}>
+										<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }} />
+										<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
+											<SendIcon />
+										</Fab>
+									</form>
+								</Card>
+							</>
+							: <Box className={clsx(classes.chatArea, classes.emptyChatArea)}>
+								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+							</Box>
+						}
 					</Box>
-				}
+					{
+						resource?.hasOwnProperty('forename') && <UserInfoPanel user={resource as APIUser} />
+					}
+				</Box>
 			</Box>
 		</Card>
 	);
