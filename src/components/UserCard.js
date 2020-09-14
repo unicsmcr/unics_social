@@ -32,13 +32,13 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: 'center'
 	}
 }));
-const UserCard = ({ fullName, course, year }) => {
+const UserCard = ({ fullName, course, year, picture=stockImage }) => {
 	const classes = useStyles();
 
 	return (
 		<Paper className={classes.body} elevation={5}>
 			<div className={classes.imageSection}>
-				<img src={stockImage} className={classes.image}/>
+				<img src={picture} alt="user photo" className={classes.image}/>
 			</div>
 			<div className={classes.contentSection}>
 				<Typography component="h3" variant="h5">
