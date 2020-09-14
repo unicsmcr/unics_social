@@ -74,10 +74,7 @@ const useStyles = makeStyles(theme => ({
 		overflow: 'hidden',
 		flexGrow: 1,
 		display: 'grid',
-		gridTemplateColumns: 'auto',
-		[theme.breakpoints.up('md')]: {
-			gridTemplateColumns: 'auto 320px'
-		}
+		gridAutoColumns: 'auto 320px'
 	},
 	chatArea: {
 		padding: theme.spacing(2),
@@ -88,7 +85,8 @@ const useStyles = makeStyles(theme => ({
 		display: 'flex',
 		flexDirection: 'column',
 		overflow: 'auto',
-		flexGrow: 1
+		flexGrow: 1,
+		gridColumn: 1
 	},
 	emptyChatArea: {
 		display: 'flex',
@@ -114,7 +112,8 @@ const useStyles = makeStyles(theme => ({
 		width: 'min(300px, 50vw)'
 	},
 	infoPanel: {
-		background: 'rgba(255, 255, 255, 0.6)'
+		background: 'rgba(255, 255, 255, 0.6)',
+		gridColumn: 2
 	}
 }));
 
@@ -271,11 +270,12 @@ export default function ChatPanel() {
 						}
 					</Box>
 					{
-						isSmall
+						channelID && (isSmall
 							? <Drawer anchor="right" open={infoPanelOpen} onClose={() => setInfoPanelOpen(false)}>
 								{ generateInfoPanel() }
 							</Drawer>
 							: generateInfoPanel()
+						)
 					}
 				</Box>
 			</Box>
