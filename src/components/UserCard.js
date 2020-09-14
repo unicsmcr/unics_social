@@ -30,24 +30,36 @@ const useStyles = makeStyles(theme => ({
 		width: '70%',
 		flexDirection: 'column',
 		justifyContent: 'center'
+	},
+	yearText: {
+		fontWeight: 500,
+		color: 'grey'
+	}, course: {
+		overflow: 'hidden'
 	}
 }));
-const UserCard = ({ fullName, course, year, picture=stockImage }) => {
+const UserCard = ({ fullName, course, year, picture = stockImage }) => {
 	const classes = useStyles();
 
 	return (
 		<Paper className={classes.body} elevation={5}>
 			<div className={classes.imageSection}>
-				<img src={picture} alt="user photo" className={classes.image}/>
+				<img src={picture} alt="user avatar" className={classes.image}/>
 			</div>
 			<div className={classes.contentSection}>
-				<Typography component="h3" variant="h5">
+				<Typography
+					component="h3"
+					variant="h5">
 					{fullName}
 				</Typography>
-				<Typography color="textSecondary">
+				<Typography
+					color="textSecondary"
+					component="h6"
+					noWrap={true}>
 					{course}
 				</Typography>
-				<Typography color="primary">
+				<Typography
+					className={classes.yearText}>
 					{year}
 				</Typography>
 			</div>
