@@ -11,7 +11,6 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 const useStyles = makeStyles(theme => ({
 	root: {
 		padding: theme.spacing(2),
-		background: 'rgba(255, 255, 255, 0.6)',
 		display: 'flex',
 		alignItems: 'center',
 		flexDirection: 'column',

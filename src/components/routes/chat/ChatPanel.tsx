@@ -30,6 +30,7 @@ import { createMessage, fetchMessages, selectMessages } from '../../../store/sli
 import UserInfoPanel from './UserInfoPanel';
 import { CircularProgress, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import EventInfoPanel from './EventInfoPanel';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -193,7 +194,11 @@ export default function ChatPanel() {
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
 			resource
-				? resource.hasOwnProperty('forename') && <UserInfoPanel user={resource as APIUser} />
+				? (
+					resource.hasOwnProperty('forename')
+						? <UserInfoPanel user={resource as APIUser} />
+						: <EventInfoPanel event={resource as APIEvent} />
+				)
 				: <CircularProgress />
 		}
 	</Box>;
