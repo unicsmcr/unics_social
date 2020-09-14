@@ -11,7 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.53",
-    "@unicsmcr/unics_social_api_client": "0.0.8",
+    "@unicsmcr/unics_social_api_client": "0.0.9",
     "clsx": "^1.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
