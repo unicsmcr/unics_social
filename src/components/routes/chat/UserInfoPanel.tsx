@@ -1,10 +1,9 @@
 import { Avatar, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { APIDMChannel, APIUser } from '@unicsmcr/unics_social_api_client';
+import { APIUser } from '@unicsmcr/unics_social_api_client';
 import React from 'react';
 import getIcon from '../../util/getAvatar';
-import { ChannelDisplayData } from './ChatPanel';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -12,7 +11,9 @@ const useStyles = makeStyles(theme => ({
 		background: 'rgba(255, 255, 255, 0.6)',
 		display: 'flex',
 		alignItems: 'center',
-		flexDirection: 'column'
+		flexDirection: 'column',
+		height: '100%',
+		width: '100%'
 	},
 	avatar: {
 		width: theme.spacing(18),

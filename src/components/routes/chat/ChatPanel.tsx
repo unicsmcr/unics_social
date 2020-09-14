@@ -28,6 +28,8 @@ import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import UserInfoPanel from './UserInfoPanel';
+import { CircularProgress, Drawer } from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -37,8 +39,12 @@ const useStyles = makeStyles(theme => ({
 		marginRight: theme.spacing(2)
 	},
 	appBar: {
-		background: grey[700],
-		color: theme.palette.getContrastText(grey[700])
+		'background': grey[700],
+		'color': theme.palette.getContrastText(grey[700]),
+		'& h6': {
+			width: '100%',
+			textAlign: 'left'
+		}
 	},
 	menuButton: {
 		marginRight: theme.spacing(1),
@@ -65,10 +71,13 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	mainContent: {
-		overflow: 'auto',
+		overflow: 'hidden',
 		flexGrow: 1,
 		display: 'grid',
-		gridTemplateColumns: 'auto 320px'
+		gridTemplateColumns: 'auto',
+		[theme.breakpoints.up('md')]: {
+			gridTemplateColumns: 'auto 320px'
+		}
 	},
 	chatArea: {
 		padding: theme.spacing(2),
@@ -103,6 +112,9 @@ const useStyles = makeStyles(theme => ({
 	skeletonText: {
 		marginLeft: theme.spacing(2),
 		width: 'min(300px, 50vw)'
+	},
+	infoPanel: {
+		background: 'rgba(255, 255, 255, 0.6)'
 	}
 }));
 
@@ -123,6 +135,7 @@ export default function ChatPanel() {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
+	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useDispatch();
 	const { id: channelID } = useParams();
 	const [scrollSynced, setScrollSynced] = useState(true);
@@ -153,8 +166,10 @@ export default function ChatPanel() {
 		}
 	}, [messages]);
 
+	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
+	const infoPanelOpen = _infoPanelOpen || !isSmall;
 
 	let displayData: ChannelDisplayData|undefined;
 	if (resource) {
@@ -174,6 +189,14 @@ export default function ChatPanel() {
 	}
 
 	const chatBoxRef = createRef<HTMLDivElement>();
+
+	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
+		{
+			resource
+				? resource.hasOwnProperty('forename') && <UserInfoPanel user={resource as APIUser} />
+				: <CircularProgress />
+		}
+	</Box>;
 
 	return (
 		<Card className={classes.flexGrow}>
@@ -199,6 +222,11 @@ export default function ChatPanel() {
 								}
 							</Typography>
 						</>
+						}
+						{
+							isSmall && <IconButton edge="end" color="inherit" aria-label="info" onClick={() => setInfoPanelOpen(!_infoPanelOpen)} >
+								<InfoOutlinedIcon />
+							</IconButton>
 						}
 					</Toolbar>
 				</AppBar>
@@ -243,7 +271,11 @@ export default function ChatPanel() {
 						}
 					</Box>
 					{
-						resource?.hasOwnProperty('forename') && <UserInfoPanel user={resource as APIUser} />
+						isSmall
+							? <Drawer anchor="right" open={infoPanelOpen} onClose={() => setInfoPanelOpen(false)}>
+								{ generateInfoPanel() }
+							</Drawer>
+							: generateInfoPanel()
 					}
 				</Box>
 			</Box>
