@@ -17,7 +17,6 @@ export default function Homepage() {
 				<Typography variant="h5" align="center" color="textSecondary" component="p">
 					We're helping to connect University of Manchester students with each other online in light of the COVID-19 pandemic!
 				</Typography>
-				<UserCard fullName="Amish Shah" course="Computer Science" year="Year 2"/>
 			</Container>
 			{/* End hero unit */}
 		</Page>
