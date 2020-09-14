@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,18 +7,12 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import grey from '@material-ui/core/colors/grey';
-import ChannelListItem from './ChannelListItem';
-
-const dummyUsers = [
-	{ name: 'Barack Obama', src: 'https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg' },
-	{ name: 'Mario', src: 'https://sickr.files.wordpress.com/2017/07/mario.jpg' },
-	{ name: 'Luigi', src: 'https://www.mariowiki.com/images/thumb/5/53/Luigi_Mario_Party.png/158px-Luigi_Mario_Party.png' }
-];
-
-const dummyEvents = [
-	{ name: 'Freshers Fair!', src: 'https://static-s.aa-cdn.net/img/ios/1389829402/87e2ba20dce5005d8f856ebbea851ff5?v=1' },
-	{ name: 'Virtual Pub Quiz', src: 'https://cdn-b.william-reed.com/var/wrbm_gb_hospitality/storage/images/publications/hospitality/morningadvertiser.co.uk/article/2020/06/24/how-do-pubs-keep-customer-data/3487206-1-eng-GB/How-do-pubs-keep-customer-data_wrbm_large.jpg' }
-];
+import { useSelector } from 'react-redux';
+import { selectChannel, selectChannels } from '../../../store/slices/ChannelsSlice';
+import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
+import DMListItem from './DMListItem';
+import EventListItem from './EventListItem';
+import { useParams } from 'react-router-dom';
 
 export const DRAWER_WIDTH = '20rem';
 
@@ -46,18 +40,50 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-interface ChannelsPanelProps {
-	onChannelSelected: (channel: { name: string; avatar: string }) => void;
-	open: boolean;
-	onClose: Function;
-}
-
-export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps) {
+export default function ChannelsPanel() {
 	const classes = useStyles();
-
+	const { id } = useParams();
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
 
-	const channelList = chatPanelValue === 0 ? dummyUsers : dummyEvents;
+	const selectedChannel = useSelector(selectChannel(id));
+
+	useEffect(() => {
+		setChatPanelValue(selectedChannel && selectedChannel.type === 'event' ? 1 : 0);
+	}, [selectedChannel]);
+
+	const channels = Object.values(useSelector(selectChannels)).sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
+
+	const eventChannels: APIEventChannel[] = [];
+	const dmChannels: APIDMChannel[] = [];
+
+	for (const channel of channels) {
+		if (channel.type === 'dm') {
+			dmChannels.push(channel);
+		} else {
+			eventChannels.push(channel);
+		}
+	}
+
+	const generateList = () => {
+		if (chatPanelValue === 0) {
+			return dmChannels.map((channel, index) => (
+				<div key={channel.id}>
+					{
+						index !== 0 && <Divider />
+					}
+					<DMListItem channel={channel} />
+				</div>
+			));
+		}
+		return eventChannels.map((channel, index) => (
+			<div key={channel.id}>
+				{
+					index !== 0 && <Divider />
+				}
+				<EventListItem channel={channel} />
+			</div>
+		));
+	};
 
 	return <Box className={classes.root}>
 		<div className={classes.channelsPanel}>
@@ -68,17 +94,9 @@ export default function ChannelsPanel({ onChannelSelected }: ChannelsPanelProps)
 				</Tabs>
 			</AppBar>
 			<List component="nav" aria-label="channels" className={classes.channelsList} >
-				{channelList.map((channel, index) => (
-					<div key={channel.name}>
-						{
-							index !== 0 && <Divider />
-						}
-						<ChannelListItem key={index} {...channel} onClick={() => onChannelSelected({
-							name: channel.name,
-							avatar: channel.src
-						})} />
-					</div>
-				))}
+				{
+					generateList()
+				}
 			</List>
 		</div>
 	</Box>;

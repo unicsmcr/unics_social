@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { APIUser } from '@unicsmcr/unics_social_api_client';
 import { client } from '../../components/util/makeClient';
 import { setJWT } from './AuthSlice';
-import asAPIError from '../../components/util/asAPIError';
+import { wrapAPIError } from './util';
 
 interface UsersSliceState {
 	me: string|null;
@@ -16,16 +16,8 @@ const initialState: UsersSliceState = {
 	values: {}
 };
 
-const wrapApiError = error => {
-	const apiError = asAPIError(error);
-	if (apiError) {
-		return Promise.reject(new Error(apiError));
-	}
-	return Promise.reject(error);
-};
-
-export const fetchMe = createAsyncThunk('users/fetchMe', () => client.getMe().catch(wrapApiError));
-export const fetchUser = createAsyncThunk('users/fetchUser', (id: string) => client.getUser(id).catch(wrapApiError));
+export const fetchMe = createAsyncThunk('users/fetchMe', () => client.getMe().catch(wrapAPIError));
+export const fetchUser = createAsyncThunk('users/fetchUser', (id: string) => client.getUser(id).catch(wrapAPIError));
 
 export const UsersSlice = createSlice({
 	name: 'users',
@@ -57,7 +49,7 @@ export const UsersSlice = createSlice({
 
 export const { addUser } = UsersSlice.actions;
 
-export const selectUserById = (id: string) => state => state.users.values[id];
+export const selectUserById = (id: string) => state => state.users.values[id] as APIUser;
 export const selectMe = state => state.users.values[state.users.me] as APIUser|undefined;
 
 export default UsersSlice.reducer;

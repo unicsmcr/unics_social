@@ -11,7 +11,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.53",
-    "@unicsmcr/unics_social_api_client": "0.0.7",
+    "@unicsmcr/unics_social_api_client": "0.0.9",
     "clsx": "^1.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -28,8 +28,8 @@
     "test": "react-scripts test",
     "test:coverage": "npm test -- --coverage",
     "eject": "react-scripts eject",
-    "lint": "npx eslint src src/**/*.{js,jsx,ts,tsx}",
-    "lint:fix": "npx eslint src src/**/*.{js,jsx,ts,tsx} --fix"
+    "lint": "npx eslint src/**/*.{js,jsx,ts,tsx}",
+    "lint:fix": "npx eslint src/**/*.{js,jsx,ts,tsx} --fix"
   },
   "eslintConfig": {
     "extends": [

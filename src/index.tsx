@@ -5,6 +5,7 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
+	// todo: disable StrictMode on deploy to prevent unnecessary double renders
 	<React.StrictMode>
 		<App />
 	</React.StrictMode>,

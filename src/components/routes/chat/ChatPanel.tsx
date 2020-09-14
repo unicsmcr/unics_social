@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -13,30 +13,39 @@ import Fab from '@material-ui/core/Fab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
-import MessageGroup, { Align } from './MessageGroup';
-import ChannelsPanel, { DRAWER_WIDTH } from './ChannelsPanel';
+import { createGroups } from './MessageGroup';
+import { DRAWER_WIDTH } from './ChannelsPanel';
 import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
+import { APIDMChannel, APIEvent, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
+import { Skeleton } from '@material-ui/lab';
+import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
+import { selectEvent } from '../../../store/slices/EventsSlice';
+import getIcon from '../../util/getAvatar';
+import { useParams } from 'react-router-dom';
+import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
+import UserInfoPanel from './UserInfoPanel';
+import { CircularProgress, Drawer } from '@material-ui/core';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import EventInfoPanel from './EventInfoPanel';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
 		flexGrow: 1
 	},
-	root: {
-		position: 'absolute',
-		top: 0,
-		bottom: 0,
-		left: 0,
-		right: 0,
-		borderRadius: '0 !important'
-	},
 	avatar: {
 		marginRight: theme.spacing(2)
 	},
 	appBar: {
-		background: grey[700],
-		color: theme.palette.getContrastText(grey[700])
+		'background': grey[700],
+		'color': theme.palette.getContrastText(grey[700]),
+		'& h6': {
+			width: '100%',
+			textAlign: 'left'
+		}
 	},
 	menuButton: {
 		marginRight: theme.spacing(1),
@@ -62,10 +71,23 @@ const useStyles = makeStyles(theme => ({
 			right: `-${DRAWER_WIDTH}`
 		}
 	},
+	mainContent: {
+		overflow: 'hidden',
+		flexGrow: 1,
+		display: 'grid',
+		gridAutoColumns: 'auto 320px'
+	},
 	chatArea: {
 		padding: theme.spacing(2),
 		overflow: 'auto',
 		flexGrow: 1
+	},
+	chatHolder: {
+		display: 'flex',
+		flexDirection: 'column',
+		overflow: 'auto',
+		flexGrow: 1,
+		gridColumn: 1
 	},
 	emptyChatArea: {
 		display: 'flex',
@@ -85,48 +107,104 @@ const useStyles = makeStyles(theme => ({
 	},
 	sendIcon: {
 		marginLeft: theme.spacing(2)
+	},
+	skeletonText: {
+		marginLeft: theme.spacing(2),
+		width: 'min(300px, 50vw)'
+	},
+	infoPanel: {
+		background: 'rgba(255, 255, 255, 0.6)',
+		width: 'min(320px, 80vw)',
+		gridColumn: 2
 	}
 }));
 
-const messages = [
-	{
-		content: 'Hi!',
-		id: '1'
-	},
-	{
-		content: 'My name is Test 😄',
-		id: '2'
-	},
-	{
-		content: 'Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs. The passage is attributed to an unknown typesetter in the 15th century who is thought to have scrambled parts of Cicero\'s De Finibus Bonorum et Malorum for use in a type specimen book.',
-		id: '3'
-	}
-];
-
-interface ChatPanelProps {
-	channel: {
-		name: string;
-		avatar: string;
-	};
-	onChannelsMenuClicked: Function;
+export interface ChannelDisplayData {
+	title: string;
+	image?: string;
 }
+
+const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, meId: string) => {
+	if (!channel) return () => undefined;
+	if (channel.type === 'dm') {
+		return selectUserById(channel.users.find(userId => userId !== meId)!);
+	}
+	return selectEvent(channel.event.id);
+};
 
 export default function ChatPanel() {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
+	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
+	const dispatch = useCallback(useDispatch(), []);
+	const { id: channelID } = useParams();
+	const [scrollSynced, setScrollSynced] = useState(true);
 
+	const me = useSelector(selectMe);
+	const chatBoxRef = createRef<HTMLDivElement>();
+
+	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
+	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
+	const messages = useSelector(selectMessages(channelID));
+
+	useEffect(() => {
+		setChannelsPanelOpen(false);
+	}, [channelID]);
+
+	useEffect(() => {
+		if (channelID && !channel) dispatch(fetchChannels());
+	}, [channel, channelID, dispatch]);
+
+	useEffect(() => {
+		if (channel && messages.length === 0) {
+			dispatch(fetchMessages(channel.id));
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [channel, dispatch]);
+
+	useEffect(() => {
+		if (messages && chatBoxRef.current && scrollSynced) {
+			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+		}
+	}, [chatBoxRef, messages, scrollSynced]);
+
+	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
-	const [channel, setChannel] = useState<{ name: string; avatar: string }|null>(null);
-
 	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
+	const infoPanelOpen = _infoPanelOpen || !isSmall;
+
+	let displayData: ChannelDisplayData|undefined;
+	if (resource) {
+		if (resource.hasOwnProperty('forename')) {
+			const user = resource as APIUser;
+			displayData = {
+				title: `${user.forename} ${user.surname}`,
+				image: getIcon(user)
+			};
+		} else {
+			const event = resource as APIEvent;
+			displayData = {
+				title: event.title,
+				image: getIcon(event)
+			};
+		}
+	}
+
+	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
+		{
+			resource
+				? (
+					resource.hasOwnProperty('forename')
+						? <UserInfoPanel user={resource as APIUser} />
+						: <EventInfoPanel event={resource as APIEvent} />
+				)
+				: <CircularProgress />
+		}
+	</Box>;
 
 	return (
-		<Card className={[classes.flexGrow, classes.root].join(' ')}>
-			<ChannelsPanel onChannelSelected={channel => {
-				setChannel(channel);
-				if (isMobile) setChannelsPanelOpen(false);
-			}} open={channelsPanelOpen} onClose={() => setChannelsPanelOpen(false)}/>
+		<Card className={classes.flexGrow}>
 			<Box className={clsx(classes.chatPanel, channelsPanelOpen && classes.shiftLeft)}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
@@ -135,36 +213,77 @@ export default function ChatPanel() {
 							{ channelsPanelOpen ? <ChevronLeftIcon /> : <MenuIcon /> }
 						</IconButton>
 						}
-						{ channel && <>
-							<Avatar className={classes.avatar} src={channel.avatar} alt={channel.name}></Avatar>
-							<Typography variant="h6">
-								{channel.name}
+						{ channelID && <>
+							{
+								displayData
+									? <Avatar className={classes.avatar} src={displayData.image} alt={'test'}></Avatar>
+									: <Skeleton animation="wave" variant="circle" width={40} height={40} />
+							}
+							<Typography variant="h6" noWrap>
+								{
+									displayData
+										? displayData.title
+										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
+								}
 							</Typography>
 						</>
 						}
+						{
+							isSmall && <IconButton edge="end" color="inherit" aria-label="info" onClick={() => setInfoPanelOpen(!_infoPanelOpen)} >
+								<InfoOutlinedIcon />
+							</IconButton>
+						}
 					</Toolbar>
 				</AppBar>
-				{ channel
-					? <>
-						<Box className={classes.chatArea}>
-							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
-							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
-							<MessageGroup align={Align.Left} messages={messages} author={{ name: 'Bob' }}/>
-							<MessageGroup align={Align.Right} messages={messages} author={{ name: 'Bob' }}/>
-						</Box>
-						<Card className={classes.chatBox}>
-							<form className={classes.flexGrow}>
-								<TextField label="Type a message" variant="filled" className={classes.flexGrow}/>
-								<Fab aria-label="send" className={classes.sendIcon} color="primary" >
-									<SendIcon />
-								</Fab>
-							</form>
-						</Card>
-					</>
-					: <Box className={clsx(classes.chatArea, classes.emptyChatArea)}>
-						<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+				<Box className={classes.mainContent}>
+					<Box className={classes.chatHolder}>
+						{ channelID
+							? <>
+								<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
+									const target = e.target as any;
+									const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
+									if (scrolledToBottom && !scrollSynced) {
+										setScrollSynced(true);
+									} else if (!scrolledToBottom && scrollSynced) {
+										setScrollSynced(false);
+									}
+								}}>
+									{
+										createGroups(messages, me!.id)
+									}
+								</div>
+								<Card className={classes.chatBox}>
+									<form className={classes.flexGrow} onSubmit={e => {
+										e.preventDefault();
+										const form = e.target as any;
+										const message = String(new FormData(form).get('message'));
+										form.reset();
+										dispatch(createMessage({
+											content: message,
+											channelID
+										}));
+									}}>
+										<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }} />
+										<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
+											<SendIcon />
+										</Fab>
+									</form>
+								</Card>
+							</>
+							: <Box className={clsx(classes.chatArea, classes.emptyChatArea)}>
+								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+							</Box>
+						}
 					</Box>
-				}
+					{
+						channelID && (isSmall
+							? <Drawer anchor="right" open={infoPanelOpen} onClose={() => setInfoPanelOpen(false)}>
+								{ generateInfoPanel() }
+							</Drawer>
+							: generateInfoPanel()
+						)
+					}
+				</Box>
 			</Box>
 		</Card>
 	);
