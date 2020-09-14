@@ -113,6 +113,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	infoPanel: {
 		background: 'rgba(255, 255, 255, 0.6)',
+		width: 'min(320px, 80vw)',
 		gridColumn: 2
 	}
 }));
