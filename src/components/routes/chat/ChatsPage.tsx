@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import Container from '@material-ui/core/Container';
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,11 +30,11 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChatsPage() {
 	const classes = useStyles();
-	const dispatch = useDispatch();
+	const dispatch = useCallback(useDispatch(), []);
 
 	useEffect(() => {
 		dispatch(fetchChannels());
-	}, []);
+	}, [dispatch]);
 
 	return (
 		<FocusedPage>

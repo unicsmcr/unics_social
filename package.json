@@ -38,8 +38,7 @@
     ],
     "rules": {
       "@typescript-eslint/no-unnecessary-condition": "off",
-      "@typescript-eslint/no-require-imports": "off",
-      "react-hooks/exhaustive-deps": "off"
+      "@typescript-eslint/no-require-imports": "off"
     }
   },
   "browserslist": {

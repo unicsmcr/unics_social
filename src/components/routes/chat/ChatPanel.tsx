@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useCallback, useEffect, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -137,11 +137,12 @@ export default function ChatPanel() {
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
-	const dispatch = useDispatch();
+	const dispatch = useCallback(useDispatch(), []);
 	const { id: channelID } = useParams();
 	const [scrollSynced, setScrollSynced] = useState(true);
 
 	const me = useSelector(selectMe);
+	const chatBoxRef = createRef<HTMLDivElement>();
 
 	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
@@ -159,13 +160,14 @@ export default function ChatPanel() {
 		if (channel && messages.length === 0) {
 			dispatch(fetchMessages(channel.id));
 		}
-	}, [channel]);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [channel, dispatch]);
 
 	useEffect(() => {
 		if (messages && chatBoxRef.current && scrollSynced) {
 			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
 		}
-	}, [messages]);
+	}, [chatBoxRef, messages, scrollSynced]);
 
 	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
@@ -188,8 +190,6 @@ export default function ChatPanel() {
 			};
 		}
 	}
-
-	const chatBoxRef = createRef<HTMLDivElement>();
 
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{

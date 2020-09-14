@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useCallback, useEffect } from 'react';
 
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProtectedRoute = props => {
 	const { component: Component, ...rest } = props;
-	const dispatch = useDispatch();
+	const dispatch = useCallback(useDispatch(), []);
 	const jwt = useSelector(selectJWT);
 	const connected = useSelector(selectConnected);
 	const me = useSelector(selectMe);
@@ -29,7 +29,8 @@ const ProtectedRoute = props => {
 	useEffect(() => {
 		if (!connected) initClientGateway(client);
 		if (!me) dispatch(fetchMe());
-	}, []);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [dispatch]);
 
 	let fallback: ReactNode|undefined;
 	if (jwt && (!me || !connected)) {

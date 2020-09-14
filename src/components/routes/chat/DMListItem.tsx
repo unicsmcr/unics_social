@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
@@ -31,10 +31,10 @@ export default function DMListItem({ channel }: DMListItemProps) {
 	const recipient = useSelector(selectUserById(recipientID));
 	const history = useHistory();
 
-	const dispatch = useDispatch();
+	const dispatch = useCallback(useDispatch(), []);
 	useEffect(() => {
 		if (!recipient) dispatch(fetchUser(recipientID));
-	}, [recipient]);
+	}, [recipient, dispatch, recipientID]);
 
 	if (!recipient) {
 		return <ListItem className={classes.loadingContainer}>

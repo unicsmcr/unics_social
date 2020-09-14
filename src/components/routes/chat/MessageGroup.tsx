@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import Avatar from '@material-ui/core/Avatar';
@@ -79,11 +79,11 @@ export function createGroups(messages: OptimisedAPIMessage[], relativeTo: string
 export default function MessageGroup({ messages, align, authorID }: MessageGroupProps) {
 	const classes = useStyles();
 	const author = useSelector(selectUserById(authorID));
-	const dispatch = useDispatch();
+	const dispatch = useCallback(useDispatch(), []);
 
 	useEffect(() => {
 		if (!author) dispatch(fetchUser(authorID));
-	}, []);
+	}, [author, authorID, dispatch]);
 
 	if (!author) {
 		return <Box style={{ textAlign: align }}>
