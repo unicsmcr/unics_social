@@ -10,6 +10,9 @@ const initialState: ReadSliceState = {
 	values: {}
 };
 
+// Syncing message read times is actually quite difficult. For now, notifications are only for messages after the app is first opened.
+export const startTime = Date.now();
+
 export const ReadSlice = createSlice({
 	name: 'read',
 	initialState,
@@ -24,6 +27,8 @@ export const ReadSlice = createSlice({
 
 export const { readChannel } = ReadSlice.actions;
 
-export const selectReadTime = (channelID: string) => (state: { read: ReadSliceState }) => state.read.values[channelID];
+export const selectHasUserChanges = (state: any) => Object.values(state.channels.values).filter((channel: any) => new Date(channel.lastUpdated).getTime() > (state.read.values[channel.id] || startTime)).map((channel: any) => channel.id);
+export const selectReadTimes = (state: { read: ReadSliceState }) => state.read.values;
+export const selectReadTime = (channelID: string) => (state: { read: ReadSliceState }) => state.read.values[channelID] || startTime;
 
 export default ReadSlice.reducer;

@@ -27,10 +27,10 @@ import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import UserInfoPanel from './UserInfoPanel';
-import { CircularProgress, Drawer } from '@material-ui/core';
+import { Badge, CircularProgress, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
-import { readChannel } from '../../../store/slices/ReadSlice';
+import { readChannel, selectHasUserChanges } from '../../../store/slices/ReadSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -138,6 +138,8 @@ export default function ChatPanel(props) {
 	const { id: channelID } = useParams();
 	const [scrollSynced, setScrollSynced] = useState(true);
 
+	const hasUserChanges = useSelector(selectHasUserChanges);
+
 	const me = useSelector(selectMe);
 	const chatBoxRef = createRef<HTMLDivElement>();
 	const inputBoxRef = createRef<HTMLInputElement>();
@@ -208,7 +210,11 @@ export default function ChatPanel(props) {
 					<Toolbar>
 						{ isMobile &&
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
-								<MenuIcon />
+								{
+									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0].id !== channelID)
+										? <Badge variant="dot" color="secondary"><MenuIcon /></Badge>
+										: <MenuIcon />
+								}
 							</IconButton>
 						}
 						{ channelID && <>

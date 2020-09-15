@@ -11,11 +11,11 @@ import { Badge, makeStyles, MenuItem, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { selectReadTime } from '../../../store/slices/ReadSlice';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
 	selected: boolean;
+	lastReadTime: number;
 }
 
 const useStyles = makeStyles(() => ({
@@ -26,10 +26,9 @@ const useStyles = makeStyles(() => ({
 	}
 }));
 
-export default function DMListItem({ channel, selected }: DMListItemProps) {
+export default function DMListItem({ channel, selected, lastReadTime }: DMListItemProps) {
 	const classes = useStyles();
 	const me = useSelector(selectMe);
-	const lastReadTime = useSelector(selectReadTime(channel.id));
 	const recipientID = channel.users.find(userID => userID !== me!.id);
 	if (!recipientID) throw new Error('Recipient not found!');
 	const recipient = useSelector(selectUserById(recipientID));
