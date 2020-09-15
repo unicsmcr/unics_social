@@ -10,6 +10,7 @@ import { Skeleton } from '@material-ui/lab';
 import { makeStyles, MenuItem, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
@@ -48,6 +49,8 @@ export default function DMListItem({ channel, selected }: DMListItemProps) {
 		<ListItemAvatar>
 			<Avatar alt={recipient.forename} src={getIcon(recipient)}/>
 		</ListItemAvatar>
-		<ListItemText primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}/>
+		<ListItemText
+			primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}
+			secondary={moment(channel.lastUpdated).fromNow()}/>
 	</MenuItem>;
 }

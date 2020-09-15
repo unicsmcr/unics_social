@@ -46,6 +46,13 @@ export default function ChannelsPanel() {
 	const classes = useStyles();
 	const { id } = useParams();
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
+	const [lastRefreshed, setLastRefreshed] = React.useState(Date.now());
+
+	// Trigger re-render of "moment" timestamps
+	useEffect(() => {
+		const timeout = setTimeout(() => setLastRefreshed(Date.now()), 60e3);
+		return () => clearTimeout(timeout);
+	}, [lastRefreshed]);
 
 	const selectedChannel = useSelector(selectChannel(id));
 
