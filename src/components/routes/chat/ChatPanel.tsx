@@ -15,7 +15,6 @@ import MenuIcon from '@material-ui/icons/Menu';
 import SendIcon from '@material-ui/icons/Send';
 import { createGroups } from './MessageGroup';
 import { DRAWER_WIDTH } from './ChannelsPanel';
-import ChevronLeftIcon from '@material-ui/icons/MenuOpen';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
@@ -63,12 +62,9 @@ const useStyles = makeStyles(theme => ({
 		transition: theme.transitions.create(['left', 'right'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen
-		})
-	},
-	shiftLeft: {
-		left: `min(${DRAWER_WIDTH}, calc(100vw - 3rem))`,
-		[theme.breakpoints.down('xs')]: {
-			right: `-${DRAWER_WIDTH}`
+		}),
+		[theme.breakpoints.up('sm')]: {
+			left: DRAWER_WIDTH
 		}
 	},
 	mainContent: {
@@ -132,7 +128,7 @@ const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, 
 	return selectEvent(channel.event.id);
 };
 
-export default function ChatPanel() {
+export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
@@ -147,10 +143,6 @@ export default function ChatPanel() {
 	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
 	const messages = useSelector(selectMessages(channelID));
-
-	useEffect(() => {
-		setChannelsPanelOpen(false);
-	}, [channelID]);
 
 	useEffect(() => {
 		if (channelID && !channel) dispatch(fetchChannels());
@@ -170,8 +162,6 @@ export default function ChatPanel() {
 	}, [chatBoxRef, messages, scrollSynced]);
 
 	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
-	const [_channelsPanelOpen, setChannelsPanelOpen] = useState(isMobile);
-	const channelsPanelOpen = _channelsPanelOpen || !isMobile;
 	const infoPanelOpen = _infoPanelOpen || !isSmall;
 
 	let displayData: ChannelDisplayData|undefined;
@@ -205,13 +195,13 @@ export default function ChatPanel() {
 
 	return (
 		<Card className={classes.flexGrow}>
-			<Box className={clsx(classes.chatPanel, channelsPanelOpen && classes.shiftLeft)}>
+			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
 						{ isMobile &&
-						<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => setChannelsPanelOpen(!channelsPanelOpen)} >
-							{ channelsPanelOpen ? <ChevronLeftIcon /> : <MenuIcon /> }
-						</IconButton>
+							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
+								<MenuIcon />
+							</IconButton>
 						}
 						{ channelID && <>
 							{
