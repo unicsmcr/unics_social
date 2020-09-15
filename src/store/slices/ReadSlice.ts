@@ -22,6 +22,6 @@ export const ReadSlice = createSlice({
 
 export const { readChannel } = ReadSlice.actions;
 
-export const selectReadTime = (channelID: string) => (state: { read: ReadSliceState }) => state.read.values[channelID] || -1;
+export const selectReadTime = (channelID: string) => (state: { read: ReadSliceState }) => state.read.values[channelID];
 
 export default ReadSlice.reducer;

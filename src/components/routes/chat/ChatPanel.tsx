@@ -18,7 +18,7 @@ import { DRAWER_WIDTH } from './ChannelsPanel';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
+import { fetchChannels, selectChannel, selectChannelImportant } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEvent, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
@@ -142,7 +142,7 @@ export default function ChatPanel(props) {
 	const chatBoxRef = createRef<HTMLDivElement>();
 	const inputBoxRef = createRef<HTMLInputElement>();
 
-	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
+	const channel: any|undefined = useSelector(selectChannelImportant(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
 	const messages = useSelector(selectMessages(channelID));
 
@@ -161,7 +161,7 @@ export default function ChatPanel(props) {
 		if (channelID && scrollSynced) {
 			dispatch(readChannel({ channelID, time: Date.now() }));
 		}
-	}, [channelID, scrollSynced, messages, dispatch]);
+	}, [channelID, scrollSynced, messages.length, dispatch]);
 
 	useEffect(() => {
 		if (messages && chatBoxRef.current && scrollSynced) {

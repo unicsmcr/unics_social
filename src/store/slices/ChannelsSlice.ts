@@ -37,7 +37,7 @@ export const ChannelsSlice = createSlice({
 		builder.addCase(addMessage, (state, action) => {
 			const message: APIMessage = action.payload;
 			const channel = state.values[message.channelID];
-			if (channel) {
+			if (channel && message.time > channel.lastUpdated) {
 				channel.lastUpdated = message.time;
 			}
 		});
@@ -49,6 +49,12 @@ export const { addChannel, removeChannel } = ChannelsSlice.actions;
 export const selectChannels = (state: { channels: ChannelsSliceState }) => state.channels.values;
 export const selectChannelsSorted = (state: { channels: ChannelsSliceState }) => Object.values(state.channels.values).sort((b, a) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
 export const selectChannel = (id: string) => (state: { channels: ChannelsSliceState }) => state.channels.values[id];
+export const selectChannelImportant = (id: string) => (state: { channels: ChannelsSliceState }) => {
+	const channel = state.channels.values[id];
+	if (!channel) return;
+	const { lastUpdated, ...other } = channel;
+	return other;
+};
 
 export const selectDMChannels = (state: { channels: ChannelsSliceState }) => Object.values(state.channels.values).filter(channel => channel.type === 'dm');
 export const selectEventChannels = (state: { channels: ChannelsSliceState }) => Object.values(state.channels.values).filter(channel => channel.type === 'event');
