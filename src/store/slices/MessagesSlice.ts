@@ -5,7 +5,7 @@ import { wrapAPIError } from './util';
 
 export type OptimisedAPIMessage = Omit<APIMessage, 'time'> & { time: number };
 
-function optimiseAPIMessage(message: APIMessage) {
+export function optimiseAPIMessage(message: APIMessage) {
 	return {
 		...message,
 		time: new Date(message.time).getTime()

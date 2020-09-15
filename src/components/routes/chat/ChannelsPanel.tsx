@@ -8,7 +8,7 @@ import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
 import grey from '@material-ui/core/colors/grey';
 import { useSelector } from 'react-redux';
-import { selectChannel, selectChannels } from '../../../store/slices/ChannelsSlice';
+import { selectChannel, selectChannelsSorted } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
 import DMListItem from './DMListItem';
 import EventListItem from './EventListItem';
@@ -53,7 +53,7 @@ export default function ChannelsPanel() {
 		setChatPanelValue(selectedChannel && selectedChannel.type === 'event' ? 1 : 0);
 	}, [selectedChannel]);
 
-	const channels = Object.values(useSelector(selectChannels)).sort((a, b) => new Date(a.lastUpdated).getTime() - new Date(b.lastUpdated).getTime());
+	const channels = useSelector(selectChannelsSorted);
 
 	const eventChannels: APIEventChannel[] = [];
 	const dmChannels: APIDMChannel[] = [];
