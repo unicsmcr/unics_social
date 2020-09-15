@@ -7,12 +7,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
-import { makeStyles, Typography } from '@material-ui/core';
+import { makeStyles, MenuItem, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
 import { useHistory } from 'react-router-dom';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
+	selected: boolean;
 }
 
 const useStyles = makeStyles(() => ({
@@ -23,7 +24,7 @@ const useStyles = makeStyles(() => ({
 	}
 }));
 
-export default function DMListItem({ channel }: DMListItemProps) {
+export default function DMListItem({ channel, selected }: DMListItemProps) {
 	const classes = useStyles();
 	const me = useSelector(selectMe);
 	const recipientID = channel.users.find(userID => userID !== me!.id);
@@ -43,10 +44,10 @@ export default function DMListItem({ channel }: DMListItemProps) {
 		</ListItem>;
 	}
 
-	return <ListItem button onClick={() => history.push(`/chats/${channel.id}`)}>
+	return <MenuItem button onClick={() => history.push(`/chats/${channel.id}`)} selected={selected}>
 		<ListItemAvatar>
 			<Avatar alt={recipient.forename} src={getIcon(recipient)}/>
 		</ListItemAvatar>
 		<ListItemText primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}/>
-	</ListItem>;
+	</MenuItem>;
 }

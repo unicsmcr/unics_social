@@ -73,7 +73,7 @@ export default function ChannelsPanel() {
 					{
 						index !== 0 && <Divider />
 					}
-					<DMListItem channel={channel} />
+					<DMListItem channel={channel} selected={channel.id === id} />
 				</div>
 			));
 		}
@@ -82,7 +82,7 @@ export default function ChannelsPanel() {
 				{
 					index !== 0 && <Divider />
 				}
-				<EventListItem channel={channel} />
+				<EventListItem channel={channel} selected={channel.id === id} />
 			</div>
 		));
 	};
