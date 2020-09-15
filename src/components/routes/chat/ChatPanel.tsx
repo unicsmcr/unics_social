@@ -139,6 +139,7 @@ export default function ChatPanel(props) {
 
 	const me = useSelector(selectMe);
 	const chatBoxRef = createRef<HTMLDivElement>();
+	const inputBoxRef = createRef<HTMLInputElement>();
 
 	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
@@ -252,8 +253,26 @@ export default function ChatPanel(props) {
 											content: message,
 											channelID
 										}));
+										if (inputBoxRef.current) {
+											const textbox: HTMLElement|null = inputBoxRef.current.querySelector('input[type=text]');
+											if (textbox) {
+												textbox.focus();
+											}
+										}
 									}}>
-										<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }} />
+										<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
+											ref={inputBoxRef}
+											onClick={() => {
+												let count = 20;
+												const resetScroll = () => {
+													if (scrollSynced && chatBoxRef.current) {
+														chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+													}
+													if (count-- > 0) setTimeout(resetScroll, 50);
+												};
+												resetScroll();
+											}}
+										/>
 										<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
 											<SendIcon />
 										</Fab>
