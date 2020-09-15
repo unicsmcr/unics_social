@@ -104,7 +104,7 @@ export default function ChannelsPanel() {
 		</Badge>
 		: text;
 
-	const channelNewUpdates = (channel: APIChannel) => new Date(channel.lastUpdated).getTime() > (readTimes[channel.id] || startTime);
+	const channelNewUpdates = (channel: APIChannel) => (new Date(channel.lastUpdated).getTime() > (readTimes[channel.id] || startTime)) && channel.id !== id;
 
 	return <Box className={classes.root}>
 		<div className={classes.channelsPanel}>
