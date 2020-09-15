@@ -59,7 +59,7 @@ const useStyles = makeStyles(theme => ({
 		bottom: 0,
 		right: 0,
 		background: `url(${require('../../../assets/chat_bg.png')})`,
-		transition: theme.transitions.create(['left', 'right'], {
+		transition: theme.transitions.create(['left'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen
 		}),
@@ -110,7 +110,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	infoPanel: {
 		background: 'rgba(255, 255, 255, 0.6)',
-		width: 'min(320px, 80vw)',
+		width: `min(${DRAWER_WIDTH}, 80vw)`,
 		gridColumn: 2
 	}
 }));
