@@ -24,7 +24,7 @@ function App() {
 						<PublicRoute path="/verify" exact component={VerifyEmailPage} />
 						<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
 						<ProtectedRoute path="/events/:id" exact component={EventPage}/>
-						<ProtectedRoute path="/chats/:id?" component={ChatPage} />
+						<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
 						<Redirect to="/" />
 					</Switch>
 				</BrowserRouter>

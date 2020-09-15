@@ -27,6 +27,7 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
+import VideoPanel from './VideoPanel';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -109,13 +110,18 @@ const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, 
 	return selectEvent(channel.event.id);
 };
 
+enum ViewType {
+	Messages = 'messages',
+	Video = 'video'
+}
+
 export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
-	const { id: channelID } = useParams();
+	const { id: channelID, type: viewTypeRaw } = useParams();
 
 	const hasUserChanges = useSelector(selectHasUserChanges);
 
@@ -147,6 +153,8 @@ export default function ChatPanel(props) {
 			};
 		}
 	}
+
+	const viewType: ViewType = (viewTypeRaw === 'video' && channel?.type === 'dm') ? ViewType.Video : ViewType.Messages;
 
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
@@ -199,7 +207,11 @@ export default function ChatPanel(props) {
 				<Box className={classes.mainContent}>
 					<Box className={classes.chatHolder}>
 						{ channel
-							? <MessagesPanel channel={channel} />
+							? (
+								viewType === ViewType.Messages
+									? <MessagesPanel channel={channel} />
+									: <VideoPanel channel={channel as APIDMChannel} />
+							)
 							: <Box className={classes.emptyChatArea}>
 								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
 							</Box>

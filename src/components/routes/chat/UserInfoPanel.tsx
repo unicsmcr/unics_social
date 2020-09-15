@@ -10,6 +10,7 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
 import { useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -35,7 +36,7 @@ interface UserInfoPanelProps {
 	user: APIUser;
 }
 
-function getSocialMediaIcon(type: 'instagram'|'facebook'|'twitter') {
+function getSocialMediaIcon(type: 'instagram' | 'facebook' | 'twitter') {
 	switch (type) {
 		case 'facebook':
 			return FacebookIcon;
@@ -46,7 +47,7 @@ function getSocialMediaIcon(type: 'instagram'|'facebook'|'twitter') {
 	}
 }
 
-function formatURL(handle: string, type: 'instagram'|'facebook'|'twitter'): string {
+function formatURL(handle: string, type: 'instagram' | 'facebook' | 'twitter'): string {
 	switch (type) {
 		case 'facebook':
 			return `https://www.facebook.com/${handle}`;
@@ -57,7 +58,7 @@ function formatURL(handle: string, type: 'instagram'|'facebook'|'twitter'): stri
 	}
 }
 
-export function SocialMediaIcon({ handle, type }: { handle: string; type: 'instagram'|'facebook'|'twitter' }) {
+export function SocialMediaIcon({ handle, type }: { handle: string; type: 'instagram' | 'facebook' | 'twitter' }) {
 	const Icon = getSocialMediaIcon(type);
 	return <a href={formatURL(handle, type)} rel="noopener noreferrer" target="_blank"><IconButton>
 		<Icon />
@@ -66,6 +67,7 @@ export function SocialMediaIcon({ handle, type }: { handle: string; type: 'insta
 
 export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 	const classes = useStyles();
+	const history = useHistory();
 
 	const me = useSelector(selectMe);
 
@@ -93,11 +95,13 @@ export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 	return <Box className={classes.root}>
 		<Avatar className={classes.avatar} src={getIcon(user)} />
 		<Typography variant="subtitle1" gutterBottom>
-			{ user.forename } {user.surname}
+			{user.forename} {user.surname}
 		</Typography>
 		{
 			hasVideo() && <Box className={classes.videoBox}>
-				<Fab color="primary">
+				<Fab color="primary" onClick={() => {
+					history.push(`${history.location.pathname}/video`);
+				}}>
 					<VideocamOutlinedIcon />
 				</Fab>
 			</Box>
@@ -110,10 +114,10 @@ export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 		{
 			user.profile && <>
 				<Typography variant="subtitle2">
-					{ user.profile.course }
+					{user.profile.course}
 				</Typography>
 				<Typography variant="subtitle2">
-					{ user.profile.yearOfStudy }
+					{user.profile.yearOfStudy}
 				</Typography>
 			</>
 		}
