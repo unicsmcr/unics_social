@@ -106,7 +106,7 @@ export function createGroups(messages: OptimisedAPIMessage[], relativeTo: string
 	groups.push(currentGroup);
 	return groups.filter(group => group instanceof Date || group.length > 0).map((group, index) => {
 		if (group instanceof Date) {
-			return <DateSeparator date={group} />;
+			return <DateSeparator key={index} date={group} />;
 		}
 		return <MessageGroup
 			key={index}
