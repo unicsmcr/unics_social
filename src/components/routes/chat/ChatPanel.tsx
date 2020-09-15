@@ -219,7 +219,7 @@ export default function ChatPanel(props) {
 						</>
 						}
 						{
-							isSmall && <IconButton edge="end" color="inherit" aria-label="info" onClick={() => setInfoPanelOpen(!_infoPanelOpen)} >
+							isSmall && channelID && <IconButton edge="end" color="inherit" aria-label="info" onClick={() => setInfoPanelOpen(!_infoPanelOpen)} >
 								<InfoOutlinedIcon />
 							</IconButton>
 						}
