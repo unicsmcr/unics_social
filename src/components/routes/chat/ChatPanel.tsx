@@ -30,6 +30,7 @@ import UserInfoPanel from './UserInfoPanel';
 import { CircularProgress, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
+import { readChannel } from '../../../store/slices/ReadSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -155,6 +156,12 @@ export default function ChatPanel(props) {
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [channel, dispatch]);
+
+	useEffect(() => {
+		if (channelID && scrollSynced) {
+			dispatch(readChannel({ channelID, time: Date.now() }));
+		}
+	}, [channelID, scrollSynced, messages, dispatch]);
 
 	useEffect(() => {
 		if (messages && chatBoxRef.current && scrollSynced) {

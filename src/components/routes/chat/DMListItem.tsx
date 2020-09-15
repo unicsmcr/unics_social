@@ -7,10 +7,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
-import { makeStyles, MenuItem, Typography } from '@material-ui/core';
+import { Badge, makeStyles, MenuItem, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { selectReadTime } from '../../../store/slices/ReadSlice';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
@@ -28,6 +29,7 @@ const useStyles = makeStyles(() => ({
 export default function DMListItem({ channel, selected }: DMListItemProps) {
 	const classes = useStyles();
 	const me = useSelector(selectMe);
+	const lastReadTime = useSelector(selectReadTime(channel.id));
 	const recipientID = channel.users.find(userID => userID !== me!.id);
 	if (!recipientID) throw new Error('Recipient not found!');
 	const recipient = useSelector(selectUserById(recipientID));
@@ -45,9 +47,17 @@ export default function DMListItem({ channel, selected }: DMListItemProps) {
 		</ListItem>;
 	}
 
+	const renderAvatar = () => <Avatar alt={recipient.forename} src={getIcon(recipient)}/>;
+
 	return <MenuItem button onClick={() => history.push(`/chats/${channel.id}`)} selected={selected}>
 		<ListItemAvatar>
-			<Avatar alt={recipient.forename} src={getIcon(recipient)}/>
+			{
+				lastReadTime > new Date(channel.lastUpdated).getTime() || selected
+					? renderAvatar()
+					: <Badge color="secondary" variant="dot">
+						{ renderAvatar() }
+					</Badge>
+			}
 		</ListItemAvatar>
 		<ListItemText
 			primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}

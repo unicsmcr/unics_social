@@ -4,6 +4,7 @@ import UsersReducer from './slices/UsersSlice';
 import MessagesReducer from './slices/MessagesSlice';
 import EventsListReducer from './slices/EventsSlice';
 import ChannelListReducer from './slices/ChannelsSlice';
+import ReadReducer from './slices/ReadSlice';
 
 export default configureStore({
 	reducer: {
@@ -11,6 +12,7 @@ export default configureStore({
 		users: UsersReducer,
 		events: EventsListReducer,
 		channels: ChannelListReducer,
-		messages: MessagesReducer
+		messages: MessagesReducer,
+		read: ReadReducer
 	}
 });
