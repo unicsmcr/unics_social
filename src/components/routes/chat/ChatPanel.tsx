@@ -163,7 +163,7 @@ export default function ChatPanel(props) {
 		if (!me) return;
 		const now = Date.now();
 		if (now < new Date(channel.video.creationTime).getTime() || now > new Date(channel.video.endTime).getTime()) {
-			return false;
+			return;
 		}
 		return channel.video?.users?.find(user => user.id === me.id)?.accessToken;
 	};
@@ -226,7 +226,7 @@ export default function ChatPanel(props) {
 							? (
 								viewType === ViewType.Messages
 									? <MessagesPanel channel={channel} />
-									: <VideoPanel channel={channel as APIDMChannel} />
+									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!}/>
 							)
 							: <Box className={classes.emptyChatArea}>
 								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
