@@ -1,12 +1,15 @@
-import { Avatar, IconButton, Typography } from '@material-ui/core';
+import { Avatar, Fab, IconButton, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { APIUser } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIUser } from '@unicsmcr/unics_social_api_client';
 import React from 'react';
 import getIcon from '../../util/getAvatar';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
+import { useSelector } from 'react-redux';
+import { selectMe } from '../../../store/slices/UsersSlice';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -21,10 +24,14 @@ const useStyles = makeStyles(theme => ({
 		width: theme.spacing(18),
 		height: theme.spacing(18),
 		margin: theme.spacing(4, 0)
+	},
+	videoBox: {
+		margin: theme.spacing(1, 0, 4, 0)
 	}
 }));
 
 interface UserInfoPanelProps {
+	channel: APIDMChannel;
 	user: APIUser;
 }
 
@@ -57,8 +64,10 @@ export function SocialMediaIcon({ handle, type }: { handle: string; type: 'insta
 	</IconButton></a>;
 }
 
-export default function UserInfoPanel({ user }: UserInfoPanelProps) {
+export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 	const classes = useStyles();
+
+	const me = useSelector(selectMe);
 
 	const renderSocialMedia = () => {
 		if (!user.profile) return undefined;
@@ -69,11 +78,30 @@ export default function UserInfoPanel({ user }: UserInfoPanelProps) {
 		return output;
 	};
 
+	const hasVideo = () => {
+		if (!me) return false;
+		if (!channel.video) return false;
+		const now = Date.now();
+		if (!channel.video.users) return false;
+		if (now < new Date(channel.video.creationTime).getTime() || now > new Date(channel.video.endTime).getTime()) {
+			return false;
+		}
+		const details = channel.video.users.find(user => user.id === me.id);
+		return Boolean(details?.accessToken);
+	};
+
 	return <Box className={classes.root}>
 		<Avatar className={classes.avatar} src={getIcon(user)} />
 		<Typography variant="subtitle1" gutterBottom>
 			{ user.forename } {user.surname}
 		</Typography>
+		{
+			hasVideo() && <Box className={classes.videoBox}>
+				<Fab color="primary">
+					<VideocamOutlinedIcon />
+				</Fab>
+			</Box>
+		}
 		<Box>
 			{
 				renderSocialMedia()
