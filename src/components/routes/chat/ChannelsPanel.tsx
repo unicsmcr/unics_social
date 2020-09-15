@@ -18,10 +18,12 @@ export const DRAWER_WIDTH = '20rem';
 
 const useStyles = makeStyles(theme => ({
 	root: {
-		position: 'absolute',
-		left: 0,
-		top: 0,
-		bottom: 0
+		[theme.breakpoints.up('sm')]: {
+			position: 'absolute',
+			left: 0,
+			top: 0,
+			bottom: 0
+		}
 	},
 	channelsPanel: {
 		width: DRAWER_WIDTH
@@ -71,7 +73,7 @@ export default function ChannelsPanel() {
 					{
 						index !== 0 && <Divider />
 					}
-					<DMListItem channel={channel} />
+					<DMListItem channel={channel} selected={channel.id === id} />
 				</div>
 			));
 		}
@@ -80,7 +82,7 @@ export default function ChannelsPanel() {
 				{
 					index !== 0 && <Divider />
 				}
-				<EventListItem channel={channel} />
+				<EventListItem channel={channel} selected={channel.id === id} />
 			</div>
 		));
 	};
