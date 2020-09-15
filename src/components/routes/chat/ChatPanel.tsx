@@ -27,9 +27,10 @@ import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import UserInfoPanel from './UserInfoPanel';
-import { CircularProgress, Drawer } from '@material-ui/core';
+import { Badge, CircularProgress, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
+import { readChannel, selectHasUserChanges } from '../../../store/slices/ReadSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -137,11 +138,13 @@ export default function ChatPanel(props) {
 	const { id: channelID } = useParams();
 	const [scrollSynced, setScrollSynced] = useState(true);
 
+	const hasUserChanges = useSelector(selectHasUserChanges);
+
 	const me = useSelector(selectMe);
 	const chatBoxRef = createRef<HTMLDivElement>();
 	const inputBoxRef = createRef<HTMLInputElement>();
 
-	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
+	const channel: any|undefined = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
 	const messages = useSelector(selectMessages(channelID));
 
@@ -155,6 +158,12 @@ export default function ChatPanel(props) {
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [channel, dispatch]);
+
+	useEffect(() => {
+		if (channelID && scrollSynced) {
+			dispatch(readChannel({ channelID, time: Date.now() }));
+		}
+	}, [channelID, scrollSynced, messages.length, dispatch]);
 
 	useEffect(() => {
 		if (messages && chatBoxRef.current && scrollSynced) {
@@ -201,7 +210,11 @@ export default function ChatPanel(props) {
 					<Toolbar>
 						{ isMobile &&
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
-								<MenuIcon />
+								{
+									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0].id !== channelID)
+										? <Badge variant="dot" color="secondary"><MenuIcon /></Badge>
+										: <MenuIcon />
+								}
 							</IconButton>
 						}
 						{ channelID && <>
