@@ -154,7 +154,23 @@ export default function ChatPanel(props) {
 		}
 	}
 
-	const viewType: ViewType = (viewTypeRaw === 'video' && channel?.type === 'dm') ? ViewType.Video : ViewType.Messages;
+	const requestedViewType: ViewType = (viewTypeRaw === 'video' && channel?.type === 'dm') ? ViewType.Video : ViewType.Messages;
+
+	const getVideoDetails = () => {
+		if (!channel) return;
+		if (channel.type !== 'dm') return;
+		if (!channel.video) return;
+		if (!me) return;
+		const now = Date.now();
+		if (now < new Date(channel.video.creationTime).getTime() || now > new Date(channel.video.endTime).getTime()) {
+			return false;
+		}
+		return channel.video?.users?.find(user => user.id === me.id)?.accessToken;
+	};
+
+	const videoToken = getVideoDetails();
+
+	const viewType = (requestedViewType === ViewType.Video && videoToken) ? ViewType.Video : ViewType.Messages;
 
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{

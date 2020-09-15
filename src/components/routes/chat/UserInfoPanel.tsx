@@ -100,7 +100,7 @@ export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 		{
 			hasVideo() && <Box className={classes.videoBox}>
 				<Fab color="primary" onClick={() => {
-					history.push(`${history.location.pathname}/video`);
+					history.push(`${history.location.pathname.replace(/\/video/g, '')}/video`);
 				}}>
 					<VideocamOutlinedIcon />
 				</Fab>
