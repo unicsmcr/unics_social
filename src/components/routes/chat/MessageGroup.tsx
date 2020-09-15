@@ -24,10 +24,6 @@ interface MessageGroupProps {
 	align: Align;
 }
 
-function formatTime(time: Date): string {
-	return moment(time).format('h:mm a');
-}
-
 const useStyles = makeStyles(theme => ({
 	messageGroup: {
 		paddingBottom: theme.spacing(1)
@@ -97,7 +93,7 @@ export function createGroups(messages: OptimisedAPIMessage[], relativeTo: string
 		const lastMessage = currentGroup[currentGroup.length - 1];
 		const oldDate = new Date(lastMessage.time);
 		const newDate = new Date(message.time);
-		if (message.authorID === lastMessage.authorID && message.time - lastMessage.time <= 3 * 60 * 1000 && sameDay(newDate, oldDate)) {
+		if (message.authorID === lastMessage.authorID && sameDay(newDate, oldDate)) {
 			currentGroup.push(message);
 		} else {
 			groups.push(currentGroup);
@@ -110,7 +106,7 @@ export function createGroups(messages: OptimisedAPIMessage[], relativeTo: string
 	groups.push(currentGroup);
 	return groups.filter(group => group instanceof Date || group.length > 0).map((group, index) => {
 		if (group instanceof Date) {
-			return <DateSeparator date={group} />;
+			return <DateSeparator key={index} date={group} />;
 		}
 		return <MessageGroup
 			key={index}
@@ -141,21 +137,15 @@ export default function MessageGroup({ messages, align, authorID }: MessageGroup
 	}
 
 	return <Box style={{ textAlign: align }} className={classes.messageGroup}>
-		{ align === Align.Left
-			? <Box className={classes.userInfo} >
-				<Avatar src={getIcon(author)} className={classes.avatar} />
-				<Typography variant="subtitle2">
-					{author.forename} | {formatTime(new Date(messages[0].time))}
-				</Typography>
-			</Box>
-			: <Box className={clsx(classes.userInfo, classes.rightAlign)} >
-				<Typography variant="subtitle2" align="right">
-					{formatTime(new Date(messages[0].time))}
-				</Typography>
-			</Box>
+		{ align === Align.Left && <Box className={classes.userInfo} >
+			<Avatar src={getIcon(author)} className={classes.avatar} />
+			<Typography variant="subtitle2">
+				{author.forename}
+			</Typography>
+		</Box>
 		}
 		{
-			messages.map(message => <Message content={message.content} id={message.id} isOwn={align === Align.Right} key={message.id} />)
+			messages.map(message => <Message message={message} id={message.id} isOwn={align === Align.Right} key={message.id} />)
 		}
 	</Box>;
 }
