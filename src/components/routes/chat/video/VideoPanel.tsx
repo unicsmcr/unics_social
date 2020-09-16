@@ -13,8 +13,6 @@ export default function VideoPanel(props: VideoPanelProps) {
 	const [room, setRoom] = React.useState<Video.Room|undefined>();
 	const [mediaStream, setMediaStream] = React.useState<MediaStream|undefined>();
 
-	const ourVideoRef = useRef<HTMLVideoElement|null>(null);
-
 	useEffect(() => {
 		let _room: Video.Room;
 		let _mediaStream: MediaStream;
