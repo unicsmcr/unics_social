@@ -1,16 +1,28 @@
 import { CircularProgress } from '@material-ui/core';
+import Box from '@material-ui/core/Box';
+import makeStyles from '@material-ui/core/styles/makeStyles';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import Video from 'twilio-video';
+import OptionsPanel from './OptionsPanel';
 import SelfVideo from './SelfVideo';
-import VideoElement from './VideoElement';
 
 interface VideoPanelProps {
 	channel: APIDMChannel;
 	videoJWT: string;
 }
 
+const useStyles = makeStyles(theme => ({
+	panel: {
+		display: 'grid',
+		height: '100%',
+		width: '100%',
+		gridTemplateRows: 'auto min-content'
+	}
+}));
+
 export default function VideoPanel(props: VideoPanelProps) {
+	const classes = useStyles();
 	const [room, setRoom] = React.useState<Video.Room|undefined>();
 	const [mediaStream, setMediaStream] = React.useState<MediaStream|undefined>();
 
@@ -47,9 +59,12 @@ export default function VideoPanel(props: VideoPanelProps) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	if (mediaStream) {
-		return <SelfVideo mediaStream={mediaStream} />;
-	}
-
-	return <CircularProgress />;
+	return <Box className={classes.panel}>
+		{
+			mediaStream
+				? <SelfVideo mediaStream={mediaStream} />
+				: <CircularProgress />
+		}
+		<OptionsPanel />
+	</Box>;
 }

@@ -1,3 +1,4 @@
+import Box from '@material-ui/core/Box';
 import { grey } from '@material-ui/core/colors';
 import { makeStyles } from '@material-ui/core/styles';
 import React from 'react';
@@ -8,6 +9,9 @@ interface SelfVideoProps extends React.DetailedHTMLProps<React.VideoHTMLAttribut
 }
 
 const useStyles = makeStyles(theme => ({
+	holder: {
+		position: 'relative'
+	},
 	video: {
 		width: 'min(20rem, 30vw)',
 		height: 'auto',
@@ -16,7 +20,8 @@ const useStyles = makeStyles(theme => ({
 		left: theme.spacing(2),
 		boxShadow: `0 0 1rem ${grey[500]}`,
 		[theme.breakpoints.down('xs')]: {
-			width: '45vw'
+			width: '40vw',
+			maxHeight: '20vh'
 		}
 	}
 }));
@@ -24,5 +29,7 @@ const useStyles = makeStyles(theme => ({
 export default function SelfVideo({ mediaStream }: SelfVideoProps) {
 	const classes = useStyles();
 
-	return <VideoElement muted={true} mediaStream={mediaStream} className={classes.video}/>;
+	return <Box className={classes.holder}>
+		<VideoElement muted={true} mediaStream={mediaStream} className={classes.video}/>
+	</Box>;
 }
