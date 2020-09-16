@@ -39,5 +39,5 @@ export default function VideoPanel(props: VideoPanelProps) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return <video autoPlay={true} ref={ourVideoRef} />;
+	return <video autoPlay={true} ref={ourVideoRef} muted={true} />;
 }
