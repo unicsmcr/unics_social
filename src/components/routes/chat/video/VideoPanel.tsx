@@ -1,9 +1,8 @@
-import { CircularProgress } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
-import React, { useEffect, useRef } from 'react';
-import Video from 'twilio-video';
+import React, { useEffect, useRef, useState } from 'react';
+import Video, { createLocalTracks } from 'twilio-video';
 import OptionsPanel from './OptionsPanel';
 import PeerVideo from './PeerVideo';
 import SelfVideo from './SelfVideo';
@@ -31,30 +30,40 @@ const useStyles = makeStyles(theme => ({
 export default function VideoPanel(props: VideoPanelProps) {
 	const classes = useStyles();
 
+	const selfVideoRef = useRef<HTMLVideoElement>(null);
 	const peerVideoRef = useRef<HTMLVideoElement>(null);
 
-	const [room, setRoom] = React.useState<Video.Room|undefined>();
-	const [mediaStream, setMediaStream] = React.useState<MediaStream|undefined>();
+	const [room, setRoom] = useState<Video.Room|undefined>();
+
+	const [cameraMode, setCameraMode] = useState<'user'|'environment'>('user');
+	const [tracks, setTracks] = useState<Video.LocalTrack[]>();
 
 	useEffect(() => {
 		let _room: Video.Room;
-		let _mediaStream: MediaStream;
+		let _tracks: Video.LocalTrack[];
+
 		async function launch() {
 			if (!room) {
-				_mediaStream = await navigator.mediaDevices.getUserMedia({
+				const tracks = await createLocalTracks({
 					audio: true,
-					video: true
+					video: {
+						facingMode: cameraMode
+					}
 				});
-				setMediaStream(_mediaStream);
-				console.log('got', _mediaStream);
-				console.log(props.channel.video!.id);
-				_room = await Video.connect(props.videoJWT);
+				_tracks = tracks;
+				setTracks(tracks);
+
+				if (selfVideoRef.current) {
+					const videoTrack: Video.LocalVideoTrack|undefined = tracks.find(track => track.kind === 'video') as Video.LocalVideoTrack;
+					if (!videoTrack) throw new Error('No video');
+					videoTrack.attach(selfVideoRef.current);
+				}
+
+				_room = await Video.connect(props.videoJWT, { tracks });
 				setRoom(_room);
 
 				function userConnected(user: Video.Participant) {
-					console.log('connecting', user);
 					user.on('trackSubscribed', (track: Video.AudioTrack|Video.VideoTrack) => {
-						console.log('got track', track);
 						if (peerVideoRef.current) {
 							track.attach(peerVideoRef.current);
 						}
@@ -81,8 +90,8 @@ export default function VideoPanel(props: VideoPanelProps) {
 		launch();
 
 		return () => {
-			if (_mediaStream) {
-				_mediaStream.getTracks().forEach(track => track.stop());
+			if (_tracks) {
+				_tracks.forEach(track => (track.kind === 'video' || track.kind === 'audio') && track.stop());
 			}
 			if (_room) {
 				_room.disconnect();
@@ -97,11 +106,21 @@ export default function VideoPanel(props: VideoPanelProps) {
 				<PeerVideo ref={peerVideoRef} />
 			}
 			{
-				mediaStream
-					? <SelfVideo mediaStream={mediaStream} />
-					: <CircularProgress />
+				<SelfVideo ref={selfVideoRef} />
 			}
 		</Box>
-		<OptionsPanel />
+		<OptionsPanel onFlipCamera={() => {
+			const newMode = cameraMode === 'environment' ? 'user' : 'environment';
+			setCameraMode(newMode);
+
+			if (tracks) {
+				const video = tracks.find(track => track.kind === 'video') as Video.LocalVideoTrack|undefined;
+				if (video) {
+					video.restart({
+						facingMode: newMode
+					});
+				}
+			}
+		}}/>
 	</Box>;
 }

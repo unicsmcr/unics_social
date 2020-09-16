@@ -12,6 +12,9 @@ import MicNoneOutlinedIcon from '@material-ui/icons/MicNoneOutlined';
 import MicOffOutlinedIcon from '@material-ui/icons/MicOffOutlined';
 
 import CallEndIcon from '@material-ui/icons/CallEnd';
+
+import SwitchCameraIcon from '@material-ui/icons/SwitchCamera';
+
 import createMuiTheme from '@material-ui/core/styles/createMuiTheme';
 
 const useStyles = makeStyles(theme => ({
@@ -24,7 +27,11 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export default function OptionsPanel() {
+interface OptionsPanelProps {
+	onFlipCamera: Function;
+}
+
+export default function OptionsPanel(props: OptionsPanelProps) {
 	const classes = useStyles();
 	const [video, setVideo] = useState(true);
 	const [mic, setMic] = useState(true);
@@ -52,5 +59,8 @@ export default function OptionsPanel() {
 				<CallEndIcon />
 			</Fab>
 		</ThemeProvider>
+		<Fab onClick={() => props.onFlipCamera()} className={classes.fab}>
+			<SwitchCameraIcon />
+		</Fab>
 	</Box>;
 }

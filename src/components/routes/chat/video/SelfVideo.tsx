@@ -1,6 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
-import VideoElement from './VideoElement';
+import React, { forwardRef, Ref } from 'react';
 
 interface SelfVideoProps extends React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement> {
 	mediaStream: MediaStream;
@@ -19,8 +18,9 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export default function SelfVideo({ mediaStream }: SelfVideoProps) {
+const SelfVideo = forwardRef((props, ref: Ref<HTMLVideoElement>) => {
 	const classes = useStyles();
+	return <video ref={ref} autoPlay={true} {...props} className={classes.video}></video>;
+});
 
-	return <VideoElement muted={true} mediaStream={mediaStream} className={classes.video}/>;
-}
+export default SelfVideo;

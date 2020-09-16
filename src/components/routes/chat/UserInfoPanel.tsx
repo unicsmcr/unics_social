@@ -74,9 +74,9 @@ export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 	const renderSocialMedia = () => {
 		if (!user.profile) return undefined;
 		const output: JSX.Element[] = [];
-		if (user.profile.facebook) output.push(<SocialMediaIcon type="facebook" handle={user.profile.facebook} />);
-		if (user.profile.instagram) output.push(<SocialMediaIcon type="instagram" handle={user.profile.instagram} />);
-		if (user.profile.twitter) output.push(<SocialMediaIcon type="twitter" handle={user.profile.twitter} />);
+		if (user.profile.facebook) output.push(<SocialMediaIcon type="facebook" handle={user.profile.facebook} key="facebook" />);
+		if (user.profile.instagram) output.push(<SocialMediaIcon type="instagram" handle={user.profile.instagram} key="instagram" />);
+		if (user.profile.twitter) output.push(<SocialMediaIcon type="twitter" handle={user.profile.twitter} key="twitter" />);
 		return output;
 	};
 
