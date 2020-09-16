@@ -2,6 +2,7 @@ import { CircularProgress } from '@material-ui/core';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import React, { useEffect, useRef } from 'react';
 import Video from 'twilio-video';
+import SelfVideo from './SelfVideo';
 import VideoElement from './VideoElement';
 
 interface VideoPanelProps {
@@ -47,7 +48,7 @@ export default function VideoPanel(props: VideoPanelProps) {
 	}, []);
 
 	if (mediaStream) {
-		return <VideoElement muted={true} mediaStream={mediaStream} />;
+		return <SelfVideo mediaStream={mediaStream} />;
 	}
 
 	return <CircularProgress />;
