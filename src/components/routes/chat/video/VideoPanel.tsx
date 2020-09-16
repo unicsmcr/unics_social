@@ -2,7 +2,7 @@ import { CircularProgress } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import Video from 'twilio-video';
 import OptionsPanel from './OptionsPanel';
 import PeerVideo from './PeerVideo';
@@ -30,6 +30,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function VideoPanel(props: VideoPanelProps) {
 	const classes = useStyles();
+
+	const peerVideoRef = useRef<HTMLVideoElement>(null);
+
 	const [room, setRoom] = React.useState<Video.Room|undefined>();
 	const [mediaStream, setMediaStream] = React.useState<MediaStream|undefined>();
 
@@ -45,11 +48,33 @@ export default function VideoPanel(props: VideoPanelProps) {
 				setMediaStream(_mediaStream);
 				console.log('got', _mediaStream);
 				console.log(props.channel.video!.id);
-				/*
-				_room = await Video.connect(props.videoJWT).catch(console.error) as any;
+				_room = await Video.connect(props.videoJWT);
 				setRoom(_room);
-				console.log(_room);
-				*/
+
+				function userConnected(user: Video.Participant) {
+					console.log('connecting', user);
+					user.on('trackSubscribed', (track: Video.AudioTrack|Video.VideoTrack) => {
+						console.log('got track', track);
+						if (peerVideoRef.current) {
+							track.attach(peerVideoRef.current);
+						}
+					});
+					user.on('trackUnsubscribed', (track: Video.AudioTrack|Video.VideoTrack) => {
+						if (peerVideoRef.current) {
+							track.detach(peerVideoRef.current);
+						}
+					});
+				}
+
+				function userDisconnected() {
+					if (peerVideoRef.current) {
+						peerVideoRef.current.srcObject = null;
+					}
+				}
+
+				_room.participants.forEach(userConnected);
+				_room.on('participantConnected', userConnected);
+				_room.on('participantDisconnected', userDisconnected);
 			}
 		}
 
@@ -69,9 +94,7 @@ export default function VideoPanel(props: VideoPanelProps) {
 	return <Box className={classes.panel}>
 		<Box className={classes.videoArea}>
 			{
-				room
-					? <h2>Room here!</h2>
-					: <PeerVideo />
+				<PeerVideo ref={peerVideoRef} />
 			}
 			{
 				mediaStream

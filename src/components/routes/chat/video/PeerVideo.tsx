@@ -1,6 +1,6 @@
 import { Box } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import React from 'react';
+import React, { forwardRef, Ref } from 'react';
 
 const useStyles = makeStyles(theme => ({
 	holder: {
@@ -16,10 +16,12 @@ const useStyles = makeStyles(theme => ({
 	}
 }));
 
-export default function PeerVideo() {
+const PeerVideo = forwardRef((props, ref: Ref<HTMLVideoElement>) => {
 	const classes = useStyles();
 
 	return <Box className={classes.holder}>
-		<video src="https://hydrabolt.me/hamster.mp4" autoPlay={true} loop={true} className={classes.video}></video>
+		<video ref={ref} autoPlay={true} className={classes.video}></video>
 	</Box>;
-}
+});
+
+export default PeerVideo;
