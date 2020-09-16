@@ -14,7 +14,7 @@ interface VideoPanelProps {
 	videoJWT: string;
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
 	panel: {
 		display: 'grid',
 		height: '100%',
@@ -48,11 +48,10 @@ function translateVideoError(error: Error|TwilioError) {
 				return 'The video chat is full! How did you get here... 🤔';
 			case 53103:
 			case 53106:
-				return 'Your video chat time with this user has ended! 😢 Try connecting with them on a different platform.';
-			case 53405:
-				return 'Your internet connection is unstable, or your firewall is preventing a connection to the video chat provider.';
 			case 53118:
 				return 'Your call time is up! You can still carry on the conversation with text chat, or you can connect with eachother on a different platform!';
+			case 53405:
+				return 'Your internet connection is unstable, or your firewall is preventing a connection to the video chat provider.';
 		}
 	}
 	return error.message || String(error);
