@@ -177,7 +177,7 @@ export default function ChatPanel(props) {
 			resource
 				? (
 					resource.hasOwnProperty('forename')
-						? <UserInfoPanel user={resource as APIUser} channel={channel as APIDMChannel} />
+						? <UserInfoPanel user={resource as APIUser} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
 						: <EventInfoPanel event={resource as APIEvent} />
 				)
 				: <CircularProgress />

@@ -34,6 +34,7 @@ const useStyles = makeStyles(theme => ({
 interface UserInfoPanelProps {
 	channel: APIDMChannel;
 	user: APIUser;
+	onClose: Function;
 }
 
 function getSocialMediaIcon(type: 'instagram' | 'facebook' | 'twitter') {
@@ -65,7 +66,7 @@ export function SocialMediaIcon({ handle, type }: { handle: string; type: 'insta
 	</IconButton></a>;
 }
 
-export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
+export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelProps) {
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -100,6 +101,7 @@ export default function UserInfoPanel({ user, channel }: UserInfoPanelProps) {
 		{
 			hasVideo() && <Box className={classes.videoBox}>
 				<Fab color="primary" onClick={() => {
+					onClose();
 					history.push(`${history.location.pathname.replace(/\/video/g, '')}/video`);
 				}}>
 					<VideocamOutlinedIcon />
