@@ -39,7 +39,7 @@ export default function ChatsPage() {
 
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
-	const { id: channelID } = useParams();
+	const { id: channelID } = useParams<{ id: string }>();
 
 	useEffect(() => {
 		dispatch(fetchChannels());

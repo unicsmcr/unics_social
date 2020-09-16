@@ -1,4 +1,4 @@
-import React, { createRef, useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -7,13 +7,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Avatar from '@material-ui/core/Avatar';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
-import Fab from '@material-ui/core/Fab';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
-import SendIcon from '@material-ui/icons/Send';
-import { createGroups } from './MessageGroup';
 import { DRAWER_WIDTH } from './ChannelsPanel';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
@@ -25,12 +21,13 @@ import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
-import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import UserInfoPanel from './UserInfoPanel';
 import { Badge, CircularProgress, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
-import { readChannel, selectHasUserChanges } from '../../../store/slices/ReadSlice';
+import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
+import MessagesPanel from './MessagesPanel';
+import VideoPanel from './video/VideoPanel';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -74,11 +71,6 @@ const useStyles = makeStyles(theme => ({
 		display: 'grid',
 		gridAutoColumns: 'auto 320px'
 	},
-	chatArea: {
-		padding: theme.spacing(2),
-		overflow: 'auto',
-		flexGrow: 1
-	},
 	chatHolder: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -89,21 +81,10 @@ const useStyles = makeStyles(theme => ({
 	emptyChatArea: {
 		display: 'flex',
 		alignItems: 'center',
-		justifyContent: 'center'
-	},
-	chatBox: {
-		'borderTop': '1px solid',
-		'borderColor': grey[400],
-		'padding': theme.spacing(2),
-		'overflow': 'initial',
-		'background': grey[300],
-		'& > form': {
-			display: 'flex',
-			alignItems: 'flex-start'
-		}
-	},
-	sendIcon: {
-		marginLeft: theme.spacing(2)
+		justifyContent: 'center',
+		padding: theme.spacing(2),
+		overflow: 'auto',
+		flexGrow: 1
 	},
 	skeletonText: {
 		marginLeft: theme.spacing(2),
@@ -129,47 +110,29 @@ const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, 
 	return selectEvent(channel.event.id);
 };
 
+enum ViewType {
+	Messages = 'messages',
+	Video = 'video'
+}
+
 export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
-	const { id: channelID } = useParams();
-	const [scrollSynced, setScrollSynced] = useState(true);
+	const { id: channelID, type: viewTypeRaw } = useParams<{ id: string; type: string }>();
 
 	const hasUserChanges = useSelector(selectHasUserChanges);
 
 	const me = useSelector(selectMe);
-	const chatBoxRef = createRef<HTMLDivElement>();
-	const inputBoxRef = createRef<HTMLInputElement>();
 
-	const channel: any|undefined = useSelector(selectChannel(channelID));
+	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
-	const messages = useSelector(selectMessages(channelID));
 
 	useEffect(() => {
 		if (channelID && !channel) dispatch(fetchChannels());
 	}, [channel, channelID, dispatch]);
-
-	useEffect(() => {
-		if (channel && messages.length === 0) {
-			dispatch(fetchMessages(channel.id));
-		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [channel, dispatch]);
-
-	useEffect(() => {
-		if (channelID && scrollSynced) {
-			dispatch(readChannel({ channelID, time: Date.now() }));
-		}
-	}, [channelID, scrollSynced, messages.length, dispatch]);
-
-	useEffect(() => {
-		if (messages && chatBoxRef.current && scrollSynced) {
-			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-		}
-	}, [chatBoxRef, messages, scrollSynced]);
 
 	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const infoPanelOpen = _infoPanelOpen || !isSmall;
@@ -191,12 +154,30 @@ export default function ChatPanel(props) {
 		}
 	}
 
+	const requestedViewType: ViewType = (viewTypeRaw === 'video' && channel?.type === 'dm') ? ViewType.Video : ViewType.Messages;
+
+	const getVideoDetails = () => {
+		if (!channel) return;
+		if (channel.type !== 'dm') return;
+		if (!channel.video) return;
+		if (!me) return;
+		const now = Date.now();
+		if (now < new Date(channel.video.creationTime).getTime() || now > new Date(channel.video.endTime).getTime()) {
+			return;
+		}
+		return channel.video?.users?.find(user => user.id === me.id)?.accessToken;
+	};
+
+	const videoToken = getVideoDetails();
+
+	const viewType = (requestedViewType === ViewType.Video && videoToken) ? ViewType.Video : ViewType.Messages;
+
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
 			resource
 				? (
 					resource.hasOwnProperty('forename')
-						? <UserInfoPanel user={resource as APIUser} />
+						? <UserInfoPanel user={resource as APIUser} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
 						: <EventInfoPanel event={resource as APIEvent} />
 				)
 				: <CircularProgress />
@@ -241,58 +222,13 @@ export default function ChatPanel(props) {
 				</AppBar>
 				<Box className={classes.mainContent}>
 					<Box className={classes.chatHolder}>
-						{ channelID
-							? <>
-								<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
-									const target = e.target as any;
-									const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
-									if (scrolledToBottom && !scrollSynced) {
-										setScrollSynced(true);
-									} else if (!scrolledToBottom && scrollSynced) {
-										setScrollSynced(false);
-									}
-								}}>
-									{
-										createGroups(messages, me!.id)
-									}
-								</div>
-								<Card className={classes.chatBox}>
-									<form className={classes.flexGrow} onSubmit={e => {
-										e.preventDefault();
-										const form = e.target as any;
-										const message = String(new FormData(form).get('message'));
-										form.reset();
-										dispatch(createMessage({
-											content: message,
-											channelID
-										}));
-										if (inputBoxRef.current) {
-											const textbox: HTMLElement|null = inputBoxRef.current.querySelector('input[type=text]');
-											if (textbox) {
-												textbox.focus();
-											}
-										}
-									}}>
-										<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
-											ref={inputBoxRef}
-											onClick={() => {
-												let count = 20;
-												const resetScroll = () => {
-													if (scrollSynced && chatBoxRef.current) {
-														chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-													}
-													if (count-- > 0) setTimeout(resetScroll, 50);
-												};
-												resetScroll();
-											}}
-										/>
-										<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
-											<SendIcon />
-										</Fab>
-									</form>
-								</Card>
-							</>
-							: <Box className={clsx(classes.chatArea, classes.emptyChatArea)}>
+						{ channel
+							? (
+								viewType === ViewType.Messages
+									? <MessagesPanel channel={channel} />
+									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!}/>
+							)
+							: <Box className={classes.emptyChatArea}>
 								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
 							</Box>
 						}
