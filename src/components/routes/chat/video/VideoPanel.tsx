@@ -1,6 +1,7 @@
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import React, { useEffect, useRef } from 'react';
 import Video from 'twilio-video';
+import VideoElement from './VideoElement';
 
 interface VideoPanelProps {
 	channel: APIDMChannel;
@@ -24,16 +25,8 @@ export default function VideoPanel(props: VideoPanelProps) {
 				});
 				setMediaStream(_mediaStream);
 				console.log('got', _mediaStream);
-				const videoEl = ourVideoRef.current;
-				if (!videoEl) return;
-				const videoTrack = _mediaStream.getVideoTracks()[0];
-
-				videoEl.width = videoTrack.getSettings().width!;
-				videoEl.height = videoTrack.getSettings().height!;
-
-				videoEl.srcObject = _mediaStream;
-
-				_room = await Video.connect(props.videoJWT, { name: props.channel.id, tracks: _mediaStream.getTracks() });
+				console.log(props.channel.video!.id);
+				_room = await Video.connect(props.videoJWT).catch(console.error) as any;
 				setRoom(_room);
 				console.log(_room);
 			}
@@ -51,6 +44,10 @@ export default function VideoPanel(props: VideoPanelProps) {
 		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	if (mediaStream) {
+		return <VideoElement mediaStream={mediaStream} />;
+	}
 
 	return <video autoPlay={true} ref={ourVideoRef} muted={true} />;
 }
