@@ -1,3 +1,4 @@
+import { CircularProgress } from '@material-ui/core';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import React, { useEffect, useRef } from 'react';
 import Video from 'twilio-video';
@@ -26,9 +27,11 @@ export default function VideoPanel(props: VideoPanelProps) {
 				setMediaStream(_mediaStream);
 				console.log('got', _mediaStream);
 				console.log(props.channel.video!.id);
+				/*
 				_room = await Video.connect(props.videoJWT).catch(console.error) as any;
 				setRoom(_room);
 				console.log(_room);
+				*/
 			}
 		}
 
@@ -46,8 +49,8 @@ export default function VideoPanel(props: VideoPanelProps) {
 	}, []);
 
 	if (mediaStream) {
-		return <VideoElement mediaStream={mediaStream} />;
+		return <VideoElement muted={true} mediaStream={mediaStream} />;
 	}
 
-	return <video autoPlay={true} ref={ourVideoRef} muted={true} />;
+	return <CircularProgress />;
 }

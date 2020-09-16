@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-interface VideoElementProps {
+interface VideoElementProps extends React.DetailedHTMLProps<React.VideoHTMLAttributes<HTMLVideoElement>, HTMLVideoElement> {
 	mediaStream: MediaStream;
 }
 
