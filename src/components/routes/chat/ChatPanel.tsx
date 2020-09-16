@@ -27,7 +27,7 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
-import VideoPanel from './VideoPanel';
+import VideoPanel from './video/VideoPanel';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
