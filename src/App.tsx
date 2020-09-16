@@ -11,25 +11,28 @@ import PublicRoute from './components/util/PublicRoute';
 import { Provider } from 'react-redux';
 import EventPage from './components/routes/EventPage';
 import ChatPage from './components/routes/chat/ChatsPage';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 
 function App() {
 	return (
-		<div>
-			<Provider store={store}>
-				<BrowserRouter>
-					<Switch>
-						<Route path="/" exact component={HomePage} />
-						<PublicRoute path="/register" exact component={RegistrationPage} />
-						<PublicRoute path="/login" exact component={LoginPage} />
-						<PublicRoute path="/verify" exact component={VerifyEmailPage} />
-						<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
-						<ProtectedRoute path="/events/:id" exact component={EventPage}/>
-						<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
-						<Redirect to="/" />
-					</Switch>
-				</BrowserRouter>
-			</Provider>
-		</div>
+		<ThemeProvider theme={createMuiTheme()}>
+			<div>
+				<Provider store={store}>
+					<BrowserRouter>
+						<Switch>
+							<Route path="/" exact component={HomePage} />
+							<PublicRoute path="/register" exact component={RegistrationPage} />
+							<PublicRoute path="/login" exact component={LoginPage} />
+							<PublicRoute path="/verify" exact component={VerifyEmailPage} />
+							<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
+							<ProtectedRoute path="/events/:id" exact component={EventPage}/>
+							<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
+							<Redirect to="/" />
+						</Switch>
+					</BrowserRouter>
+				</Provider>
+			</div>
+		</ThemeProvider>
 	);
 }
 
