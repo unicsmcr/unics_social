@@ -5,6 +5,7 @@ import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import React, { useEffect } from 'react';
 import Video from 'twilio-video';
 import OptionsPanel from './OptionsPanel';
+import PeerVideo from './PeerVideo';
 import SelfVideo from './SelfVideo';
 
 interface VideoPanelProps {
@@ -70,7 +71,7 @@ export default function VideoPanel(props: VideoPanelProps) {
 			{
 				room
 					? <h2>Room here!</h2>
-					: <h2>Loading</h2>
+					: <PeerVideo />
 			}
 			{
 				mediaStream
