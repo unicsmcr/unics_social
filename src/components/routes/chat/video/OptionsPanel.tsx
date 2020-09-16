@@ -44,6 +44,9 @@ export default function OptionsPanel(props: OptionsPanelProps) {
 	const MicIcon = mic ? MicNoneOutlinedIcon : MicOffOutlinedIcon;
 
 	return <Box className={classes.panel}>
+		<Fab onClick={() => props.onFlipCamera()} className={classes.fab}>
+			<SwitchCameraIcon />
+		</Fab>
 		<Fab onClick={() => {
 			const newValue = !video;
 			setVideo(newValue);
@@ -69,8 +72,5 @@ export default function OptionsPanel(props: OptionsPanelProps) {
 				<CallEndIcon />
 			</Fab>
 		</ThemeProvider>
-		<Fab onClick={() => props.onFlipCamera()} className={classes.fab}>
-			<SwitchCameraIcon />
-		</Fab>
 	</Box>;
 }
