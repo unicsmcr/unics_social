@@ -121,7 +121,7 @@ export default function ChatPanel(props) {
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
-	const { id: channelID, type: viewTypeRaw } = useParams();
+	const { id: channelID, type: viewTypeRaw } = useParams<{ id: string; type: string }>();
 
 	const hasUserChanges = useSelector(selectHasUserChanges);
 

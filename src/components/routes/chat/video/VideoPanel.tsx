@@ -17,7 +17,13 @@ const useStyles = makeStyles(theme => ({
 		display: 'grid',
 		height: '100%',
 		width: '100%',
-		gridTemplateRows: 'auto min-content'
+		gridTemplateRows: 'auto min-content',
+		background: 'black'
+	},
+	videoArea: {
+		height: '100%',
+		width: '100%',
+		position: 'relative'
 	}
 }));
 
@@ -60,11 +66,18 @@ export default function VideoPanel(props: VideoPanelProps) {
 	}, []);
 
 	return <Box className={classes.panel}>
-		{
-			mediaStream
-				? <SelfVideo mediaStream={mediaStream} />
-				: <CircularProgress />
-		}
+		<Box className={classes.videoArea}>
+			{
+				room
+					? <h2>Room here!</h2>
+					: <h2>Loading</h2>
+			}
+			{
+				mediaStream
+					? <SelfVideo mediaStream={mediaStream} />
+					: <CircularProgress />
+			}
+		</Box>
 		<OptionsPanel />
 	</Box>;
 }

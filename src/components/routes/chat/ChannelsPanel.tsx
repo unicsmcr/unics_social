@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ChannelsPanel() {
 	const classes = useStyles();
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
 	const [chatPanelValue, setChatPanelValue] = React.useState(0);
 	const [lastRefreshed, setLastRefreshed] = React.useState(Date.now());
 
