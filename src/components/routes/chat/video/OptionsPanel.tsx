@@ -29,6 +29,8 @@ const useStyles = makeStyles(theme => ({
 
 interface OptionsPanelProps {
 	onFlipCamera: Function;
+	onVideoStatusChange: (enabled: boolean) => void;
+	onMicStatusChange: (enabled: boolean) => void;
 }
 
 export default function OptionsPanel(props: OptionsPanelProps) {
@@ -42,10 +44,18 @@ export default function OptionsPanel(props: OptionsPanelProps) {
 	const MicIcon = mic ? MicNoneOutlinedIcon : MicOffOutlinedIcon;
 
 	return <Box className={classes.panel}>
-		<Fab onClick={() => setVideo(!video)} className={classes.fab}>
+		<Fab onClick={() => {
+			const newValue = !video;
+			setVideo(newValue);
+			props.onVideoStatusChange(newValue);
+		}} className={classes.fab}>
 			<VideoIcon />
 		</Fab>
-		<Fab onClick={() => setMic(!mic)} className={classes.fab}>
+		<Fab onClick={() => {
+			const newValue = !mic;
+			setMic(newValue);
+			props.onMicStatusChange(newValue);
+		}} className={classes.fab}>
 			<MicIcon />
 		</Fab>
 		<ThemeProvider theme={createMuiTheme({

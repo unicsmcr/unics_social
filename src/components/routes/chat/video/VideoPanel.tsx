@@ -109,18 +109,38 @@ export default function VideoPanel(props: VideoPanelProps) {
 				<SelfVideo ref={selfVideoRef} />
 			}
 		</Box>
-		<OptionsPanel onFlipCamera={() => {
-			const newMode = cameraMode === 'environment' ? 'user' : 'environment';
-			setCameraMode(newMode);
+		<OptionsPanel
+			onFlipCamera={() => {
+				const newMode = cameraMode === 'environment' ? 'user' : 'environment';
+				setCameraMode(newMode);
 
-			if (tracks) {
-				const video = tracks.find(track => track.kind === 'video') as Video.LocalVideoTrack|undefined;
-				if (video) {
-					video.restart({
-						facingMode: newMode
-					});
+				if (tracks) {
+					const video = tracks.find(track => track.kind === 'video') as Video.LocalVideoTrack|undefined;
+					if (video) {
+						video.restart({
+							facingMode: newMode
+						});
+					}
 				}
-			}
-		}}/>
+			}}
+
+			onVideoStatusChange={enable => {
+				if (tracks) {
+					const video = tracks.find(track => track.kind === 'video') as Video.LocalVideoTrack|undefined;
+					if (video) {
+						enable ? video.enable() : video.disable();
+					}
+				}
+			}}
+
+			onMicStatusChange={enable => {
+				if (tracks) {
+					const mic = tracks.find(track => track.kind === 'audio') as Video.LocalAudioTrack|undefined;
+					if (mic) {
+						enable ? mic.enable() : mic.disable();
+					}
+				}
+			}}
+		/>
 	</Box>;
 }
