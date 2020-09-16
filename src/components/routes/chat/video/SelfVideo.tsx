@@ -20,8 +20,7 @@ const useStyles = makeStyles(theme => ({
 		left: theme.spacing(2),
 		boxShadow: `0 0 1rem ${grey[500]}`,
 		[theme.breakpoints.down('xs')]: {
-			width: '40vw',
-			maxHeight: '20vh'
+			width: '40vw'
 		}
 	}
 }));
