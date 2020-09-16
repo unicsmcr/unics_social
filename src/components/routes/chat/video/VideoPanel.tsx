@@ -3,7 +3,7 @@ import makeStyles from '@material-ui/core/styles/makeStyles';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import Video, { createLocalTracks } from 'twilio-video';
+import Video, { createLocalTracks, TwilioError } from 'twilio-video';
 import NotificationDialog from '../../../util/NotificationDialog';
 import OptionsPanel from './OptionsPanel';
 import PeerVideo from './PeerVideo';
@@ -34,6 +34,28 @@ function wrapError<T>(promise: Promise<T>, message: string): Promise<T> {
 		console.error(error);
 		return Promise.reject(new Error(message));
 	});
+}
+
+function translateVideoError(error: Error|TwilioError) {
+	if (error.hasOwnProperty('code')) {
+		// https://www.twilio.com/docs/video/build-js-video-application-recommendations-and-best-practices#connection-errors
+		switch ((error as TwilioError).code) {
+			case 53000:
+				return 'Your internet connection is too unstable for a video chat.';
+			case 53006:
+				return 'The external video chat provider is currently overloaded. We can\'t do anything about that, try again later. Sorry!';
+			case 53105:
+				return 'The video chat is full! How did you get here... 🤔';
+			case 53103:
+			case 53106:
+				return 'Your video chat time with this user has ended! 😢 Try connecting with them on a different platform.';
+			case 53405:
+				return 'Your internet connection is unstable, or your firewall is preventing a connection to the video chat provider.';
+			case 53118:
+				return 'Your call time is up! You can still carry on the conversation with text chat, or you can connect with eachother on a different platform!';
+		}
+	}
+	return error.message || String(error);
 }
 
 export default function VideoPanel(props: VideoPanelProps) {
@@ -71,7 +93,10 @@ export default function VideoPanel(props: VideoPanelProps) {
 					videoTrack.attach(selfVideoRef.current);
 				}
 
-				_room = await Video.connect(props.videoJWT, { tracks });
+				_room = await Video.connect(props.videoJWT, { tracks }).catch(err => {
+					console.error(err);
+					return Promise.reject(new Error(translateVideoError(err)));
+				});
 				setRoom(_room);
 
 				function userConnected(user: Video.Participant) {
@@ -96,6 +121,12 @@ export default function VideoPanel(props: VideoPanelProps) {
 				_room.participants.forEach(userConnected);
 				_room.on('participantConnected', userConnected);
 				_room.on('participantDisconnected', userDisconnected);
+				_room.once('disconnected', (room, error) => {
+					if (error) {
+						console.error(error);
+						setError(translateVideoError(error));
+					}
+				});
 			}
 		}
 
@@ -159,7 +190,7 @@ export default function VideoPanel(props: VideoPanelProps) {
 			}}
 		/>
 		<NotificationDialog
-			title="Error in video chat"
+			title="Unable to join video chat"
 			show={Boolean(error?.length)}
 			message={error ?? ''}
 			onClose={() => history.push(`${history.location.pathname.replace('/video', '')}`)}
