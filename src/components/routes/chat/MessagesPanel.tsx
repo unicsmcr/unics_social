@@ -1,4 +1,4 @@
-import { makeStyles, Card, TextField, Fab } from '@material-ui/core';
+import { makeStyles, Card, TextField, Fab, CircularProgress } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
 import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
 import React, { createRef, useCallback, useEffect, useState } from 'react';
@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
 	skeletonText: {
 		marginLeft: theme.spacing(2),
 		width: 'min(300px, 50vw)'
+	},
+	loader: {
+		margin: theme.spacing(1, 0)
 	}
 }));
 
@@ -54,14 +57,19 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 	const me = useSelector(selectMe);
 	const chatBoxRef = createRef<HTMLDivElement>();
 	const inputBoxRef = createRef<HTMLInputElement>();
+	const [loadingMore, setLoadingMore] = useState<{
+		scrollPosition: number;
+	}|null>(null);
 	const [scrollSynced, setScrollSynced] = useState(true);
 
 	useEffect(() => {
-		if (messages.length === 0) {
-			dispatch(fetchMessages({ channelID: props.channel.id }));
+		if (messages.length === 0 && !loadingMore) {
+			setLoadingMore({ scrollPosition: 0 });
+			(dispatch(fetchMessages({ channelID: props.channel.id })) as any)
+				.then(() => setLoadingMore(null));
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [props.channel, dispatch]);
+	}, [props.channel.id]);
 
 	useEffect(() => {
 		if (scrollSynced) {
@@ -75,15 +83,30 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		}
 	}, [chatBoxRef, messages, scrollSynced]);
 
+	useEffect(() => {
+		if (chatBoxRef.current && loadingMore) {
+			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight - loadingMore.scrollPosition;
+		}
+	}, [messages.length, loadingMore, chatBoxRef]);
+
+	useEffect(() => {
+		if (chatBoxRef.current && loadingMore) {
+			chatBoxRef.current.scrollTop = 0;
+		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [loadingMore]);
+
 	return <>
 		<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
 			const target = e.target as any;
 			const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
-			if (target.scrollTop === 0 && !firstMessageTime) {
-				dispatch(fetchMessages({
+			if (target.scrollTop === 0 && !firstMessageTime && messages.length > 0) {
+				setLoadingMore({ scrollPosition: target.scrollHeight });
+				(dispatch(fetchMessages({
 					channelID: props.channel.id,
 					before: new Date(messages[0].time)
-				}));
+				})) as any)
+					.then(() => setLoadingMore(null));
 			}
 
 			if (scrolledToBottom && !scrollSynced) {
@@ -92,6 +115,9 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 				setScrollSynced(false);
 			}
 		}}>
+			{
+				loadingMore && <CircularProgress className={classes.loader} size="2rem" />
+			}
 			{
 				createGroups(messages, me!.id)
 			}
