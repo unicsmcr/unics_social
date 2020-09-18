@@ -3,6 +3,7 @@ import API_HOST from './APIHost';
 import { setQueueStatus, QueueStatus, setConnected } from '../../store/slices/AuthSlice';
 import store from '../../store';
 import { addMessage, removeMessage } from '../../store/slices/MessagesSlice';
+import { fetchChannels } from '../../store/slices/ChannelsSlice';
 
 export default function makeClient() {
 	const token = localStorage.getItem('jwt');
@@ -29,6 +30,8 @@ export function initClientGateway(apiClient: APIClient) {
 	});
 	gateway.on(GatewayPacketType.MessageCreate, data => {
 		const message: APIMessage = data.message;
+		const channels = store.getState().channels;
+		if (!channels.values[message.channelID]) store.dispatch(fetchChannels());
 		store.dispatch(addMessage(message));
 	});
 	gateway.on(GatewayPacketType.MessageDelete, data => {
