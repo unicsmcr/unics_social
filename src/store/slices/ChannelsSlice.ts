@@ -6,7 +6,9 @@ import { wrapAPIError } from './util';
 
 export interface ChannelsSliceState {
 	values: {
-		[id: string]: APIDMChannel|APIEventChannel;
+		[id: string]: (APIDMChannel|APIEventChannel) & {
+			firstMessage?: string;
+		};
 	};
 }
 
