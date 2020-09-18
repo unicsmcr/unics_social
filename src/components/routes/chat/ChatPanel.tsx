@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEvent, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
-import { selectMe, selectUserById } from '../../../store/slices/UsersSlice';
+import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
@@ -133,6 +133,14 @@ export default function ChatPanel(props) {
 	useEffect(() => {
 		if (channelID && !channel) dispatch(fetchChannels());
 	}, [channel, channelID, dispatch]);
+
+	useEffect(() => {
+		if (me && channel && !resource) {
+			if (channel.type === 'dm') {
+				dispatch(fetchUser(channel.users.find(userID => userID !== me.id)!));
+			}
+		}
+	}, [channel, resource, me, dispatch]);
 
 	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const infoPanelOpen = _infoPanelOpen || !isSmall;
