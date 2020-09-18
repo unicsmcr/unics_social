@@ -1,10 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import grey from '@material-ui/core/colors/grey';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 import { OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
+
+import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
+
+import { IconButton } from '@material-ui/core';
 
 export interface MessageProps {
 	message: OptimisedAPIMessage;
@@ -35,7 +39,14 @@ const useStyles = makeStyles(theme => ({
 export default function Message({ message, isOwn }: MessageProps) {
 	const classes = useStyles({ isOwn });
 
-	return <Box>
+	const [hovered, setHovered] = useState(false);
+
+	return <Box onMouseOver={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
+		{
+			isOwn && hovered && <IconButton>
+				<DeleteOutlinedIcon />
+			</IconButton>
+		}
 		<div className={classes.messageBubble}>
 			<Typography variant="body1" style={{ textAlign: 'left' }}>
 				{ message.content }
