@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import grey from '@material-ui/core/colors/grey';
-import { darken, lighten, makeStyles } from '@material-ui/core/styles';
+import { darken, makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 import { deleteMessage, OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
 
