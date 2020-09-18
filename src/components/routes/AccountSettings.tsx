@@ -23,12 +23,18 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { APIUser, Year, Course } from '@unicsmcr/unics_social_api_client';
+import { APIUser, Year, Course, Visibility } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
 
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+import InputAdornment from '@material-ui/core/InputAdornment';
+
+import InstagramIcon from '@material-ui/icons/Instagram';
+import FacebookIcon from '@material-ui/icons/Facebook';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -73,6 +79,10 @@ const useStyles = makeStyles(theme => ({
 	formControl: {
 		minWidth: '100%',
 		textAlign: 'left'
+	},
+	profileSection: {
+		marginTop: theme.spacing(2),
+		display: 'inline-block'
 	}
 }));
 
@@ -105,7 +115,9 @@ function AccountSettings({ me }: { me: APIUser }) {
 			yearOfStudy: me.profile?.yearOfStudy ?? '',
 			facebook: me.profile?.facebook ?? '',
 			twitter: me.profile?.twitter ?? '',
-			instagram: me.profile?.instagram ?? ''
+			instagram: me.profile?.instagram ?? '',
+			linkedin: me.profile?.linkedin ?? '',
+			visibility: me.profile?.visibility
 		}
 	});
 
@@ -159,6 +171,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 				...profile
 			}
 		};
+		console.log(newUserState);
 		setUserState(newUserState);
 
 		setSaveState(SaveState.Saving);
@@ -213,6 +226,10 @@ function AccountSettings({ me }: { me: APIUser }) {
 				<Avatar alt={`${me.forename} ${me.surname}`} src={avatar} className={classes.avatar} onClick={avatarClicked} />
 
 				<Box>
+					<Typography variant="overline" gutterBottom className={classes.profileSection}>Key Information</Typography>
+				</Box>
+
+				<Box>
 					<FormControl variant="outlined" className={classes.formControl}>
 						<InputLabel id="form-label-course" required>Course</InputLabel>
 						<Select
@@ -250,9 +267,58 @@ function AccountSettings({ me }: { me: APIUser }) {
 					</FormControl>
 				</Box>
 
-				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" defaultValue={userState.profile.instagram}/>
-				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" defaultValue={userState.profile.facebook}/>
-				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" defaultValue={userState.profile.twitter}/>
+				<Box>
+					<FormControl variant="outlined" className={classes.formControl}>
+						<InputLabel id="form-label-visibility" required>Profile Visibility</InputLabel>
+						<Select
+							labelId="form-label-visibility"
+							id="form-visibility"
+							name="visibility"
+							defaultValue={userState.profile.visibility ?? Visibility.Public}
+							label="Profile Visibility *"
+							onChange={() => profileSettingsChanged()}
+							required
+						>
+							<MenuItem value={Visibility.Public}>Public - list me in the users directory</MenuItem>
+							<MenuItem value={Visibility.Private}>Private - don't list me in the users directory</MenuItem>
+						</Select>
+					</FormControl>
+				</Box>
+
+				<Typography variant="overline" gutterBottom className={classes.profileSection}>Social Media</Typography>
+
+				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" defaultValue={userState.profile.instagram}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<InstagramIcon />
+							</InputAdornment>
+						)
+					}}/>
+				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" defaultValue={userState.profile.facebook}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<FacebookIcon />
+							</InputAdornment>
+						)
+					}}/>
+				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" defaultValue={userState.profile.twitter}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<TwitterIcon />
+							</InputAdornment>
+						)
+					}}/>
+				<TextField fullWidth label="LinkedIn" name="linkedin" variant="outlined" defaultValue={userState.profile.linkedin}
+					InputProps={{
+						startAdornment: (
+							<InputAdornment position="start">
+								<LinkedInIcon />
+							</InputAdornment>
+						)
+					}}/>
 
 				<Menu
 					open={Boolean(avatarMenuTarget)}
