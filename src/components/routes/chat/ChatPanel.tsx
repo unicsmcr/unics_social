@@ -127,7 +127,7 @@ export default function ChatPanel(props) {
 
 	const me = useSelector(selectMe);
 
-	const channel: APIDMChannel|APIEventChannel|undefined = useSelector(selectChannel(channelID));
+	const channel = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
 
 	useEffect(() => {

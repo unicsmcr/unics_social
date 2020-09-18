@@ -1,12 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { APIChannel, APIDMChannel, APIEventChannel, APIMessage } from '@unicsmcr/unics_social_api_client';
 import { client } from '../../components/util/makeClient';
-import { addMessage } from './MessagesSlice';
+import { addMessage, fetchMessages } from './MessagesSlice';
 import { wrapAPIError } from './util';
 
 export interface ChannelsSliceState {
 	values: {
-		[id: string]: APIDMChannel|APIEventChannel;
+		[id: string]: (APIDMChannel|APIEventChannel) & {
+			firstMessage?: string;
+		};
 	};
 }
 
@@ -33,6 +35,15 @@ export const ChannelsSlice = createSlice({
 	extraReducers(builder) {
 		builder.addCase(fetchChannels.fulfilled, (state, action) => {
 			state.values = Object.fromEntries(action.payload.map(channel => ([channel.id, channel])));
+		});
+		builder.addCase(fetchMessages.fulfilled, (state, action) => {
+			const length = action.payload.length;
+			if (length < 50) {
+				const channel = state.values[action.meta.arg.channelID];
+				if (channel) {
+					channel.firstMessage = action.payload[length - 1].time;
+				}
+			}
 		});
 		builder.addCase(addMessage, (state, action) => {
 			const message: APIMessage = action.payload;
