@@ -14,7 +14,7 @@ const initialState: ChannelsSliceState = {
 	values: {}
 };
 
-export const fetchChannels = createAsyncThunk('channels/fetchChannels', () => client.getChannels().catch(wrapAPIError));
+export const fetchChannels = createAsyncThunk('channels/fetchChannels', (_, { dispatch }) => client.getChannels().catch(err => wrapAPIError(err, dispatch)));
 
 export const ChannelsSlice = createSlice({
 	name: 'channels',

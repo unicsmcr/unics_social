@@ -14,7 +14,7 @@ const initialState: EventsSliceState = {
 	values: {}
 };
 
-export const fetchEvents = createAsyncThunk('events/fetchEvents', () => client.getEvents().catch(wrapAPIError));
+export const fetchEvents = createAsyncThunk('events/fetchEvents', (_, { dispatch }) => client.getEvents().catch(err => wrapAPIError(err, dispatch)));
 
 export const EventsSlice = createSlice({
 	name: 'events',
