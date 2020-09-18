@@ -1,6 +1,6 @@
 import React, { ReactNode, useCallback, useEffect } from 'react';
 
-import { Route, Redirect, withRouter } from 'react-router-dom';
+import { Route, Redirect, withRouter, useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectJWT, selectConnected } from '../../store/slices/AuthSlice';
 import { initClientGateway, client } from './makeClient';
@@ -25,6 +25,9 @@ const ProtectedRoute = props => {
 	const connected = useSelector(selectConnected);
 	const me = useSelector(selectMe);
 	const classes = useStyles();
+	const history = useHistory();
+
+	const isAccountPage = history.location.pathname === '/account';
 
 	useEffect(() => {
 		if (!connected) initClientGateway(client);
@@ -40,7 +43,9 @@ const ProtectedRoute = props => {
 				<CircularProgress color="inherit" />
 			</Box>
 		</Backdrop>;
-	} else if (!jwt) {
+	} else if (jwt && me && !me.profile && !isAccountPage) {
+		fallback = <Redirect to="/account" />;
+	}	else if (!jwt) {
 		fallback = <Redirect to="/login" />;
 	}
 
