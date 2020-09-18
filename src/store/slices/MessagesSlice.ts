@@ -24,6 +24,7 @@ const initialState: MessagesSliceState = {
 
 export const fetchMessages = createAsyncThunk('messages/fetchMessages', (channelID: string, { dispatch }) => client.getMessages(channelID).catch(err => wrapAPIError(err, dispatch)));
 export const createMessage = createAsyncThunk('messages/createMessage', (data: { content: string; channelID: string }, { dispatch }) => client.createMessage(data).catch(err => wrapAPIError(err, dispatch)));
+export const deleteMessage = createAsyncThunk('messages/deleteMessage', (data: { messageID: string; channelID: string }, { dispatch }) => client.deleteMessage(data).catch(err => wrapAPIError(err, dispatch)));
 
 /**
  * Inserts messages into a list of existing messages
@@ -52,6 +53,13 @@ function insertMessagesToList(_messages: OptimisedAPIMessage[], state: Optimised
 	return state;
 }
 
+function removeMessageFromList(state: MessagesSliceState, { channelID, messageID }: { channelID: string; messageID: string }) {
+	if (state.values[channelID]) {
+		const index = state.values[channelID].findIndex(msg => msg.id === messageID);
+		if (index !== -1) state.values[channelID].splice(index, 1);
+	}
+}
+
 export const MessagesSlice = createSlice({
 	name: 'messages',
 	initialState,
@@ -64,12 +72,9 @@ export const MessagesSlice = createSlice({
 			const messages = state.values[channelID];
 			insertMessagesToList([message], messages);
 		},
-		deleteMessage: (state, action) => {
+		removeMessage: (state, action) => {
 			const { channelID, messageID }: { channelID: string; messageID: string } = action.payload;
-			if (state.values[channelID]) {
-				const index = state.values[channelID].findIndex(msg => msg.id === messageID);
-				if (index !== -1) state.values[channelID].splice(index, 1);
-			}
+			removeMessageFromList(state, { channelID, messageID });
 		}
 	},
 	extraReducers(builder) {
@@ -88,10 +93,14 @@ export const MessagesSlice = createSlice({
 			const messages = state.values[channelID];
 			insertMessagesToList([message], messages);
 		});
+		builder.addCase(deleteMessage.fulfilled, (state, action) => {
+			const { messageID, channelID } = action.meta.arg;
+			removeMessageFromList(state, { channelID, messageID });
+		});
 	}
 });
 
-export const { addMessage, deleteMessage } = MessagesSlice.actions;
+export const { addMessage, removeMessage } = MessagesSlice.actions;
 
 export const selectMessages = (channelID: string) => (state: { messages: MessagesSliceState }) => state.messages.values[channelID] ?? [];
 

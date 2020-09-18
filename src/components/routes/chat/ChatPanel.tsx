@@ -192,7 +192,7 @@ export default function ChatPanel(props) {
 						{ isMobile &&
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
 								{
-									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0].id !== channelID)
+									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0] !== channelID)
 										? <Badge variant="dot" color="secondary"><MenuIcon /></Badge>
 										: <MenuIcon />
 								}
