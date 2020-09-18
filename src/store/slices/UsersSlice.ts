@@ -16,8 +16,8 @@ const initialState: UsersSliceState = {
 	values: {}
 };
 
-export const fetchMe = createAsyncThunk('users/fetchMe', () => client.getMe().catch(wrapAPIError));
-export const fetchUser = createAsyncThunk('users/fetchUser', (id: string) => client.getUser(id).catch(wrapAPIError));
+export const fetchMe = createAsyncThunk('users/fetchMe', (_, { dispatch }) => client.getMe().catch(err => wrapAPIError(err, dispatch)));
+export const fetchUser = createAsyncThunk('users/fetchUser', (id: string, { dispatch }) => client.getUser(id).catch(err => wrapAPIError(err, dispatch)));
 
 export const UsersSlice = createSlice({
 	name: 'users',

@@ -22,8 +22,8 @@ const initialState: MessagesSliceState = {
 	values: {}
 };
 
-export const fetchMessages = createAsyncThunk('messages/fetchMessages', (channelID: string) => client.getMessages(channelID).catch(wrapAPIError));
-export const createMessage = createAsyncThunk('messages/createMessage', (data: { content: string; channelID: string }) => client.createMessage(data).catch(wrapAPIError));
+export const fetchMessages = createAsyncThunk('messages/fetchMessages', (channelID: string, { dispatch }) => client.getMessages(channelID).catch(err => wrapAPIError(err, dispatch)));
+export const createMessage = createAsyncThunk('messages/createMessage', (data: { content: string; channelID: string }, { dispatch }) => client.createMessage(data).catch(err => wrapAPIError(err, dispatch)));
 
 /**
  * Inserts messages into a list of existing messages
