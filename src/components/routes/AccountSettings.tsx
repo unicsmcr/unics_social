@@ -28,13 +28,18 @@ import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
 
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
+
 const useStyles = makeStyles(theme => ({
 	heroContent: {
-		padding: theme.spacing(14, 2, 4, 2)
+		padding: theme.spacing(8, 2, 0, 2)
 	},
 	mainContent: {
-		padding: theme.spacing(4, 2, 14, 2),
+		padding: theme.spacing(0, 2, 8, 2),
 		textAlign: 'center'
+	},
+	warning: {
+		padding: theme.spacing(4)
 	},
 	paper: {
 		padding: theme.spacing(2),
@@ -181,6 +186,14 @@ function AccountSettings({ me }: { me: APIUser }) {
 	};
 
 	return <>
+		{
+			!me.profile && <Paper elevation={2} className={classes.warning}>
+				<ErrorOutlineIcon />
+				<Typography variant="body1" color="textSecondary">
+				Before you can use UniCS  KB and meet new people, you need to finish setting up your profile below! You need to set at least your course and year of study before you can continue.
+				</Typography>
+			</Paper>
+		}
 		{<Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
 			<SaveIcon className={classes.saveIcon} />
 			Save Changes
