@@ -7,6 +7,7 @@ import getIcon from '../../util/getAvatar';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
 import { useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
@@ -37,7 +38,9 @@ interface UserInfoPanelProps {
 	onClose: Function;
 }
 
-function getSocialMediaIcon(type: 'instagram' | 'facebook' | 'twitter') {
+type SocialMedia = 'instagram' | 'facebook' | 'twitter' | 'linkedin';
+
+function getSocialMediaIcon(type: SocialMedia) {
 	switch (type) {
 		case 'facebook':
 			return FacebookIcon;
@@ -45,10 +48,12 @@ function getSocialMediaIcon(type: 'instagram' | 'facebook' | 'twitter') {
 			return InstagramIcon;
 		case 'twitter':
 			return TwitterIcon;
+		case 'linkedin':
+			return LinkedInIcon;
 	}
 }
 
-function formatURL(handle: string, type: 'instagram' | 'facebook' | 'twitter'): string {
+function formatURL(handle: string, type: SocialMedia): string {
 	switch (type) {
 		case 'facebook':
 			return `https://www.facebook.com/${handle}`;
@@ -56,10 +61,12 @@ function formatURL(handle: string, type: 'instagram' | 'facebook' | 'twitter'): 
 			return `https://www.instagram.com/${handle}`;
 		case 'twitter':
 			return `https://twitter.com/${handle}`;
+		case 'linkedin':
+			return `https://linkedin.com/in/${handle}`;
 	}
 }
 
-export function SocialMediaIcon({ handle, type }: { handle: string; type: 'instagram' | 'facebook' | 'twitter' }) {
+export function SocialMediaIcon({ handle, type }: { handle: string; type: SocialMedia }) {
 	const Icon = getSocialMediaIcon(type);
 	return <a href={formatURL(handle, type)} rel="noopener noreferrer" target="_blank"><IconButton>
 		<Icon />
@@ -78,6 +85,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 		if (user.profile.facebook) output.push(<SocialMediaIcon type="facebook" handle={user.profile.facebook} key="facebook" />);
 		if (user.profile.instagram) output.push(<SocialMediaIcon type="instagram" handle={user.profile.instagram} key="instagram" />);
 		if (user.profile.twitter) output.push(<SocialMediaIcon type="twitter" handle={user.profile.twitter} key="twitter" />);
+		if (user.profile.linkedin) output.push(<SocialMediaIcon type="linkedin" handle={user.profile.linkedin} key="linkedin" />);
 		return output;
 	};
 
