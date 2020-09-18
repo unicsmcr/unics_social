@@ -2,7 +2,7 @@ import { APIClient, APIMessage, GatewayPacketType } from '@unicsmcr/unics_social
 import API_HOST from './APIHost';
 import { setQueueStatus, QueueStatus, setConnected } from '../../store/slices/AuthSlice';
 import store from '../../store';
-import { addMessage } from '../../store/slices/MessagesSlice';
+import { addMessage, removeMessage } from '../../store/slices/MessagesSlice';
 
 export default function makeClient() {
 	const token = localStorage.getItem('jwt');
@@ -30,6 +30,10 @@ export function initClientGateway(apiClient: APIClient) {
 	gateway.on(GatewayPacketType.MessageCreate, data => {
 		const message: APIMessage = data.message;
 		store.dispatch(addMessage(message));
+	});
+	gateway.on(GatewayPacketType.MessageDelete, data => {
+		const { messageID, channelID }: { messageID: string; channelID: string } = data;
+		store.dispatch(removeMessage({ messageID, channelID }));
 	});
 	gateway.on(GatewayPacketType.JoinDiscoveryQueue, () => {
 		console.log('Joined');
