@@ -39,13 +39,17 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface MessagesPanelProps {
-	channel: APIDMChannel|APIEventChannel;
+	channel: (APIDMChannel|APIEventChannel) & {
+		firstMessage?: string;
+	};
 }
 
 export default function MessagesPanel(props: MessagesPanelProps) {
 	const classes = useStyles();
 	const dispatch = useCallback(useDispatch(), []);
 	const messages = useSelector(selectMessages(props.channel.id));
+
+	const firstMessageTime = props.channel.firstMessage ? new Date(props.channel.firstMessage) : undefined;
 
 	const me = useSelector(selectMe);
 	const chatBoxRef = createRef<HTMLDivElement>();
@@ -75,6 +79,13 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
 			const target = e.target as any;
 			const scrolledToBottom = target.scrollHeight - target.scrollTop - target.clientHeight < 1;
+			if (target.scrollTop === 0 && !firstMessageTime) {
+				dispatch(fetchMessages({
+					channelID: props.channel.id,
+					before: new Date(messages[0].time)
+				}));
+			}
+
 			if (scrolledToBottom && !scrollSynced) {
 				setScrollSynced(true);
 			} else if (!scrolledToBottom && scrollSynced) {
