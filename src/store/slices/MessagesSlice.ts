@@ -22,7 +22,7 @@ const initialState: MessagesSliceState = {
 	values: {}
 };
 
-export const fetchMessages = createAsyncThunk('messages/fetchMessages', (channelID: string, { dispatch }) => client.getMessages(channelID).catch(err => wrapAPIError(err, dispatch)));
+export const fetchMessages = createAsyncThunk('messages/fetchMessages', (data: { channelID: string; before?: Date }, { dispatch }) => client.getMessages(data).catch(err => wrapAPIError(err, dispatch)));
 export const createMessage = createAsyncThunk('messages/createMessage', (data: { content: string; channelID: string }, { dispatch }) => client.createMessage(data).catch(err => wrapAPIError(err, dispatch)));
 export const deleteMessage = createAsyncThunk('messages/deleteMessage', (data: { messageID: string; channelID: string }, { dispatch }) => client.deleteMessage(data).catch(err => wrapAPIError(err, dispatch)));
 
@@ -81,7 +81,7 @@ export const MessagesSlice = createSlice({
 		builder.addCase(fetchMessages.fulfilled, (state, action) => {
 			const newMessages = action.payload.map(message => optimiseAPIMessage(message));
 			if (newMessages.length === 0) return;
-			const channelID = action.meta.arg;
+			const { channelID } = action.meta.arg;
 			if (!state.values[channelID]) state.values[channelID] = [];
 			const messages = state.values[channelID];
 			insertMessagesToList(newMessages, messages);

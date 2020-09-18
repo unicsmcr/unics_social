@@ -54,7 +54,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 
 	useEffect(() => {
 		if (messages.length === 0) {
-			dispatch(fetchMessages(props.channel.id));
+			dispatch(fetchMessages({ channelID: props.channel.id }));
 		}
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.channel, dispatch]);
