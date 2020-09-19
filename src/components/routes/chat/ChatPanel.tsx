@@ -76,7 +76,12 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'column',
 		overflow: 'auto',
 		flexGrow: 1,
-		gridColumn: 1
+		gridColumn: 1,
+		position: 'absolute',
+		top: theme.spacing(2),
+		left: 0,
+		right: 0,
+		bottom: 0
 	},
 	emptyChatArea: {
 		display: 'flex',

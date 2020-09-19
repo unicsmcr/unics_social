@@ -38,7 +38,7 @@ export const ChannelsSlice = createSlice({
 		});
 		builder.addCase(fetchMessages.fulfilled, (state, action) => {
 			const length = action.payload.length;
-			if (length < 50) {
+			if (length > 0 && length < 50) {
 				const channel = state.values[action.meta.arg.channelID];
 				if (channel) {
 					channel.firstMessage = action.payload[length - 1].time;
