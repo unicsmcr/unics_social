@@ -1,5 +1,7 @@
-import { Box, Container, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, Container, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueState } from '../../../store/slices/AuthSlice';
 import Page from '../../Page';
 import NotificationDialog from '../../util/NotificationDialog';
 
@@ -11,13 +13,39 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(8, 2, 0, 2)
 	},
 	mainContent: {
-		padding: theme.spacing(0, 2, 8, 2),
+		padding: theme.spacing(8, 2, 0, 2),
 		textAlign: 'center'
 	}
 }));
 
+function JoinQueue() {
+	const dispatch = useDispatch();
+	return <Button variant="contained" color="primary" onClick={() => {
+		dispatch(joinDiscoveryQueue({ sameYear: true }));
+	}}>Join the queue</Button>;
+}
+
+function InQueue() {
+	const dispatch = useDispatch();
+	return <Button variant="contained" color="primary" onClick={() => {
+		dispatch(leaveDiscoveryQueue());
+	}}>Leave the queue</Button>;
+}
+
 export default function NetworkingPage() {
 	const classes = useStyles();
+	const queueState = useSelector(selectQueueState);
+
+	const generateBody = () => {
+		switch (queueState.status) {
+			case QueueStatus.Idle:
+				return <JoinQueue />;
+			case QueueStatus.InQueue:
+				return <InQueue />;
+			default:
+				return <h2>hi</h2>;
+		}
+	};
 
 	return <Page>
 		<Box className={classes.root}>
@@ -31,7 +59,9 @@ export default function NetworkingPage() {
 				</Typography>
 			</Container>
 			<Container maxWidth="sm" component="section" className={classes.mainContent}>
-			hello
+				{
+					generateBody()
+				}
 			</Container>
 			{/* End hero unit */}
 			{/*
