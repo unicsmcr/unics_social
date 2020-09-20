@@ -1,4 +1,4 @@
-import { Box, Button, Container, makeStyles, Typography } from '@material-ui/core';
+import { Box, Button, Card, Container, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueState } from '../../../store/slices/AuthSlice';
@@ -15,21 +15,44 @@ const useStyles = makeStyles(theme => ({
 	mainContent: {
 		padding: theme.spacing(8, 2, 0, 2),
 		textAlign: 'center'
+	},
+	padded: {
+		padding: theme.spacing(2)
+	},
+	marginTop: {
+		marginTop: theme.spacing(4)
 	}
 }));
 
 function JoinQueue() {
 	const dispatch = useDispatch();
-	return <Button variant="contained" color="primary" onClick={() => {
-		dispatch(joinDiscoveryQueue({ sameYear: true }));
-	}}>Join the queue</Button>;
+	const classes = useStyles();
+	return <>
+		<Paper elevation={2}>
+			<Typography variant="body1" align="center" color="textSecondary" component="p" className={classes.padded}>
+				Join the 1:1 Networking Queue to be paired up with another random KB user! You'll be able to chat to each other for 5 minutes, and then you can either continue speaking to them or join the queue again.
+			</Typography>
+		</Paper>
+		<Button variant="contained" color="primary" className={classes.marginTop} onClick={() => {
+			dispatch(joinDiscoveryQueue({ sameYear: true }));
+		}}>Join the queue</Button>
+	</>;
 }
 
 function InQueue() {
 	const dispatch = useDispatch();
-	return <Button variant="contained" color="primary" onClick={() => {
-		dispatch(leaveDiscoveryQueue());
-	}}>Leave the queue</Button>;
+	const classes = useStyles();
+	return <>
+		<Paper elevation={2}>
+			<Typography variant="body1" align="center" color="textSecondary" component="p" className={classes.padded}>
+				Trying to match you with someone else that's online right now... please wait!
+			</Typography>
+			<LinearProgress />
+		</Paper>
+		<Button variant="outlined" color="primary" className={classes.marginTop} onClick={() => {
+			dispatch(leaveDiscoveryQueue());
+		}}>Leave the queue</Button>
+	</>;
 }
 
 export default function NetworkingPage() {
@@ -53,9 +76,6 @@ export default function NetworkingPage() {
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
 				1-to-1 Networking
-				</Typography>
-				<Typography variant="h5" align="center" color="textSecondary" component="p">
-				Meet new people here!
 				</Typography>
 			</Container>
 			<Container maxWidth="sm" component="section" className={classes.mainContent}>
