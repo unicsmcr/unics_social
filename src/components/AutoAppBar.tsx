@@ -67,7 +67,7 @@ export function AppDrawer(props) {
 
 	const links = props.hasJWT ? AUTH_LINKS : GUEST_LINKS;
 
-	return <Drawer open={props.open} anchor="right" onClose={() => props.onClose()} className={classes.drawer}>
+	return <Drawer open={props.open} anchor="left" onClose={() => props.onClose()} className={classes.drawer}>
 		<List>
 			{
 				links.map(([name, url], index) => (
@@ -83,6 +83,14 @@ export function AppDrawer(props) {
 						</ListItem>
 					</div>
 				))
+			}
+			{
+				props.hasJWT && <ListItem button className={classes.drawerItem} onClick={() => {
+					props.onClose();
+					props.onLogout();
+				}}>
+					<ListItemText>Logout</ListItemText>
+				</ListItem>
 			}
 		</List>
 	</Drawer>;
@@ -109,37 +117,38 @@ export default function AutoAppBar() {
 	return (
 		<AppBar position="static" color="default" elevation={0} className={classes.appBar}>
 			<Toolbar className={classes.toolbar}>
+				{
+					isMobile && <IconButton color="inherit" onClick={() => setDrawerOpen(true)} edge="start">
+						<MenuIcon />
+					</IconButton>
+				}
 				<Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
 					<RouterLink style={{ color: 'inherit' }} to="/">UniCS KB</RouterLink>
 				</Typography>
 				{
-					isMobile
-						? <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
-							<MenuIcon />
-						</IconButton>
-						: <nav>
-							{
-								hasJWT
-									? <>
-										<Button color="inherit" component={RouterLink} to="/networking">1:1 Networking</Button>
-										<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
-										<Button color="inherit" component={RouterLink} to="/account">Account</Button>
-										<Button href="#" color="inherit" variant="outlined" className={classes.link} onClick={logout}>
+					!isMobile && <nav>
+						{
+							hasJWT
+								? <>
+									<Button color="inherit" component={RouterLink} to="/networking">1:1 Networking</Button>
+									<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
+									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
+									<Button href="#" color="inherit" variant="outlined" className={classes.link} onClick={logout}>
 											Logout
-										</Button>
-									</>
-									: <>
-										<Button color="inherit" component={RouterLink} to="/">About</Button>
-										<Button color="inherit" component={RouterLink} to="/register">Register</Button>
-										<Button href="#" color="inherit" variant="outlined" className={classes.link} component={RouterLink} to="/login">
+									</Button>
+								</>
+								: <>
+									<Button color="inherit" component={RouterLink} to="/">About</Button>
+									<Button color="inherit" component={RouterLink} to="/register">Register</Button>
+									<Button href="#" color="inherit" variant="outlined" className={classes.link} component={RouterLink} to="/login">
 											Login
-										</Button>
-									</>
-							}
-						</nav>
+									</Button>
+								</>
+						}
+					</nav>
 				}
 			</Toolbar>
-			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT}/>
+			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()}/>
 			<Backdrop open={loggingOut && hasJWT} className={classes.backdrop}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
