@@ -1,9 +1,9 @@
-import { APIClient, APIMessage, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
+import { APIClient, APIDMChannel, APIMessage, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
 import API_HOST from './APIHost';
-import { setQueueStatus, QueueStatus, setConnected } from '../../store/slices/AuthSlice';
+import { setQueueState, QueueStatus, setConnected, setQueueStatus } from '../../store/slices/AuthSlice';
 import store from '../../store';
 import { addMessage, removeMessage } from '../../store/slices/MessagesSlice';
-import { fetchChannels } from '../../store/slices/ChannelsSlice';
+import { addChannel, fetchChannels } from '../../store/slices/ChannelsSlice';
 
 export default function makeClient() {
 	const token = localStorage.getItem('jwt');
@@ -46,9 +46,17 @@ export function initClientGateway(apiClient: APIClient) {
 		store.dispatch(setQueueStatus(QueueStatus.Idle));
 	});
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	gateway.on(GatewayPacketType.DiscoveryQueueMatch, channel => {
-		// TODO: navigate user to channel
-		store.dispatch(setQueueStatus(QueueStatus.Idle));
+	gateway.on(GatewayPacketType.DiscoveryQueueMatch, data => {
+		const channel: APIDMChannel = data.channel;
+		store.dispatch(addChannel(channel));
+		store.dispatch(setQueueState({
+			status: QueueStatus.Idle,
+			errorMessage: '',
+			match: {
+				channelID: channel.id,
+				startTime: channel.video?.creationTime ? new Date(channel.video.creationTime).getTime() : Date.now()
+			}
+		}));
 	});
 }
 
