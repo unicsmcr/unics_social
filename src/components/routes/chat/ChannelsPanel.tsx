@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import Box from '@material-ui/core/Box';
 import Divider from '@material-ui/core/Divider';
-import { useSelector } from 'react-redux';
-import { selectChannelsSorted } from '../../../store/slices/ChannelsSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchChannels, selectChannelsSorted } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
 import DMListItem from './DMListItem';
 import { useParams } from 'react-router-dom';
@@ -30,6 +30,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export default function ChannelsPanel() {
+	const dispatch = useCallback(useDispatch(), []);
 	const classes = useStyles();
 	const { id } = useParams<{ id: string }>();
 	const [lastRefreshed, setLastRefreshed] = React.useState(Date.now());
@@ -43,6 +44,10 @@ export default function ChannelsPanel() {
 	}, [lastRefreshed]);
 
 	const channels = useSelector(selectChannelsSorted);
+
+	useEffect(() => {
+		if (!channels || channels.length === 0) dispatch(fetchChannels());
+	}, [channels, dispatch]);
 
 	const eventChannels: APIEventChannel[] = [];
 	const dmChannels: APIDMChannel[] = [];

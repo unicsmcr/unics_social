@@ -1,12 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Container from '@material-ui/core/Container';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import ChatPanel from './ChatPanel';
 import FocusedPage from '../../FocusedPage';
-import { useDispatch } from 'react-redux';
-import { fetchChannels } from '../../../store/slices/ChannelsSlice';
 import ChannelsPanel from './ChannelsPanel';
 import { Drawer } from '@material-ui/core';
 import { useMediaQuery } from 'react-responsive';
@@ -34,16 +32,11 @@ const useStyles = makeStyles(theme => ({
 export default function ChatsPage() {
 	const classes = useStyles();
 	const theme = useTheme();
-	const dispatch = useCallback(useDispatch(), []);
 	const isMobile = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.sm}px)` });
 
 	const [drawerOpen, setDrawerOpen] = useState(false);
 
 	const { id: channelID } = useParams<{ id: string }>();
-
-	useEffect(() => {
-		dispatch(fetchChannels());
-	}, [dispatch]);
 
 	useEffect(() => {
 		setDrawerOpen(!Boolean(channelID));
