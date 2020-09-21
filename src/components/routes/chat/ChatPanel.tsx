@@ -9,7 +9,7 @@ import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
+import GroupIcon from '@material-ui/icons/Group';
 import { DRAWER_WIDTH } from './ChannelsPanel';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
@@ -198,8 +198,8 @@ export default function ChatPanel(props) {
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
 								{
 									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0] !== channelID)
-										? <Badge variant="dot" color="secondary"><MenuIcon /></Badge>
-										: <MenuIcon />
+										? <Badge variant="dot" color="secondary"><GroupIcon /></Badge>
+										: <GroupIcon />
 								}
 							</IconButton>
 						}
