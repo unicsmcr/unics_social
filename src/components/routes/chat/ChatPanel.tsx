@@ -24,7 +24,6 @@ import { useHistory, useParams } from 'react-router-dom';
 import UserInfoPanel from './UserInfoPanel';
 import { Badge, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
 import VideoPanel from './video/VideoPanel';
@@ -200,9 +199,8 @@ export default function ChatPanel(props) {
 		{
 			resource
 				? (
-					resource.hasOwnProperty('forename')
-						? <UserInfoPanel user={resource as APIUser} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
-						: <EventInfoPanel event={resource as APIEvent} />
+					resource.hasOwnProperty('forename') &&
+						<UserInfoPanel user={resource as APIUser} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
 				)
 				: <CircularProgress />
 		}
