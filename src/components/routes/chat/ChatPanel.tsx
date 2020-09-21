@@ -28,6 +28,8 @@ import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
 import VideoPanel from './video/VideoPanel';
+import NotificationDialog from '../../util/NotificationDialog';
+import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -122,6 +124,8 @@ export default function ChatPanel(props) {
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
 	const { id: channelID, type: viewTypeRaw } = useParams<{ id: string; type: string }>();
+
+	const matchedData = useSelector(selectQueueMatch);
 
 	const hasUserChanges = useSelector(selectHasUserChanges);
 
@@ -251,6 +255,14 @@ export default function ChatPanel(props) {
 					}
 				</Box>
 			</Box>
+			<NotificationDialog
+				message="You'll be able to video chat with them for 5 minutes. After that, you'll be asked if you'd like to continue talking, or rejoin the 1:1 networking queue!"
+				onClose={() => {
+					dispatch(setQueueState({ match: undefined }));
+				}}
+				show={Boolean(matchedData?.channelID === channelID && displayData)}
+				title={`You've been matched with ${displayData?.title}!`}
+			/>
 		</Card>
 	);
 }

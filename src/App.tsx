@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import store from './store';
 import { BrowserRouter, Route, Redirect, Switch, useHistory } from 'react-router-dom';
 import HomePage from './components/routes/HomePage';
