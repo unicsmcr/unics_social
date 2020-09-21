@@ -1,9 +1,8 @@
-import { Box, Button, Card, Container, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
-import React from 'react';
+import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueState } from '../../../store/slices/AuthSlice';
+import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueOptions, selectQueueState, setQueueState } from '../../../store/slices/AuthSlice';
 import Page from '../../Page';
-import NotificationDialog from '../../util/NotificationDialog';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -13,7 +12,7 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(8, 2, 0, 2)
 	},
 	mainContent: {
-		padding: theme.spacing(8, 2, 0, 2),
+		padding: theme.spacing(0, 2, 0, 2),
 		textAlign: 'center'
 	},
 	padded: {
@@ -26,15 +25,52 @@ const useStyles = makeStyles(theme => ({
 
 function JoinQueue() {
 	const dispatch = useDispatch();
+	const uxOptions = useSelector(selectQueueOptions);
 	const classes = useStyles();
+
+	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean }>({
+		sameYear: true
+	});
+
 	return <>
-		<Paper elevation={2}>
-			<Typography variant="body1" align="center" color="textSecondary" component="p" className={classes.padded}>
+		<Typography variant="body1" align="center" color="textSecondary" component="p" className={classes.padded}>
 				Join the 1:1 Networking Queue to be paired up with another random KB user! You'll be able to chat to each other for 5 minutes, and then you can either continue speaking to them or join the queue again.
-			</Typography>
+		</Typography>
+		<Paper elevation={2} className={classes.padded}>
+			<FormGroup>
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={matchOptions.sameYear}
+							onChange={e => setMatchOptions({ ...matchOptions, sameYear: e.target.checked })}
+							name="sameYear"
+							color="primary"
+						/>
+					}
+					label="Only match with users in the same year"
+				/>
+			</FormGroup>
+			<FormGroup>
+				<FormControlLabel
+					control={
+						<Checkbox
+							checked={uxOptions.autoJoinVideo}
+							onChange={e => dispatch(setQueueState({
+								uxOptions: {
+									...uxOptions,
+									autoJoinVideo: e.target.checked
+								}
+							}))}
+							name="autoJoinVideo"
+							color="primary"
+						/>
+					}
+					label="Join video automatically"
+				/>
+			</FormGroup>
 		</Paper>
 		<Button variant="contained" color="primary" className={classes.marginTop} onClick={() => {
-			dispatch(joinDiscoveryQueue({ sameYear: true }));
+			dispatch(joinDiscoveryQueue(matchOptions));
 		}}>Join the queue</Button>
 	</>;
 }
