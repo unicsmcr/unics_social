@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
 	},
 	marginTop: {
 		marginTop: theme.spacing(4)
+	},
+	form: {
+		textAlign: 'left'
 	}
 }));
 
@@ -37,7 +40,7 @@ function JoinQueue() {
 				Join the 1:1 Networking Queue to be paired up with another random KB user! You'll be able to chat to each other for 5 minutes, and then you can either continue speaking to them or join the queue again.
 		</Typography>
 		<Paper elevation={2} className={classes.padded}>
-			<FormGroup>
+			<FormGroup className={classes.form}>
 				<FormControlLabel
 					control={
 						<Checkbox
@@ -49,8 +52,6 @@ function JoinQueue() {
 					}
 					label="Only match with users in the same year"
 				/>
-			</FormGroup>
-			<FormGroup>
 				<FormControlLabel
 					control={
 						<Checkbox
