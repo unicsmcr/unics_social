@@ -27,6 +27,7 @@ export default function FocusedPage({ children }) {
 	const classes = useStyles();
 	const ref = useRef<HTMLDivElement>(null);
 
+	/*
 	useEffect(() => {
 		const resize = () => {
 			if (ref.current) {
@@ -37,6 +38,7 @@ export default function FocusedPage({ children }) {
 		window.addEventListener('resize', resize);
 		return () => window.removeEventListener('resize', resize);
 	}, [ref]);
+	*/
 	return (
 		<>
 			<div className={classes.root} ref={ref}>

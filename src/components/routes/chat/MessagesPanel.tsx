@@ -139,7 +139,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 					}
 				}
 			}}>
-				<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
+				<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }} autoFocus
 					ref={inputBoxRef}
 					onClick={() => {
 						let count = 20;
