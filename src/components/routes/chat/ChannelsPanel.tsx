@@ -22,10 +22,9 @@ const useStyles = makeStyles(theme => ({
 		}
 	},
 	channelsPanel: {
-		width: DRAWER_WIDTH
-	},
-	channelsList: {
-		overflow: 'auto'
+		width: DRAWER_WIDTH,
+		overflow: 'auto',
+		height: '100%'
 	}
 }));
 
@@ -71,7 +70,7 @@ export default function ChannelsPanel() {
 
 	return <Box className={classes.root}>
 		<div className={classes.channelsPanel}>
-			<List component="nav" aria-label="channels" className={classes.channelsList} >
+			<List component="nav" aria-label="channels" >
 				{
 					generateList()
 				}
