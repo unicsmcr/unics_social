@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { client } from '../../components/util/makeClient';
 import { QueueOptions } from '@unicsmcr/unics_social_api_client';
-import asAPIError from '../../components/util/asAPIError';
-import { Queue } from '@material-ui/icons';
 
 export enum QueueStatus {
 	InQueue,
@@ -15,6 +13,10 @@ export enum QueueStatus {
 export interface QueueState {
 	status: QueueStatus;
 	errorMessage: string;
+	match?: {
+		channelID: string;
+		startTime: number;
+	};
 }
 
 interface AuthSliceState {
@@ -55,6 +57,9 @@ export const AuthSlice = createSlice({
 					localStorage.removeItem('jwt');
 				}
 			}
+		},
+		setQueueState: (state, action: { payload: QueueState }) => {
+			state.queue = action.payload;
 		},
 		setQueueStatus: (state, action) => {
 			state.queue.status = action.payload;
@@ -98,7 +103,7 @@ export const AuthSlice = createSlice({
 	}
 });
 
-export const { setJWT, setQueueStatus, setConnected } = AuthSlice.actions;
+export const { setJWT, setQueueState, setQueueStatus, setConnected } = AuthSlice.actions;
 
 export const selectJWT = state => state.auth.jwt;
 
