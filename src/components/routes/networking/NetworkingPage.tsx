@@ -1,4 +1,4 @@
-import { Box, Button, Checkbox, Container, FormControlLabel, FormGroup, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
+import { Box, Button, Checkbox, CircularProgress, Container, FormControlLabel, FormGroup, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueOptions, selectQueueState, setQueueState } from '../../../store/slices/AuthSlice';
@@ -91,6 +91,26 @@ function InQueue() {
 	</>;
 }
 
+function Failed() {
+	const classes = useStyles();
+	const state = useSelector(selectQueueState);
+	const dispatch = useDispatch();
+	return <>
+		<Paper elevation={2}>
+			<Typography variant="body1" align="center" color="textSecondary" component="p" className={classes.padded}>
+				{ state.errorMessage }
+			</Typography>
+			<LinearProgress />
+		</Paper>
+		<Button variant="outlined" color="primary" className={classes.marginTop} onClick={() => {
+			dispatch(setQueueState({
+				errorMessage: '',
+				status: QueueStatus.Idle
+			}));
+		}}>Try again</Button>
+	</>;
+}
+
 export default function NetworkingPage() {
 	const classes = useStyles();
 	const queueState = useSelector(selectQueueState);
@@ -101,8 +121,11 @@ export default function NetworkingPage() {
 				return <JoinQueue />;
 			case QueueStatus.InQueue:
 				return <InQueue />;
-			default:
-				return <h2>hi</h2>;
+			case QueueStatus.Joining:
+			case QueueStatus.Leaving:
+				return <CircularProgress />;
+			case QueueStatus.Failed:
+				return <Failed />;
 		}
 	};
 
@@ -120,13 +143,6 @@ export default function NetworkingPage() {
 				}
 			</Container>
 			{/* End hero unit */}
-			{/*
-		<NotificationDialog
-			title="Failed to login"
-			message={state.formError}
-			show={Boolean(state.formError)}
-			onClose={() => setState({ ...state, formError: '' })}
-		/>*/}
 		</Box>
 	</Page>;
 }
