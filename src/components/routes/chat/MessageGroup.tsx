@@ -1,13 +1,11 @@
 import React, { useCallback, useEffect } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
 import Message from './Message';
 import { OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, selectUserById } from '../../../store/slices/UsersSlice';
-import getIcon from '../../util/getAvatar';
 import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -27,11 +25,6 @@ interface MessageGroupProps {
 const useStyles = makeStyles(theme => ({
 	messageGroup: {
 		paddingBottom: theme.spacing(1)
-	},
-	avatar: {
-		marginRight: theme.spacing(1),
-		width: theme.spacing(4),
-		height: theme.spacing(4)
 	},
 	userInfo: {
 		display: 'flex',
@@ -137,13 +130,6 @@ export default function MessageGroup({ messages, align, authorID }: MessageGroup
 	}
 
 	return <Box style={{ textAlign: align }} className={classes.messageGroup}>
-		{ align === Align.Left && <Box className={classes.userInfo} >
-			<Avatar src={getIcon(author)} className={classes.avatar} />
-			<Typography variant="subtitle2">
-				{author.forename}
-			</Typography>
-		</Box>
-		}
 		{
 			messages.map(message => <Message message={message} id={message.id} isOwn={align === Align.Right} key={message.id} />)
 		}
