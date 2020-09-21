@@ -1,17 +1,18 @@
-import React, { useEffect, useRef } from 'react';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AutoAppBar from './AutoAppBar';
+import React, { useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
 		position: 'fixed',
-		top: 0,
+		top: 65,
 		bottom: 0,
 		left: 0,
-		right: 0
+		right: 0,
+		[theme.breakpoints.down('sm')]: {
+			top: 57
+		}
 	},
 	main: {
 		flexGrow: 1,
@@ -26,6 +27,7 @@ export default function FocusedPage({ children }) {
 	const classes = useStyles();
 	const ref = useRef<HTMLDivElement>(null);
 
+	/*
 	useEffect(() => {
 		const resize = () => {
 			if (ref.current) {
@@ -36,11 +38,10 @@ export default function FocusedPage({ children }) {
 		window.addEventListener('resize', resize);
 		return () => window.removeEventListener('resize', resize);
 	}, [ref]);
+	*/
 	return (
 		<>
-			<CssBaseline />
 			<div className={classes.root} ref={ref}>
-				<AutoAppBar />
 				<div className={classes.main}>
 					{ children }
 				</div>

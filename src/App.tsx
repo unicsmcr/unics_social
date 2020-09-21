@@ -10,9 +10,10 @@ import ProtectedRoute from './components/util/ProtectedRoute';
 import PublicRoute from './components/util/PublicRoute';
 import { Provider, useSelector } from 'react-redux';
 import ChatPage from './components/routes/chat/ChatsPage';
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import NetworkingPage from './components/routes/networking/NetworkingPage';
 import { selectQueueMatch, selectQueueOptions } from './store/slices/AuthSlice';
+import AutoAppBar from './components/AutoAppBar';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
@@ -33,9 +34,11 @@ function AppLayer({ children }) {
 function App() {
 	return (
 		<ThemeProvider theme={createMuiTheme()}>
+			<CssBaseline />
 			<div>
 				<Provider store={store}>
 					<BrowserRouter>
+						<AutoAppBar />
 						<AppLayer>
 							<Switch>
 								<Route path="/" exact component={HomePage} />
