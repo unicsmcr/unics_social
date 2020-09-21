@@ -111,4 +111,6 @@ export const selectConnected = state => state.auth.connected;
 
 export const selectQueueState = (state: { auth: AuthSliceState }) => state.auth.queue;
 
+export const selectQueueMatch = (state: { auth: AuthSliceState }) => selectQueueState(state).match;
+
 export default AuthSlice.reducer;
