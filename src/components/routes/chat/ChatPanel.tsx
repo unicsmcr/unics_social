@@ -9,22 +9,20 @@ import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import MenuIcon from '@material-ui/icons/Menu';
+import GroupIcon from '@material-ui/icons/Group';
 import { DRAWER_WIDTH } from './ChannelsPanel';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
-import { APIDMChannel, APIEvent, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
+import { selectChannel } from '../../../store/slices/ChannelsSlice';
+import { APIDMChannel, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
-import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useHistory, useParams } from 'react-router-dom';
 import UserInfoPanel from './UserInfoPanel';
 import { Badge, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
 import VideoPanel from './video/VideoPanel';
@@ -106,11 +104,10 @@ export interface ChannelDisplayData {
 }
 
 const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, meId: string) => {
-	if (!channel) return () => undefined;
-	if (channel.type === 'dm') {
+	if (channel?.type === 'dm') {
 		return selectUserById(channel.users.find(userId => userId !== meId)!);
 	}
-	return selectEvent(channel.event.id);
+	return () => undefined;
 };
 
 enum ViewType {
@@ -134,7 +131,7 @@ export default function ChatPanel(props) {
 	const me = useSelector(selectMe);
 
 	const channel = useSelector(selectChannel(channelID));
-	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
+	const resource: APIUser|undefined = useSelector(selectChannelResource(channel, me!.id));
 
 	useEffect(() => {
 		if (channel?.type === 'dm' && channel.video) {
@@ -145,10 +142,6 @@ export default function ChatPanel(props) {
 			}
 		}
 	}, [channel]);
-
-	useEffect(() => {
-		if (channelID && !channel) dispatch(fetchChannels());
-	}, [channel, channelID, dispatch]);
 
 	useEffect(() => {
 		if (me && channel && !resource) {
@@ -163,19 +156,11 @@ export default function ChatPanel(props) {
 
 	let displayData: ChannelDisplayData|undefined;
 	if (resource) {
-		if (resource.hasOwnProperty('forename')) {
-			const user = resource as APIUser;
-			displayData = {
-				title: `${user.forename} ${user.surname}`,
-				image: getIcon(user)
-			};
-		} else {
-			const event = resource as APIEvent;
-			displayData = {
-				title: event.title,
-				image: getIcon(event)
-			};
-		}
+		const user = resource;
+		displayData = {
+			title: `${user.forename} ${user.surname}`,
+			image: getIcon(user)
+		};
 	}
 
 	const requestedViewType: ViewType = (viewTypeRaw === 'video' && channel?.type === 'dm') ? ViewType.Video : ViewType.Messages;
@@ -199,11 +184,7 @@ export default function ChatPanel(props) {
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
 			resource
-				? (
-					resource.hasOwnProperty('forename')
-						? <UserInfoPanel user={resource as APIUser} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
-						: <EventInfoPanel event={resource as APIEvent} />
-				)
+				? <UserInfoPanel user={resource} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
 				: <CircularProgress />
 		}
 	</Box>;
@@ -217,8 +198,8 @@ export default function ChatPanel(props) {
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
 								{
 									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0] !== channelID)
-										? <Badge variant="dot" color="secondary"><MenuIcon /></Badge>
-										: <MenuIcon />
+										? <Badge variant="dot" color="secondary"><GroupIcon /></Badge>
+										: <GroupIcon />
 								}
 							</IconButton>
 						}

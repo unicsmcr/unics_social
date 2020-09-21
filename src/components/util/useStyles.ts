@@ -27,9 +27,6 @@ const useStyles = makeStyles(theme => ({
 	'paddedCaption': {
 		padding: theme.spacing(2, 0, 2, 0)
 	},
-	'eventCard': {
-		width: '25em'
-	},
 	'footer': {
 		borderTop: `1px solid ${theme.palette.divider}`,
 		marginTop: theme.spacing(8),
@@ -39,9 +36,6 @@ const useStyles = makeStyles(theme => ({
 			paddingTop: theme.spacing(6),
 			paddingBottom: theme.spacing(6)
 		}
-	},
-	'media': {
-		height: '13em'
 	}
 }));
 

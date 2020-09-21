@@ -9,7 +9,6 @@ import AccountSettingsPage from './components/routes/AccountSettings';
 import ProtectedRoute from './components/util/ProtectedRoute';
 import PublicRoute from './components/util/PublicRoute';
 import { Provider, useSelector } from 'react-redux';
-import EventPage from './components/routes/EventPage';
 import ChatPage from './components/routes/chat/ChatsPage';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import NetworkingPage from './components/routes/networking/NetworkingPage';
@@ -45,7 +44,6 @@ function App() {
 								<PublicRoute path="/verify" exact component={VerifyEmailPage} />
 								<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
 								<ProtectedRoute path="/networking" exact component={NetworkingPage} />
-								<ProtectedRoute path="/events/:id" exact component={EventPage}/>
 								<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
 								<Redirect to="/" />
 							</Switch>
