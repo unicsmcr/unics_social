@@ -22,7 +22,7 @@ import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
 import { useParams } from 'react-router-dom';
 import UserInfoPanel from './UserInfoPanel';
-import { Badge, CircularProgress, Drawer } from '@material-ui/core';
+import { Badge, Chip, CircularProgress, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
@@ -30,6 +30,7 @@ import MessagesPanel from './MessagesPanel';
 import VideoPanel from './video/VideoPanel';
 import NotificationDialog from '../../util/NotificationDialog';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
+import Timer from './Timer';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -219,10 +220,15 @@ export default function ChatPanel(props) {
 							<Typography variant="h6" noWrap>
 								{
 									displayData
-										? displayData.title
+										? <>
+											{displayData.title}
+										</>
 										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
 								}
 							</Typography>
+							{
+								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && <Timer endTime={new Date(channel.video.endTime)} />
+							}
 						</>
 						}
 						{
