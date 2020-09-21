@@ -20,9 +20,9 @@ import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import { selectEvent } from '../../../store/slices/EventsSlice';
 import getIcon from '../../util/getAvatar';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import UserInfoPanel from './UserInfoPanel';
-import { Badge, Chip, CircularProgress, Drawer } from '@material-ui/core';
+import { Badge, Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Drawer } from '@material-ui/core';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import EventInfoPanel from './EventInfoPanel';
 import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
@@ -125,15 +125,26 @@ export default function ChatPanel(props) {
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
 	const { id: channelID, type: viewTypeRaw } = useParams<{ id: string; type: string }>();
+	const [hasEnded, setHasEnded] = useState(false);
+	const history = useHistory();
 
 	const matchedData = useSelector(selectQueueMatch);
-
 	const hasUserChanges = useSelector(selectHasUserChanges);
 
 	const me = useSelector(selectMe);
 
 	const channel = useSelector(selectChannel(channelID));
 	const resource: APIUser|APIEvent = useSelector(selectChannelResource(channel, me!.id));
+
+	useEffect(() => {
+		if (channel?.type === 'dm' && channel.video) {
+			const endTime = new Date(channel.video.endTime).getTime();
+			if (Date.now() < endTime) {
+				const timeout = setTimeout(() => setHasEnded(true), endTime - Date.now());
+				return () => clearTimeout(timeout);
+			}
+		}
+	}, [channel]);
 
 	useEffect(() => {
 		if (channelID && !channel) dispatch(fetchChannels());
@@ -269,6 +280,34 @@ export default function ChatPanel(props) {
 				show={Boolean(matchedData?.channelID === channelID && displayData)}
 				title={`You've been matched with ${displayData?.title}!`}
 			/>
+
+			<Dialog
+				open={Boolean(channel) && hasEnded}
+				onClose={() => {
+					setHasEnded(false);
+					history.replace(history.location.pathname.replace('/video', ''));
+				}}>
+				<DialogTitle>Time's up!</DialogTitle>
+				<DialogContent>
+					<DialogContentText>
+						Your 5 minutes are up! You can continue chatting over text, or you can rejoin the 1:1 networking queue!
+					</DialogContentText>
+				</DialogContent>
+				<DialogActions>
+					<Button onClick={() => {
+						setHasEnded(false);
+						history.replace(history.location.pathname.replace('/video', ''));
+					}}>
+						Continue Chatting
+					</Button>
+					<Button color="primary" onClick={() => {
+						setHasEnded(false);
+						history.push('/networking');
+					}}>
+						Chat to Someone New
+					</Button>
+				</DialogActions>
+			</Dialog>
 		</Card>
 	);
 }

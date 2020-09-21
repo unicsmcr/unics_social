@@ -49,7 +49,8 @@ function translateVideoError(error: Error|TwilioError) {
 			case 53103:
 			case 53106:
 			case 53118:
-				return 'Your call time is up! You can still carry on the conversation with text chat, or you can connect with eachother on a different platform!';
+				// return 'Your call time is up! You can still carry on the conversation with text chat, or you can connect with eachother on a different platform!';
+				return undefined;
 			case 53405:
 				return 'Your internet connection is unstable, or your firewall is preventing a connection to the video chat provider.';
 		}
@@ -123,7 +124,8 @@ export default function VideoPanel(props: VideoPanelProps) {
 				_room.once('disconnected', (room, error) => {
 					if (error) {
 						console.error(error);
-						setError(translateVideoError(error));
+						const translated = translateVideoError(error);
+						if (translated) setError(translated);
 					}
 				});
 			}
