@@ -13,16 +13,19 @@ import EventPage from './components/routes/EventPage';
 import ChatPage from './components/routes/chat/ChatsPage';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import NetworkingPage from './components/routes/networking/NetworkingPage';
-import { selectQueueMatch } from './store/slices/AuthSlice';
+import { selectQueueMatch, selectQueueOptions } from './store/slices/AuthSlice';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
+	const uxOptions = useSelector(selectQueueOptions);
 	const history = useHistory();
 
 	useEffect(() => {
 		if (match) {
-			history.push(`/chats/${match.channelID}`);
+			const extra = uxOptions.autoJoinVideo ? '/video' : '';
+			history.push(`/chats/${match.channelID}${extra}`);
 		}
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [match, history]);
 
 	return children;

@@ -13,6 +13,9 @@ export enum QueueStatus {
 export interface QueueState {
 	status: QueueStatus;
 	errorMessage: string;
+	uxOptions: {
+		autoJoinVideo: boolean;
+	};
 	match?: {
 		channelID: string;
 		startTime: number;
@@ -29,7 +32,10 @@ const initialState: AuthSliceState = {
 	jwt: localStorage.getItem('jwt'),
 	queue: {
 		status: QueueStatus.Idle,
-		errorMessage: ''
+		errorMessage: '',
+		uxOptions: {
+			autoJoinVideo: false
+		}
 	},
 	connected: false
 };
@@ -51,6 +57,7 @@ export const AuthSlice = createSlice({
 					client.destroy();
 					state.connected = false;
 					state.queue = {
+						...state.queue,
 						status: QueueStatus.Idle,
 						errorMessage: ''
 					};
@@ -58,8 +65,11 @@ export const AuthSlice = createSlice({
 				}
 			}
 		},
-		setQueueState: (state, action: { payload: QueueState }) => {
-			state.queue = action.payload;
+		setQueueState: (state, action: { payload: Partial<QueueState> }) => {
+			state.queue = {
+				...state.queue,
+				...action.payload
+			};
 		},
 		setQueueStatus: (state, action) => {
 			state.queue.status = action.payload;
@@ -68,6 +78,7 @@ export const AuthSlice = createSlice({
 			state.connected = action.payload;
 			if (!state.connected) {
 				state.queue = {
+					...state.queue,
 					status: QueueStatus.Idle,
 					errorMessage: ''
 				};
@@ -112,5 +123,7 @@ export const selectConnected = state => state.auth.connected;
 export const selectQueueState = (state: { auth: AuthSliceState }) => state.auth.queue;
 
 export const selectQueueMatch = (state: { auth: AuthSliceState }) => selectQueueState(state).match;
+
+export const selectQueueOptions = (state: { auth: AuthSliceState }) => selectQueueState(state).uxOptions;
 
 export default AuthSlice.reducer;
