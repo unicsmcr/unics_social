@@ -1,8 +1,8 @@
-import { Avatar, Fab, IconButton, Typography } from '@material-ui/core';
+import { Avatar, Divider, Fab, IconButton, Paper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { APIDMChannel, APIUser } from '@unicsmcr/unics_social_api_client';
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import getIcon from '../../util/getAvatar';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
@@ -12,6 +12,8 @@ import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
 import { useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { useHistory } from 'react-router-dom';
+import pickQuestions from '../../util/SampleQuestions';
+import { grey } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -20,7 +22,9 @@ const useStyles = makeStyles(theme => ({
 		alignItems: 'center',
 		flexDirection: 'column',
 		height: '100%',
-		width: '100%'
+		width: '100%',
+		background: grey[200],
+		overflow: 'auto'
 	},
 	avatar: {
 		width: theme.spacing(18),
@@ -29,6 +33,23 @@ const useStyles = makeStyles(theme => ({
 	},
 	videoBox: {
 		margin: theme.spacing(1, 0, 4, 0)
+	},
+	sampleQuestions: {
+		'width': '100%',
+		'margin': theme.spacing(2, 0),
+		'padding': theme.spacing(1),
+		'textAlign': 'left',
+		'& ul': {
+			paddingLeft: theme.spacing(3)
+		},
+		'& li': {
+			padding: theme.spacing(1, 0, 0, 1)
+		}
+	},
+	questionsTitle: {
+		textAlign: 'center',
+		display: 'block',
+		paddingTop: theme.spacing(1)
 	}
 }));
 
@@ -76,6 +97,12 @@ export function SocialMediaIcon({ handle, type }: { handle: string; type: Social
 export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelProps) {
 	const classes = useStyles();
 	const history = useHistory();
+
+	const [questions, setQuestions] = useState(pickQuestions(3));
+
+	useLayoutEffect(() => {
+		setQuestions(pickQuestions(3));
+	}, [user.id]);
 
 	const me = useSelector(selectMe);
 
@@ -126,10 +153,23 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 				<Typography variant="subtitle2">
 					{user.profile.course}
 				</Typography>
-				<Typography variant="subtitle2">
+				<Typography variant="subtitle2" gutterBottom>
 					{user.profile.yearOfStudy}
 				</Typography>
 			</>
 		}
+		<Paper elevation={1} className={classes.sampleQuestions}>
+			<Typography variant="overline" align="center" className={classes.questionsTitle}>
+			Questions to ask
+			</Typography>
+			<ul>
+				{
+					questions.map(question => (
+						<li><Typography key={question} gutterBottom>
+							{question}
+						</Typography></li>))
+				}
+			</ul>
+		</Paper>
 	</Box>;
 }

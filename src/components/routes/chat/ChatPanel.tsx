@@ -92,8 +92,8 @@ const useStyles = makeStyles(theme => ({
 		width: 'min(300px, 50vw)'
 	},
 	infoPanel: {
-		background: 'rgba(255, 255, 255, 0.6)',
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
+		height: '100%',
 		gridColumn: 2
 	}
 }));
