@@ -25,6 +25,5 @@ export const SAMPLE_QUESTIONS = [
 	'Have you visited Manchester before?',
 	'What societies have you joined or planning to join?',
 	'What do you do for fun?',
-	'Do you have any prior experience?',
 	'What do you want to do after graduating?'
 ];

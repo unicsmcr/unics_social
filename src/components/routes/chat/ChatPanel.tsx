@@ -57,6 +57,7 @@ const useStyles = makeStyles(theme => ({
 		top: 0,
 		bottom: 0,
 		right: 0,
+		backgroundColor: '#BABABA',
 		background: `url(${require('../../../assets/chat_bg.png')})`,
 		transition: theme.transitions.create(['left'], {
 			easing: theme.transitions.easing.sharp,
@@ -254,7 +255,7 @@ export default function ChatPanel(props) {
 				</Box>
 			</Box>
 			<NotificationDialog
-				message="You'll be able to video chat with them for 5 minutes. After that, you'll be asked if you'd like to continue talking, or rejoin the 1:1 networking queue!"
+				message="You'll be able to video chat with them for 5 minutes. After that, you'll be asked if you'd like to continue talking, or rejoin the networking queue!"
 				onClose={() => {
 					dispatch(setQueueState({ match: undefined }));
 				}}
@@ -271,7 +272,7 @@ export default function ChatPanel(props) {
 				<DialogTitle>Time's up!</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Your 5 minutes are up! You can continue chatting over text, or you can rejoin the 1:1 networking queue!
+						Your 5 minutes are up! You can continue chatting over text, or you can rejoin the networking queue!
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>

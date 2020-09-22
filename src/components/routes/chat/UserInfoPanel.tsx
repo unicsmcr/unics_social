@@ -98,7 +98,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 	const classes = useStyles();
 	const history = useHistory();
 
-	const [questions, setQuestions] = useState(pickQuestions(3));
+	const [questions, setQuestions] = useState<string[]>([]);
 
 	useLayoutEffect(() => {
 		setQuestions(pickQuestions(3));
