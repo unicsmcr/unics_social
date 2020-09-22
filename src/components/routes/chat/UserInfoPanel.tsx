@@ -1,4 +1,4 @@
-import { Avatar, Divider, Fab, IconButton, Paper, Typography } from '@material-ui/core';
+import { Avatar, Fab, IconButton, Paper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { APIDMChannel, APIUser } from '@unicsmcr/unics_social_api_client';
