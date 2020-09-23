@@ -58,7 +58,8 @@ const AUTH_LINKS = [
 	['Home', '/'],
 	['Chats', '/chats'],
 	['Networking', '/networking'],
-	['Account Settings', '/account']
+	['Account Settings', '/account'],
+	['Discord', '/discord']
 ];
 
 export function AppDrawer(props) {
