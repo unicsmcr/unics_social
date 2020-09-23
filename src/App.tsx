@@ -14,11 +14,13 @@ import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core';
 import NetworkingPage from './components/routes/networking/NetworkingPage';
 import { selectQueueMatch, selectQueueOptions } from './store/slices/AuthSlice';
 import AutoAppBar from './components/AutoAppBar';
+import DiscordIntroPage from './components/routes/discord/DiscordIntroPage';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
 	const uxOptions = useSelector(selectQueueOptions);
 	const history = useHistory();
+	const discordOAuthPage = history.location.pathname.includes('discord_link');
 
 	useEffect(() => {
 		if (match) {
@@ -28,7 +30,12 @@ function AppLayer({ children }) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [match, history]);
 
-	return children;
+	return discordOAuthPage
+		? children
+		: <>
+			<AutoAppBar />
+			{ children }
+		</>;
 }
 
 function App() {
@@ -38,7 +45,6 @@ function App() {
 			<div>
 				<Provider store={store}>
 					<BrowserRouter>
-						<AutoAppBar />
 						<AppLayer>
 							<Switch>
 								<Route path="/" exact component={HomePage} />
@@ -47,6 +53,7 @@ function App() {
 								<PublicRoute path="/verify" exact component={VerifyEmailPage} />
 								<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
 								<ProtectedRoute path="/networking" exact component={NetworkingPage} />
+								<ProtectedRoute path="/discord" exact component={DiscordIntroPage} />
 								<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
 								<Redirect to="/" />
 							</Switch>
