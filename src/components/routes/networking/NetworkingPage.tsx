@@ -15,7 +15,13 @@ const useStyles = makeStyles(theme => ({
 		padding: theme.spacing(0, 2, 0, 2),
 		textAlign: 'center'
 	},
+	paddedPg: {
+		padding: theme.spacing(1, 0),
+		textAlign: 'justify',
+		textJustify: 'inter-word'
+	},
 	padded: {
+		marginTop: theme.spacing(2),
 		padding: theme.spacing(2)
 	},
 	marginTop: {
@@ -36,8 +42,17 @@ function JoinQueue() {
 	});
 
 	return <>
-		<Typography variant="body1" align="center" color="textSecondary" component="p" className={classes.padded}>
-				Join the 1:1 Networking Queue to be paired up with another random KB user! You'll be able to chat to each other for 5 minutes, and then you can either continue speaking to them or join the queue again.
+		<Typography variant="body1" align="center" component="p" className={classes.paddedPg}>
+			Welcome to KB Networking! This is a great place to find new friends, and we're happy you're here.
+		</Typography>
+		<Typography variant="body1" align="center" component="p" className={classes.paddedPg}>
+			Click the button below to join the Networking Queue. Here, we'll try to pair you up with someone that you've not spoken to on KB before. Once you're paired up, you have 5 minutes to chat to each other! You're able to video chat for this time after you've been paired, and chat over text for however long you want!
+		</Typography>
+		<Typography variant="body1" align="center" component="p" className={classes.paddedPg}>
+			Once your 5 minutes are over, you'll have the option to join the queue again and be paired with someone new, or continue your conversation if it's going well!
+		</Typography>
+		<Typography variant="body1" align="center" component="p" className={classes.paddedPg}>
+			If it's not going so well, you can end the call whenever you want. We hope this will never be the case, but if you come across any abusive and/or disturbing actions, please block the user and report them to us, where we will then pass on their details and your report to the Student Support Office (SSO).
 		</Typography>
 		<Paper elevation={2} className={classes.padded}>
 			<FormGroup className={classes.form}>
@@ -72,7 +87,7 @@ function JoinQueue() {
 		</Paper>
 		<Button variant="contained" color="primary" className={classes.marginTop} onClick={() => {
 			dispatch(joinDiscoveryQueue(matchOptions));
-		}}>Join the queue</Button>
+		}}>Chat to someone new!</Button>
 	</>;
 }
 
@@ -135,7 +150,7 @@ export default function NetworkingPage() {
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="main" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-				1-to-1 Networking
+					Networking
 				</Typography>
 			</Container>
 			<Container maxWidth="sm" component="section" className={classes.mainContent}>

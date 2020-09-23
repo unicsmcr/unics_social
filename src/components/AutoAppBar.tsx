@@ -57,7 +57,7 @@ const GUEST_LINKS = [
 const AUTH_LINKS = [
 	['Home', '/'],
 	['Chats', '/chats'],
-	['1-to-1 Networking', '/networking'],
+	['Networking', '/networking'],
 	['Account Settings', '/account']
 ];
 
@@ -131,7 +131,7 @@ export default function AutoAppBar() {
 							hasJWT
 								? <>
 									<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
-									<Button color="inherit" component={RouterLink} to="/networking">1:1 Networking</Button>
+									<Button color="inherit" component={RouterLink} to="/networking">Networking</Button>
 									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
 									<Button href="#" color="inherit" variant="outlined" className={classes.link} onClick={logout}>
 											Logout
