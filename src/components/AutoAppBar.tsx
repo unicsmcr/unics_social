@@ -85,12 +85,15 @@ export function AppDrawer(props) {
 				))
 			}
 			{
-				props.hasJWT && <ListItem button className={classes.drawerItem} onClick={() => {
-					props.onClose();
-					props.onLogout();
-				}}>
-					<ListItemText>Logout</ListItemText>
-				</ListItem>
+				props.hasJWT && <>
+					<Divider />
+					<ListItem button className={classes.drawerItem} onClick={() => {
+						props.onClose();
+						props.onLogout();
+					}}>
+						<ListItemText>Logout</ListItemText>
+					</ListItem>
+				</>
 			}
 		</List>
 	</Drawer>;
