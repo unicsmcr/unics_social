@@ -1,4 +1,4 @@
-import { Avatar, Fab, IconButton, Paper, Typography } from '@material-ui/core';
+import { Avatar, Button, Fab, IconButton, Paper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
 import { APIDMChannel, APIUser } from '@unicsmcr/unics_social_api_client';
@@ -14,6 +14,7 @@ import { selectMe } from '../../../store/slices/UsersSlice';
 import { useHistory } from 'react-router-dom';
 import pickQuestions from '../../util/SampleQuestions';
 import { grey } from '@material-ui/core/colors';
+import { ReportModal } from './ReportModal';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -99,6 +100,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 	const history = useHistory();
 
 	const [questions, setQuestions] = useState<string[]>([]);
+	const [reportOpen, setReportOpen] = useState<boolean>(false);
 
 	useLayoutEffect(() => {
 		setQuestions(pickQuestions(3));
@@ -165,11 +167,17 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 			<ul>
 				{
 					questions.map(question => (
-						<li><Typography key={question} gutterBottom>
+						<li key={question}><Typography gutterBottom>
 							{question}
 						</Typography></li>))
 				}
 			</ul>
 		</Paper>
+
+		<ReportModal open={reportOpen} onClose={() => setReportOpen(false)} againstUser={user} />
+
+		<Button variant="outlined" onClick={() => setReportOpen(true)}>
+				Report User
+		</Button>
 	</Box>;
 }
