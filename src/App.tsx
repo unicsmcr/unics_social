@@ -16,6 +16,7 @@ import { selectQueueMatch, selectQueueOptions } from './store/slices/AuthSlice';
 import AutoAppBar from './components/AutoAppBar';
 import DiscordIntroPage from './components/routes/discord/DiscordIntroPage';
 import DiscordLinkerPage from './components/routes/discord/DiscordLinkerPage';
+import ResetPasswordPage from './components/routes/ResetPassword';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
@@ -56,6 +57,7 @@ function App() {
 								<ProtectedRoute path="/networking" exact component={NetworkingPage} />
 								<ProtectedRoute path="/discord" exact component={DiscordIntroPage} />
 								<Route path="/discord_link" exact component={DiscordLinkerPage} />
+								<Route path="/reset_password" exact component={ResetPasswordPage} />
 								<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
 								<Redirect to="/" />
 							</Switch>

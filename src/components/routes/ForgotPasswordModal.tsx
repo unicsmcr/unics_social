@@ -3,9 +3,10 @@ import React, { useRef, useState } from 'react';
 import asAPIError from '../util/asAPIError';
 import { client } from '../util/makeClient';
 
-interface ResendVerificationEmailModalProps {
+interface ForgotPasswordModalProps {
 	open: boolean;
 	onClose: () => void;
+	email?: string;
 }
 
 const useStyles = makeStyles(theme => ({
@@ -31,7 +32,7 @@ enum ModalState {
 	Finished
 }
 
-export function ResendVerificationEmailModal(props: ResendVerificationEmailModalProps) {
+export function ForgotPasswordModal(props: ForgotPasswordModalProps) {
 	const classes = useStyles();
 
 	const [state, setState] = useState<{
@@ -46,12 +47,13 @@ export function ResendVerificationEmailModal(props: ResendVerificationEmailModal
 			case ModalState.Waiting:
 				return <>
 					<DialogContentText>
-						Haven't received your confirmation email? Please type in your email address below and we'll try to resend it. Alternatively, contact us if it still doesn't arrive.
+						Forgot your password or just want to change it? Enter your email below and we'll send you instructions on how you can reset it.
 					</DialogContentText>
 					<TextField
 						label="Email"
 						variant="outlined"
 						className={classes.textField}
+						defaultValue={props.email}
 						ref={textfieldRef}
 						InputProps={{ type: 'email' }}/>
 					<Box className={classes.buttonBox}>
@@ -62,29 +64,29 @@ export function ResendVerificationEmailModal(props: ResendVerificationEmailModal
 							const email = textarea.value.trim();
 							setState({ state: ModalState.Processing });
 							setTimeout(() => {
-								client.resendVerificationEmail(email)
+								client.forgotPassword(email)
 									.then(() => {
 										setState({
 											state: ModalState.Finished,
-											message: 'Your confirmation email has been resent!'
+											message: 'Your password reset email has been sent!'
 										});
 									})
 									.catch(err => {
 										console.error(err);
-										const message = asAPIError(err) ?? 'An unknown error occurred trying to resend your confirmation email. Please try again later.';
+										const message = asAPIError(err) ?? 'An unknown error occurred trying to send your password reset email. Please try again later.';
 										setState({
 											state: ModalState.Finished,
 											message
 										});
 									});
 							}, 1e3);
-						}}>Resend Email</Button>
+						}}>Send Reset Instructions</Button>
 					</Box>
 				</>;
 			case ModalState.Processing:
 				return <Box className={classes.centered}>
 					<DialogContentText className={classes.spaced}>
-						Resending the confirmation email...
+						Sending the password reset email...
 					</DialogContentText>
 					<CircularProgress className={classes.spaced} />
 				</Box>;
@@ -107,7 +109,7 @@ export function ResendVerificationEmailModal(props: ResendVerificationEmailModal
 		props.onClose();
 		setTimeout(() => setState({ state: ModalState.Waiting }), 250);
 	}}>
-		<DialogTitle>Resend confirmation email</DialogTitle>
+		<DialogTitle>Reset password</DialogTitle>
 		<DialogContent>
 			{ generateBody() }
 		</DialogContent>
