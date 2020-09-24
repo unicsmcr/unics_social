@@ -18,7 +18,7 @@ import { createNote, deleteNote, selectNoteByID } from '../../../store/slices/No
 export interface DMListItemProps {
 	channel: APIDMChannel;
 	selected: boolean;
-	lastReadTime: number;
+	lastReadTime?: number;
 }
 
 const useStyles = makeStyles(() => ({
@@ -72,7 +72,7 @@ export default function DMListItem({ channel, selected, lastReadTime }: DMListIt
 	return <MenuItem button onClick={() => history.push(`/chats/${channel.id}`)} selected={selected}>
 		<ListItemAvatar>
 			{
-				lastReadTime > new Date(channel.lastUpdated).getTime() || selected
+				!lastReadTime || (lastReadTime > new Date(channel.lastUpdated).getTime()) || selected
 					? renderAvatar()
 					: <Badge color="secondary" variant="dot">
 						{ renderAvatar() }
@@ -81,7 +81,7 @@ export default function DMListItem({ channel, selected, lastReadTime }: DMListIt
 		</ListItemAvatar>
 		<ListItemText
 			primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}
-			secondary={moment(channel.lastUpdated).fromNow()}/>
+			secondary={lastReadTime && moment(channel.lastUpdated).fromNow()}/>
 		<ListItemSecondaryAction>
 			{ generateThumb() }
 		</ListItemSecondaryAction>

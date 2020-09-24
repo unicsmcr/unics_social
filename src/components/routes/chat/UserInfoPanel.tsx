@@ -169,7 +169,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 			<ul>
 				{
 					questions.map(question => (
-						<li key={question}><Typography gutterBottom>
+						<li key={question + user.id}><Typography gutterBottom>
 							{question}
 						</Typography></li>))
 				}
