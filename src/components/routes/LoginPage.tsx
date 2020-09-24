@@ -17,6 +17,7 @@ import { setJWT } from '../../store/slices/AuthSlice';
 import Page from '../Page';
 import { Divider, Link } from '@material-ui/core';
 import { ResendVerificationEmailModal } from './ResendVerificationEmailModal';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -42,6 +43,12 @@ enum LoginPageState {
 	Success
 }
 
+enum OpenModal {
+	None,
+	ResendEmail,
+	ForgotPassword
+}
+
 type FormField = 'forename'|'surname'|'email'|'password';
 
 export default function LoginPage() {
@@ -56,7 +63,7 @@ export default function LoginPage() {
 		formError: ''
 	});
 
-	const [resendEmailOpen, setResendEmailOpen] = useState(false);
+	const [openModal, setOpenModal] = useState<OpenModal>(OpenModal.None);
 
 	const changeInput = (key: FormField, value: string) => {
 		setState({
@@ -121,9 +128,15 @@ export default function LoginPage() {
 					<Divider />
 					<Link href="#" color="textSecondary" onClick={e => {
 						e.preventDefault();
-						setResendEmailOpen(true);
+						setOpenModal(OpenModal.ResendEmail);
 					}}>
 						Resend confirmation email
+					</Link>{' | '}
+					<Link href="#" color="textSecondary" onClick={e => {
+						e.preventDefault();
+						setOpenModal(OpenModal.ForgotPassword);
+					}}>
+						Forgot your password?
 					</Link>
 				</form>;
 			case LoginPageState.LoggingIn:
@@ -169,8 +182,12 @@ export default function LoginPage() {
 				onClose={() => setState({ ...state, formError: '' })}
 			/>
 			<ResendVerificationEmailModal
-				open={resendEmailOpen}
-				onClose={() => setResendEmailOpen(false)}
+				open={openModal === OpenModal.ResendEmail}
+				onClose={() => setOpenModal(OpenModal.None)}
+			/>
+			<ForgotPasswordModal
+				open={openModal === OpenModal.ForgotPassword}
+				onClose={() => setOpenModal(OpenModal.None)}
 			/>
 		</Page>
 	);
