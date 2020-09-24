@@ -14,7 +14,7 @@ import { DRAWER_WIDTH } from './ChannelsPanel';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectChannel } from '../../../store/slices/ChannelsSlice';
+import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
@@ -143,6 +143,12 @@ export default function ChatPanel(props) {
 			}
 		}
 	}, [channel]);
+
+	useEffect(() => {
+		if (channelID && !channel) {
+			dispatch(fetchChannels());
+		}
+	}, [channelID, channel, dispatch]);
 
 	useEffect(() => {
 		if (me && channel && !resource) {
