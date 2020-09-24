@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 import { selectReadTimes, startTime } from '../../../store/slices/ReadSlice';
 import { selectNotesByType } from '../../../store/slices/NotesSlice';
 import { selectMe } from '../../../store/slices/UsersSlice';
-import { Button } from '@material-ui/core';
+import { ListItem, ListItemText, Typography } from '@material-ui/core';
 
 export const DRAWER_WIDTH = '20rem';
 
@@ -28,6 +28,9 @@ const useStyles = makeStyles(theme => ({
 		width: DRAWER_WIDTH,
 		overflow: 'auto',
 		height: '100%'
+	},
+	showBlockedText: {
+		textAlign: 'center'
 	}
 }));
 
@@ -87,7 +90,13 @@ export default function ChannelsPanel() {
 			{
 				blockedDmChannels.length > 0 && (
 					<>
-						<Button onClick={() => setShowBlocked(!showBlocked)}>{showBlocked ? 'Hide' : 'Show'} {blockedDmChannels.length} blocked user{blockedDmChannels.length > 1 ? 's' : ''}</Button>
+						<ListItem button onClick={() => setShowBlocked(!showBlocked)}>
+							<ListItemText className={classes.showBlockedText}>
+								<Typography variant="overline">
+									{showBlocked ? 'Hide' : 'Show'} {blockedDmChannels.length} blocked user{blockedDmChannels.length > 1 ? 's' : ''}
+								</Typography>
+							</ListItemText>
+						</ListItem>
 						{
 							showBlocked && <List aria-label="blocked_channels" >
 								{

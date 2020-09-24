@@ -13,6 +13,7 @@ const useStyles = makeStyles(theme => ({
 		'zIndex': theme.zIndex.drawer + 1,
 		'color': '#fff',
 		'flexDirection': 'column',
+		'textAlign': 'center',
 		'& > *': {
 			margin: theme.spacing(4, 0)
 		}
