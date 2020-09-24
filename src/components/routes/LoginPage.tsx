@@ -15,6 +15,8 @@ import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import { useDispatch } from 'react-redux';
 import { setJWT } from '../../store/slices/AuthSlice';
 import Page from '../Page';
+import { Divider, Link } from '@material-ui/core';
+import { ResendVerificationEmailModal } from './ResendVerificationEmailModal';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -53,6 +55,8 @@ export default function LoginPage() {
 		passwordError: '',
 		formError: ''
 	});
+
+	const [resendEmailOpen, setResendEmailOpen] = useState(false);
 
 	const changeInput = (key: FormField, value: string) => {
 		setState({
@@ -114,6 +118,13 @@ export default function LoginPage() {
 					<Button variant="contained" color="primary" type="submit">
 						Login
 					</Button>
+					<Divider />
+					<Link href="#" color="textSecondary" onClick={e => {
+						e.preventDefault();
+						setResendEmailOpen(true);
+					}}>
+						Resend confirmation email
+					</Link>
 				</form>;
 			case LoginPageState.LoggingIn:
 				return <Box textAlign="center">
@@ -156,6 +167,10 @@ export default function LoginPage() {
 				message={state.formError}
 				show={Boolean(state.formError)}
 				onClose={() => setState({ ...state, formError: '' })}
+			/>
+			<ResendVerificationEmailModal
+				open={resendEmailOpen}
+				onClose={() => setResendEmailOpen(false)}
 			/>
 		</Page>
 	);
