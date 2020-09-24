@@ -54,23 +54,21 @@ export function BlockUserModal(props: BlockUserModalProps) {
 					<Box className={classes.buttonBox}>
 						<Button color="primary" onClick={() => {
 							setState({ state: ModalState.Processing });
-							setTimeout(() => {
-								(dispatch(createNote({ id: props.user.id, noteType: NoteType.Blocked })) as any)
-									.then(() => {
-										setState({
-											state: ModalState.Finished,
-											message: 'This user has been blocked!'
-										});
-									})
-									.catch(err => {
-										console.error(err);
-										const message = asAPIError(err) ?? 'An unknown error occurred trying to block this user. Please try again later.';
-										setState({
-											state: ModalState.Finished,
-											message
-										});
+							(dispatch(createNote({ id: props.user.id, noteType: NoteType.Blocked })) as any)
+								.then(() => {
+									setState({
+										state: ModalState.Finished,
+										message: 'This user has been blocked!'
 									});
-							}, 1e3);
+								})
+								.catch(err => {
+									console.error(err);
+									const message = asAPIError(err) ?? 'An unknown error occurred trying to block this user. Please try again later.';
+									setState({
+										state: ModalState.Finished,
+										message
+									});
+								});
 						}}>Block</Button>
 					</Box>
 				</>;

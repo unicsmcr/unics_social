@@ -1,7 +1,7 @@
 import { Avatar, Button, Fab, IconButton, Paper, Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import { makeStyles } from '@material-ui/core/styles';
-import { APIDMChannel, APIUser } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIUser, NoteType } from '@unicsmcr/unics_social_api_client';
 import React, { useLayoutEffect, useState } from 'react';
 import getIcon from '../../util/getAvatar';
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -9,13 +9,14 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { useHistory } from 'react-router-dom';
 import pickQuestions from '../../util/SampleQuestions';
 import { grey } from '@material-ui/core/colors';
 import { ReportModal } from './ReportModal';
 import { BlockUserModal } from './BlockUserModal';
+import { deleteNote, selectNoteByID } from '../../../store/slices/NotesSlice';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -52,6 +53,9 @@ const useStyles = makeStyles(theme => ({
 		textAlign: 'center',
 		display: 'block',
 		paddingTop: theme.spacing(1)
+	},
+	paddedTop: {
+		marginTop: theme.spacing(2)
 	}
 }));
 
@@ -99,6 +103,9 @@ export function SocialMediaIcon({ handle, type }: { handle: string; type: Social
 export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelProps) {
 	const classes = useStyles();
 	const history = useHistory();
+
+	const isBlocked = useSelector(selectNoteByID(user.id))?.noteType === NoteType.Blocked;
+	const dispatch = useDispatch();
 
 	const [questions, setQuestions] = useState<string[]>([]);
 	const [reportOpen, setReportOpen] = useState<boolean>(false);
@@ -162,27 +169,34 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 				</Typography>
 			</>
 		}
-		<Paper elevation={1} className={classes.sampleQuestions}>
-			<Typography variant="overline" align="center" className={classes.questionsTitle}>
-			Questions to ask
-			</Typography>
-			<ul>
-				{
-					questions.map(question => (
-						<li key={question}><Typography gutterBottom>
-							{question}
-						</Typography></li>))
-				}
-			</ul>
-		</Paper>
-
-		<Box>
+		{
+			!isBlocked && <Paper elevation={1} className={classes.sampleQuestions}>
+				<Typography variant="overline" align="center" className={classes.questionsTitle}>
+					Questions to ask
+				</Typography>
+				<ul>
+					{
+						questions.map(question => (
+							<li key={question}><Typography gutterBottom>
+								{question}
+							</Typography></li>))
+					}
+				</ul>
+			</Paper>
+		}
+		<Box className={classes.paddedTop}>
 			<Button onClick={() => setReportOpen(true)}>
 				Report
 			</Button>
-			<Button onClick={() => setBlockOpen(true)}>
-				Block
-			</Button>
+			{
+				isBlocked
+					? <Button onClick={() => dispatch(deleteNote(user.id))}>
+						Unblock
+					</Button>
+					: <Button onClick={() => setBlockOpen(true)}>
+						Block
+					</Button>
+			}
 		</Box>
 		<ReportModal open={reportOpen} onClose={() => setReportOpen(false)} againstUser={user} />
 		<BlockUserModal open={blockOpen} onClose={() => setBlockOpen(false)} user={user} />
