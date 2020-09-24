@@ -5,17 +5,20 @@ import Avatar from '@material-ui/core/Avatar';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
-import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, NoteType } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
-import { Badge, makeStyles, MenuItem, Typography } from '@material-ui/core';
+import { Badge, IconButton, ListItemSecondaryAction, makeStyles, MenuItem, Typography } from '@material-ui/core';
 import getIcon from '../../util/getAvatar';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import ThumbUpOutlinedIcon from '@material-ui/icons/ThumbUpOutlined';
+import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import { createNote, deleteNote, selectNoteByID } from '../../../store/slices/NotesSlice';
 
 export interface DMListItemProps {
 	channel: APIDMChannel;
 	selected: boolean;
-	lastReadTime: number;
+	lastReadTime?: number;
 }
 
 const useStyles = makeStyles(() => ({
@@ -34,6 +37,8 @@ export default function DMListItem({ channel, selected, lastReadTime }: DMListIt
 	const recipient = useSelector(selectUserById(recipientID));
 	const history = useHistory();
 
+	const note = useSelector(selectNoteByID(recipientID));
+
 	const dispatch = useCallback(useDispatch(), []);
 	useEffect(() => {
 		if (!recipient) dispatch(fetchUser(recipientID));
@@ -48,10 +53,26 @@ export default function DMListItem({ channel, selected, lastReadTime }: DMListIt
 
 	const renderAvatar = () => <Avatar alt={recipient.forename} src={getIcon(recipient)}/>;
 
+	const generateThumb = () => {
+		if (note?.noteType === NoteType.Liked) {
+			return <IconButton edge="end" onClick={() => {
+				dispatch(deleteNote(recipientID));
+			}}>
+				<ThumbUpIcon/>
+			</IconButton>;
+		} else if (!note) {
+			return <IconButton edge="end" onClick={() => {
+				dispatch(createNote({ id: recipientID, noteType: NoteType.Liked }));
+			}}>
+				<ThumbUpOutlinedIcon />
+			</IconButton>;
+		}
+	};
+
 	return <MenuItem button onClick={() => history.push(`/chats/${channel.id}`)} selected={selected}>
 		<ListItemAvatar>
 			{
-				lastReadTime > new Date(channel.lastUpdated).getTime() || selected
+				!lastReadTime || (lastReadTime > new Date(channel.lastUpdated).getTime()) || selected
 					? renderAvatar()
 					: <Badge color="secondary" variant="dot">
 						{ renderAvatar() }
@@ -60,6 +81,9 @@ export default function DMListItem({ channel, selected, lastReadTime }: DMListIt
 		</ListItemAvatar>
 		<ListItemText
 			primary={<Typography noWrap>{`${recipient.forename} ${recipient.surname}`}</Typography>}
-			secondary={moment(channel.lastUpdated).fromNow()}/>
+			secondary={lastReadTime && moment(channel.lastUpdated).fromNow()}/>
+		<ListItemSecondaryAction>
+			{ generateThumb() }
+		</ListItemSecondaryAction>
 	</MenuItem>;
 }

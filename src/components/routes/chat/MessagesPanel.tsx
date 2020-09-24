@@ -1,6 +1,6 @@
-import { makeStyles, Card, TextField, Fab, CircularProgress } from '@material-ui/core';
+import { makeStyles, Card, TextField, Fab, CircularProgress, Button } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, NoteType } from '@unicsmcr/unics_social_api_client';
 import React, { createRef, useCallback, useEffect, useState } from 'react';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import { createGroups } from './MessageGroup';
@@ -8,6 +8,7 @@ import SendIcon from '@material-ui/icons/Send';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { readChannel } from '../../../store/slices/ReadSlice';
+import { selectNoteByID } from '../../../store/slices/NotesSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -51,16 +52,26 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 	const classes = useStyles();
 	const dispatch = useCallback(useDispatch(), []);
 	const messages = useSelector(selectMessages(props.channel.id));
+	const me = useSelector(selectMe);
+
+	const [showBlocked, setShowBlocked] = useState(false);
+
+	const channel: APIDMChannel = props.channel as APIDMChannel;
+	const otherID = channel.users.find(userID => userID !== me!.id);
 
 	const firstMessageTime = props.channel.firstMessage ? new Date(props.channel.firstMessage) : undefined;
+	const isBlocked = useSelector(selectNoteByID(otherID ?? ''))?.noteType === NoteType.Blocked;
 
-	const me = useSelector(selectMe);
 	const chatBoxRef = createRef<HTMLDivElement>();
 	const inputBoxRef = createRef<HTMLInputElement>();
 	const [loadingMore, setLoadingMore] = useState<{
 		scrollPosition: number;
 	}|null>(null);
 	const [scrollSynced, setScrollSynced] = useState(true);
+
+	useEffect(() => {
+		setShowBlocked(false);
+	}, [props.channel.id]);
 
 	useEffect(() => {
 		if (messages.length === 0 && !loadingMore) {
@@ -96,6 +107,13 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loadingMore]);
 
+	const generateMessageBody = () => {
+		if (!isBlocked || (isBlocked && showBlocked)) {
+			return createGroups(messages, me!.id);
+		}
+		return <Button variant="contained" onClick={() => setShowBlocked(true)}>Load Messages</Button>;
+	};
+
 	return <>
 		<div ref={chatBoxRef} className={classes.chatArea} onScroll={e => {
 			const target = e.target as any;
@@ -119,7 +137,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 				loadingMore && <CircularProgress className={classes.loader} size="2rem" />
 			}
 			{
-				createGroups(messages, me!.id)
+				generateMessageBody()
 			}
 		</div>
 		<Card className={classes.chatBox}>

@@ -13,7 +13,7 @@
     "@types/node": "^12.12.53",
     "@types/react-router-dom": "^5.1.5",
     "@types/twilio-video": "^2.7.0",
-    "@unicsmcr/unics_social_api_client": "^0.1.3",
+    "@unicsmcr/unics_social_api_client": "^0.1.4",
     "clsx": "^1.1.1",
     "moment": "^2.28.0",
     "react": "^16.13.1",
