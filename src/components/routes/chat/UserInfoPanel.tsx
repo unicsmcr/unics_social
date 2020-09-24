@@ -15,6 +15,7 @@ import { useHistory } from 'react-router-dom';
 import pickQuestions from '../../util/SampleQuestions';
 import { grey } from '@material-ui/core/colors';
 import { ReportModal } from './ReportModal';
+import { BlockUserModal } from './BlockUserModal';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -101,6 +102,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 
 	const [questions, setQuestions] = useState<string[]>([]);
 	const [reportOpen, setReportOpen] = useState<boolean>(false);
+	const [blockOpen, setBlockOpen] = useState<boolean>(false);
 
 	useLayoutEffect(() => {
 		setQuestions(pickQuestions(3));
@@ -174,10 +176,15 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 			</ul>
 		</Paper>
 
+		<Box>
+			<Button onClick={() => setReportOpen(true)}>
+				Report
+			</Button>
+			<Button onClick={() => setBlockOpen(true)}>
+				Block
+			</Button>
+		</Box>
 		<ReportModal open={reportOpen} onClose={() => setReportOpen(false)} againstUser={user} />
-
-		<Button variant="outlined" onClick={() => setReportOpen(true)}>
-				Report User
-		</Button>
+		<BlockUserModal open={blockOpen} onClose={() => setBlockOpen(false)} user={user} />
 	</Box>;
 }
