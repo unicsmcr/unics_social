@@ -2,6 +2,7 @@ const potentials: string[] = [];
 
 function shuffleQuestions() {
 	const copy = [...SAMPLE_QUESTIONS];
+	potentials.splice(0, potentials.length);
 	while (copy.length > 0) {
 		const index = Math.floor(Math.random() * copy.length);
 		potentials.push(...copy.splice(index, 1));
