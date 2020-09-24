@@ -128,15 +128,16 @@ export default function LoginPage() {
 					<Divider />
 					<Link href="#" color="textSecondary" onClick={e => {
 						e.preventDefault();
-						setOpenModal(OpenModal.ResendEmail);
-					}}>
-						Resend confirmation email
-					</Link>{' | '}
-					<Link href="#" color="textSecondary" onClick={e => {
-						e.preventDefault();
 						setOpenModal(OpenModal.ForgotPassword);
 					}}>
 						Forgot your password?
+					</Link>
+					{' | '}
+					<Link href="#" color="textSecondary" onClick={e => {
+						e.preventDefault();
+						setOpenModal(OpenModal.ResendEmail);
+					}}>
+						Resend confirmation email
 					</Link>
 				</form>;
 			case LoginPageState.LoggingIn:

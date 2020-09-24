@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import asAPIError from '../util/asAPIError';
 import { client } from '../util/makeClient';
 
-interface ReportModalProps {
+interface ResendVerificationEmailModalProps {
 	open: boolean;
 	onClose: () => void;
 }
@@ -31,7 +31,7 @@ enum ModalState {
 	Finished
 }
 
-export function ResendVerificationEmailModal(props: ReportModalProps) {
+export function ResendVerificationEmailModal(props: ResendVerificationEmailModalProps) {
 	const classes = useStyles();
 
 	const [state, setState] = useState<{
@@ -46,17 +46,18 @@ export function ResendVerificationEmailModal(props: ReportModalProps) {
 			case ModalState.Waiting:
 				return <>
 					<DialogContentText>
-						Haven't received your verification email? Please type in your email address below and we'll try to resend it. Alternatively, contact us if it still doesn't arrive.
+						Haven't received your confirmation email? Please type in your email address below and we'll try to resend it. Alternatively, contact us if it still doesn't arrive.
 					</DialogContentText>
 					<TextField
 						label="Email"
 						variant="outlined"
 						className={classes.textField}
-						ref={textfieldRef}/>
+						ref={textfieldRef}
+						InputProps={{ type: 'email' }}/>
 					<Box className={classes.buttonBox}>
 						<Button color="primary" onClick={() => {
 							if (!textfieldRef.current) return;
-							const textarea: HTMLInputElement|null = textfieldRef.current.querySelector('input[type=text]');
+							const textarea: HTMLInputElement|null = textfieldRef.current.querySelector('input[type=email]');
 							if (!textarea) return;
 							const email = textarea.value.trim();
 							setState({ state: ModalState.Processing });
@@ -65,12 +66,12 @@ export function ResendVerificationEmailModal(props: ReportModalProps) {
 									.then(() => {
 										setState({
 											state: ModalState.Finished,
-											message: 'Your verification email has been resent!'
+											message: 'Your confirmation email has been resent!'
 										});
 									})
 									.catch(err => {
 										console.error(err);
-										const message = asAPIError(err) ?? 'An unknown error occurred trying to resend your verification email. Please try again later.';
+										const message = asAPIError(err) ?? 'An unknown error occurred trying to resend your confirmation email. Please try again later.';
 										setState({
 											state: ModalState.Finished,
 											message
@@ -83,7 +84,7 @@ export function ResendVerificationEmailModal(props: ReportModalProps) {
 			case ModalState.Processing:
 				return <Box className={classes.centered}>
 					<DialogContentText className={classes.spaced}>
-						Resending the verification email...
+						Resending the confirmation email...
 					</DialogContentText>
 					<CircularProgress className={classes.spaced} />
 				</Box>;
@@ -106,7 +107,7 @@ export function ResendVerificationEmailModal(props: ReportModalProps) {
 		props.onClose();
 		setTimeout(() => setState({ state: ModalState.Waiting }), 250);
 	}}>
-		<DialogTitle>Resend verification email</DialogTitle>
+		<DialogTitle>Resend confirmation email</DialogTitle>
 		<DialogContent>
 			{ generateBody() }
 		</DialogContent>

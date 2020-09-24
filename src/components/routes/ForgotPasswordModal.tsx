@@ -54,11 +54,12 @@ export function ForgotPasswordModal(props: ForgotPasswordModalProps) {
 						variant="outlined"
 						className={classes.textField}
 						defaultValue={props.email}
-						ref={textfieldRef}/>
+						ref={textfieldRef}
+						InputProps={{ type: 'email' }}/>
 					<Box className={classes.buttonBox}>
 						<Button color="primary" onClick={() => {
 							if (!textfieldRef.current) return;
-							const textarea: HTMLInputElement|null = textfieldRef.current.querySelector('input[type=text]');
+							const textarea: HTMLInputElement|null = textfieldRef.current.querySelector('input[type=email]');
 							if (!textarea) return;
 							const email = textarea.value.trim();
 							setState({ state: ModalState.Processing });
