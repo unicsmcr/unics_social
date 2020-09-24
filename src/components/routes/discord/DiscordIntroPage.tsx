@@ -1,5 +1,5 @@
 import { Button, CircularProgress, Container, makeStyles, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Page from '../../Page';
 import asAPIError from '../../util/asAPIError';
 import { client } from '../../util/makeClient';
@@ -20,40 +20,45 @@ const useStyles = makeStyles(theme => ({
 }));
 
 enum PageState {
-	Idle,
 	Loading,
-	Loaded
+	Loaded,
+	Failed
 }
 
 export default function DiscordIntroPage() {
 	const classes = useStyles();
 
-	const [state, setState] = useState<PageState>(PageState.Idle);
+	const [state, setState] = useState<PageState>(PageState.Loading);
 	const [error, setError] = useState<{ show: boolean; message?: string }>({
 		show: false
 	});
 
+	const [url, setURL] = useState<string>('');
+
+	useEffect(() => {
+		client.getDiscordOAuth2URL()
+			.then(url => {
+				setURL(url);
+				setState(PageState.Loaded);
+			})
+			.catch(err => {
+				const message = asAPIError(err) ?? 'Unknown error occurred';
+				setState(PageState.Failed);
+				setError({ show: true, message });
+			});
+	}, []);
+
 	const generateBody = () => {
 		switch (state) {
-			case PageState.Idle:
-				return <Button variant="contained" color="primary" onClick={() => {
-					setState(PageState.Loading);
-					client.getDiscordOAuth2URL()
-						.then(url => {
-							window.open(url, '_blank');
-							setState(PageState.Loaded);
-						})
-						.catch(err => {
-							const message = asAPIError(err) ?? 'Unknown error occurred';
-							setState(PageState.Idle);
-							setError({ show: true, message });
-						});
-				}}>Join the Discord</Button>;
 			case PageState.Loading:
 				return <CircularProgress />;
 			case PageState.Loaded:
+				return <Button variant="contained" color="primary" onClick={() => {
+					window.open(url, '_blank');
+				}}>Join the Discord</Button>;
+			case PageState.Failed:
 				return <Typography variant="body1" align="center" color="textPrimary">
-					See you on Discord soon!
+					Something went wrong!
 				</Typography>;
 		}
 	};
