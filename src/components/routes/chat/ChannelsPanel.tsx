@@ -87,7 +87,7 @@ export default function ChannelsPanel() {
 			{
 				blockedDmChannels.length > 0 && (
 					<>
-						<Button onClick={() => setShowBlocked(!showBlocked)}>{showBlocked ? 'Hide' : 'Show'} {blockedDmChannels.length} blocked user(s)</Button>
+						<Button onClick={() => setShowBlocked(!showBlocked)}>{showBlocked ? 'Hide' : 'Show'} {blockedDmChannels.length} blocked user{blockedDmChannels.length > 1 ? 's' : ''}</Button>
 						{
 							showBlocked && <List aria-label="blocked_channels" >
 								{
