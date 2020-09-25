@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
 	},
 	image: {
 		backgroundColor: '#520F79',
-		background: `url(${require('../../assets/homepage_bg.jpg')})`,
+		background: `url(${require('../../assets/backdrop_2.jpg')})`,
 		backgroundSize: 'cover',
 		backgroundPosition: 'center'
 	},
@@ -157,7 +157,6 @@ export default function RegistrationPage() {
 
 	return (
 		<Page>
-			{/* Hero unit */}
 			<Box component="section" className={classes.mainContent}>
 				<Box className={classes.image}></Box>
 				<Box className={classes.contentBox}>
@@ -174,7 +173,6 @@ export default function RegistrationPage() {
 					</Container>
 				</Box>
 			</Box>
-			{/* End hero unit */}
 			<NotificationDialog
 				title="Failed to register your account"
 				message={state.formError}
