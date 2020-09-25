@@ -7,7 +7,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Avatar from '@material-ui/core/Avatar';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
-import Card from '@material-ui/core/Card';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import GroupIcon from '@material-ui/icons/Group';
 import { DRAWER_WIDTH } from './ChannelsPanel';
@@ -78,7 +77,16 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'column',
 		overflow: 'auto',
 		flexGrow: 1,
-		gridColumn: 1
+		gridColumn: 1,
+		position: 'absolute',
+		top: theme.spacing(8),
+		left: 0,
+		right: DRAWER_WIDTH,
+		bottom: 0,
+		[theme.breakpoints.down('sm')]: {
+			right: 0,
+			top: theme.spacing(7)
+		}
 	},
 	emptyChatArea: {
 		display: 'flex',
@@ -197,7 +205,7 @@ export default function ChatPanel(props) {
 	</Box>;
 
 	return (
-		<Card className={classes.flexGrow}>
+		<Box className={classes.flexGrow}>
 			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
@@ -296,6 +304,6 @@ export default function ChatPanel(props) {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</Card>
+		</Box>
 	);
 }

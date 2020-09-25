@@ -5,13 +5,13 @@ const useStyles = makeStyles(theme => ({
 	root: {
 		display: 'flex',
 		flexDirection: 'column',
-		position: 'fixed',
-		top: 65,
+		position: 'absolute',
+		top: theme.spacing(8),
 		bottom: 0,
 		left: 0,
 		right: 0,
 		[theme.breakpoints.down('sm')]: {
-			top: 57
+			top: theme.spacing(7)
 		}
 	},
 	main: {
