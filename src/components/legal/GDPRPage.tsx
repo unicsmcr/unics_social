@@ -6,7 +6,7 @@ import GDPR from './GDPR';
 
 const useStyles = makeStyles(theme => ({
 	container: {
-		padding: theme.spacing(2, 0),
+		padding: theme.spacing(2),
 		fontSize: '1rem'
 	},
 	gdpr: {
