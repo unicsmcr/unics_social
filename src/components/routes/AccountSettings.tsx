@@ -298,7 +298,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<InstagramIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sample_user"/>
 				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" defaultValue={userState.profile.facebook}
 					InputProps={{
 						startAdornment: (
@@ -306,7 +307,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<FacebookIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sample.user.135"/>
 				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" defaultValue={userState.profile.twitter}
 					InputProps={{
 						startAdornment: (
@@ -314,7 +316,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<TwitterIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sampleuser"/>
 				<TextField fullWidth label="LinkedIn" name="linkedin" variant="outlined" defaultValue={userState.profile.linkedin}
 					InputProps={{
 						startAdornment: (
@@ -322,7 +325,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<LinkedInIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sample-user"/>
 
 				<Menu
 					open={Boolean(avatarMenuTarget)}
