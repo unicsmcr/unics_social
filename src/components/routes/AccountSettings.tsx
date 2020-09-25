@@ -35,6 +35,7 @@ import InstagramIcon from '@material-ui/icons/Instagram';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
+import { ForgotPasswordModal } from './ForgotPasswordModal';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -106,6 +107,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 	const [hasChanged, setHasChanged] = useState(false);
 	const [avatarMenuTarget, setAvatarMenuTarget] = useState<null | HTMLElement>(null);
+
+	const [resetPasswordOpen, setResetPasswordOpen] = useState(false);
 
 	const [userState, setUserState] = useState({
 		forename: me.forename,
@@ -217,6 +220,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 			<form className={classes.form}>
 				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename} />
 				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname} />
+				<Button color="primary" onClick={() => setResetPasswordOpen(true)}>Reset Password</Button>
 			</form>
 		</Paper>
 		<Paper elevation={2} className={classes.paper}>
@@ -294,7 +298,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<InstagramIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sample_user"/>
 				<TextField fullWidth label="Facebook" name="facebook" variant="outlined" defaultValue={userState.profile.facebook}
 					InputProps={{
 						startAdornment: (
@@ -302,7 +307,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<FacebookIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sample.user.135"/>
 				<TextField fullWidth label="Twitter" name="twitter" variant="outlined" defaultValue={userState.profile.twitter}
 					InputProps={{
 						startAdornment: (
@@ -310,7 +316,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<TwitterIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sampleuser"/>
 				<TextField fullWidth label="LinkedIn" name="linkedin" variant="outlined" defaultValue={userState.profile.linkedin}
 					InputProps={{
 						startAdornment: (
@@ -318,7 +325,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 								<LinkedInIcon />
 							</InputAdornment>
 						)
-					}}/>
+					}}
+					placeholder="sample-user"/>
 
 				<Menu
 					open={Boolean(avatarMenuTarget)}
@@ -342,6 +350,11 @@ function AccountSettings({ me }: { me: APIUser }) {
 			onClose={() => {
 				setSaveMessage(null);
 			}}
+		/>
+
+		<ForgotPasswordModal
+			open={resetPasswordOpen}
+			onClose={() => setResetPasswordOpen(false)}
 		/>
 	</>;
 }

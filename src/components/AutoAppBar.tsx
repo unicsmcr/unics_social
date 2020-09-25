@@ -57,8 +57,9 @@ const GUEST_LINKS = [
 const AUTH_LINKS = [
 	['Home', '/'],
 	['Chats', '/chats'],
-	['1-to-1 Networking', '/networking'],
-	['Account Settings', '/account']
+	['Networking', '/networking'],
+	['Account Settings', '/account'],
+	['Discord', '/discord']
 ];
 
 export function AppDrawer(props) {
@@ -85,12 +86,15 @@ export function AppDrawer(props) {
 				))
 			}
 			{
-				props.hasJWT && <ListItem button className={classes.drawerItem} onClick={() => {
-					props.onClose();
-					props.onLogout();
-				}}>
-					<ListItemText>Logout</ListItemText>
-				</ListItem>
+				props.hasJWT && <>
+					<Divider />
+					<ListItem button className={classes.drawerItem} onClick={() => {
+						props.onClose();
+						props.onLogout();
+					}}>
+						<ListItemText>Logout</ListItemText>
+					</ListItem>
+				</>
 			}
 		</List>
 	</Drawer>;
@@ -131,8 +135,9 @@ export default function AutoAppBar() {
 							hasJWT
 								? <>
 									<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
-									<Button color="inherit" component={RouterLink} to="/networking">1:1 Networking</Button>
+									<Button color="inherit" component={RouterLink} to="/networking">Networking</Button>
 									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
+									<Button color="inherit" component={RouterLink} to="/discord">Discord</Button>
 									<Button href="#" color="inherit" variant="outlined" className={classes.link} onClick={logout}>
 											Logout
 									</Button>

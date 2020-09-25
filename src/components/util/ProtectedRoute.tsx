@@ -6,12 +6,14 @@ import { selectJWT, selectConnected } from '../../store/slices/AuthSlice';
 import { initClientGateway, client } from './makeClient';
 import { makeStyles, Backdrop, CircularProgress, Typography, Box } from '@material-ui/core';
 import { selectMe, fetchMe } from '../../store/slices/UsersSlice';
+import { fetchNotes, selectNotesFetched } from '../../store/slices/NotesSlice';
 
 const useStyles = makeStyles(theme => ({
 	backdrop: {
 		'zIndex': theme.zIndex.drawer + 1,
 		'color': '#fff',
 		'flexDirection': 'column',
+		'textAlign': 'center',
 		'& > *': {
 			margin: theme.spacing(4, 0)
 		}
@@ -24,6 +26,7 @@ const ProtectedRoute = props => {
 	const jwt = useSelector(selectJWT);
 	const connected = useSelector(selectConnected);
 	const me = useSelector(selectMe);
+	const haveNotes = useSelector(selectNotesFetched);
 	const classes = useStyles();
 	const history = useHistory();
 
@@ -32,11 +35,12 @@ const ProtectedRoute = props => {
 	useEffect(() => {
 		if (!connected) initClientGateway(client);
 		if (!me) dispatch(fetchMe());
+		if (!haveNotes) dispatch(fetchNotes());
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [dispatch]);
 
 	let fallback: ReactNode|undefined;
-	if (jwt && (!me || !connected)) {
+	if (jwt && (!me || !connected || !haveNotes)) {
 		fallback = <Backdrop open={true} className={classes.backdrop}>
 			<Typography variant="h4">Connecting to UniCS KB</Typography>
 			<Box>

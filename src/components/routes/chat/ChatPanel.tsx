@@ -7,14 +7,13 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Avatar from '@material-ui/core/Avatar';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
-import Card from '@material-ui/core/Card';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import GroupIcon from '@material-ui/icons/Group';
 import { DRAWER_WIDTH } from './ChannelsPanel';
 import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectChannel } from '../../../store/slices/ChannelsSlice';
+import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel, APIUser, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
@@ -58,6 +57,7 @@ const useStyles = makeStyles(theme => ({
 		top: 0,
 		bottom: 0,
 		right: 0,
+		backgroundColor: '#BABABA',
 		background: `url(${require('../../../assets/chat_bg.png')})`,
 		transition: theme.transitions.create(['left'], {
 			easing: theme.transitions.easing.sharp,
@@ -78,7 +78,16 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'column',
 		overflow: 'auto',
 		flexGrow: 1,
-		gridColumn: 1
+		gridColumn: 1,
+		position: 'absolute',
+		top: theme.spacing(8),
+		left: 0,
+		right: DRAWER_WIDTH,
+		bottom: 0,
+		[theme.breakpoints.down('sm')]: {
+			right: 0,
+			top: theme.spacing(7)
+		}
 	},
 	emptyChatArea: {
 		display: 'flex',
@@ -93,8 +102,8 @@ const useStyles = makeStyles(theme => ({
 		width: 'min(300px, 50vw)'
 	},
 	infoPanel: {
-		background: 'rgba(255, 255, 255, 0.6)',
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
+		height: '100%',
 		gridColumn: 2
 	},
 	typingIndicator: {
@@ -174,6 +183,12 @@ export default function ChatPanel(props) {
 	}, [channel]);
 
 	useEffect(() => {
+		if (channelID && !channel) {
+			dispatch(fetchChannels());
+		}
+	}, [channelID, channel, dispatch]);
+
+	useEffect(() => {
 		if (me && channel && !resource) {
 			if (channel.type === 'dm') {
 				dispatch(fetchUser(channel.users.find(userID => userID !== me.id)!));
@@ -220,7 +235,7 @@ export default function ChatPanel(props) {
 	</Box>;
 
 	return (
-		<Card className={classes.flexGrow}>
+		<Box className={classes.flexGrow}>
 			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
@@ -285,7 +300,7 @@ export default function ChatPanel(props) {
 				</Box>
 			</Box>
 			<NotificationDialog
-				message="You'll be able to video chat with them for 5 minutes. After that, you'll be asked if you'd like to continue talking, or rejoin the 1:1 networking queue!"
+				message="You'll be able to video chat with them for 5 minutes. After that, you'll be asked if you'd like to continue talking, or rejoin the networking queue!"
 				onClose={() => {
 					dispatch(setQueueState({ match: undefined }));
 				}}
@@ -302,7 +317,7 @@ export default function ChatPanel(props) {
 				<DialogTitle>Time's up!</DialogTitle>
 				<DialogContent>
 					<DialogContentText>
-						Your 5 minutes are up! You can continue chatting over text, or you can rejoin the 1:1 networking queue!
+						Your 5 minutes are up! You can continue chatting over text, or you can rejoin the networking queue!
 					</DialogContentText>
 				</DialogContent>
 				<DialogActions>
@@ -320,6 +335,6 @@ export default function ChatPanel(props) {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</Card>
+		</Box>
 	);
 }
