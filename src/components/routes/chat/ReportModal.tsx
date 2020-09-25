@@ -65,26 +65,24 @@ export function ReportModal(props: ReportModalProps) {
 							if (!textarea) return;
 							const description = textarea.value.trim();
 							setState({ state: ReportState.Reporting });
-							setTimeout(() => {
-								client.reportUser({
-									description,
-									reportedUserID: props.againstUser.id
-								})
-									.then(() => {
-										setState({
-											state: ReportState.Finished,
-											message: 'Your report has been submitted. We will try to review it as soon as possible.'
-										});
-									})
-									.catch(err => {
-										console.error(err);
-										const message = asAPIError(err) ?? 'An unknown error occurred trying to submit the report. Please try again later.';
-										setState({
-											state: ReportState.Finished,
-											message
-										});
+							client.reportUser({
+								description,
+								reportedUserID: props.againstUser.id
+							})
+								.then(() => {
+									setState({
+										state: ReportState.Finished,
+										message: 'Your report has been submitted. We will try to review it as soon as possible.'
 									});
-							}, 1e3);
+								})
+								.catch(err => {
+									console.error(err);
+									const message = asAPIError(err) ?? 'An unknown error occurred trying to submit the report. Please try again later.';
+									setState({
+										state: ReportState.Finished,
+										message
+									});
+								});
 						}}>Submit Report</Button>
 					</Box>
 				</>;

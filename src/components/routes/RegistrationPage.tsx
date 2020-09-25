@@ -97,22 +97,18 @@ export default function RegistrationPage() {
 		if (newState.formState !== RegistrationState.Registering) return;
 
 		const { forename, surname, password, email } = newState;
-		const register = () => {
-			client.register({
-				forename, surname, password, email
-			})
-				.then(() => setState({ ...state, formState: RegistrationState.Success }))
-				.catch(err => {
-					console.warn(err);
-					setState({
-						...state,
-						formState: RegistrationState.FillingForm,
-						formError: asAPIError(err) ?? 'An unexpected error occurred trying to register your account.'
-					});
+		client.register({
+			forename, surname, password, email
+		})
+			.then(() => setState({ ...state, formState: RegistrationState.Success }))
+			.catch(err => {
+				console.warn(err);
+				setState({
+					...state,
+					formState: RegistrationState.FillingForm,
+					formError: asAPIError(err) ?? 'An unexpected error occurred trying to register your account.'
 				});
-		};
-
-		setTimeout(register, 1e3);
+			});
 	};
 
 	const mainContent = () => {
