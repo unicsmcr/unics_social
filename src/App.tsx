@@ -25,6 +25,14 @@ function AppLayer({ children }) {
 	const discordOAuthPage = history.location.pathname.includes('discord_link');
 
 	useEffect(() => {
+		history.listen((location, action) => {
+			if (action !== 'POP') {
+				window.scrollTo(0, 0);
+			}
+		});
+	}, []);
+
+	useEffect(() => {
 		if (match) {
 			const extra = uxOptions.autoJoinVideo ? '/video' : '';
 			history.push(`/chats/${match.channelID}${extra}`);
