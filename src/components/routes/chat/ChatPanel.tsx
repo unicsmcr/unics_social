@@ -197,7 +197,7 @@ export default function ChatPanel(props) {
 	</Box>;
 
 	return (
-		<Card className={classes.flexGrow}>
+		<Box className={classes.flexGrow}>
 			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
@@ -296,6 +296,6 @@ export default function ChatPanel(props) {
 					</Button>
 				</DialogActions>
 			</Dialog>
-		</Card>
+		</Box>
 	);
 }
