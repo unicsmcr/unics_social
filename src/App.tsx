@@ -30,7 +30,7 @@ function AppLayer({ children }) {
 				window.scrollTo(0, 0);
 			}
 		});
-	}, []);
+	}, [history]);
 
 	useEffect(() => {
 		if (match) {
