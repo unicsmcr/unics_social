@@ -15,7 +15,7 @@ import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectChannel } from '../../../store/slices/ChannelsSlice';
-import { APIDMChannel, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, APIUser, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import getIcon from '../../util/getAvatar';
@@ -29,6 +29,7 @@ import VideoPanel from './video/VideoPanel';
 import NotificationDialog from '../../util/NotificationDialog';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 import Timer from './Timer';
+import { client } from '../../util/makeClient';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -95,6 +96,12 @@ const useStyles = makeStyles(theme => ({
 		background: 'rgba(255, 255, 255, 0.6)',
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
 		gridColumn: 2
+	},
+	typingIndicator: {
+		margin: theme.spacing(1, 1),
+		display: 'flex',
+		alignItems: 'flex-start',
+		position: 'relative'
 	}
 }));
 
@@ -103,7 +110,7 @@ export interface ChannelDisplayData {
 	image?: string;
 }
 
-const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, meId: string) => {
+const selectChannelResource = (channel: APIDMChannel | APIEventChannel | undefined, meId: string) => {
 	if (channel?.type === 'dm') {
 		return selectUserById(channel.users.find(userId => userId !== meId)!);
 	}
@@ -115,6 +122,28 @@ enum ViewType {
 	Video = 'video'
 }
 
+const useTyping = (channelID: string) => {
+	const [isTyping, setIsTyping] = useState(false);
+	const [timer, setTimer] = useState<NodeJS.Timeout>(setTimeout(() => console.log('Typing initialised'), 0));
+
+	const currentUserID = useSelector(selectMe)?.id;
+	useEffect(() => {
+		const listener = client.gateway?.on(GatewayPacketType.GatewayTyping, data => {
+			console.log(data);
+			if (data.channelID === channelID && data.userID !== currentUserID) {
+				setIsTyping(true);
+				clearTimeout(timer);
+				setTimer(setTimeout(() => setIsTyping(false), 5000));
+			}
+		});
+		return () => {
+			listener?.destroy();
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+	return { isTyping, setIsTyping };
+};
+
 export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
@@ -122,6 +151,7 @@ export default function ChatPanel(props) {
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
 	const { id: channelID, type: viewTypeRaw } = useParams<{ id: string; type: string }>();
+	const { isTyping, setIsTyping } = useTyping(channelID);
 	const [hasEnded, setHasEnded] = useState(false);
 	const history = useHistory();
 
@@ -131,7 +161,7 @@ export default function ChatPanel(props) {
 	const me = useSelector(selectMe);
 
 	const channel = useSelector(selectChannel(channelID));
-	const resource: APIUser|undefined = useSelector(selectChannelResource(channel, me!.id));
+	const resource: APIUser | undefined = useSelector(selectChannelResource(channel, me!.id));
 
 	useEffect(() => {
 		if (channel?.type === 'dm' && channel.video) {
@@ -154,7 +184,7 @@ export default function ChatPanel(props) {
 	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const infoPanelOpen = _infoPanelOpen || !isSmall;
 
-	let displayData: ChannelDisplayData|undefined;
+	let displayData: ChannelDisplayData | undefined;
 	if (resource) {
 		const user = resource;
 		displayData = {
@@ -184,7 +214,7 @@ export default function ChatPanel(props) {
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
 			resource
-				? <UserInfoPanel user={resource} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
+				? <UserInfoPanel user={resource} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)} />
 				: <CircularProgress />
 		}
 	</Box>;
@@ -194,7 +224,7 @@ export default function ChatPanel(props) {
 			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
-						{ isMobile &&
+						{isMobile &&
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
 								{
 									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0] !== channelID)
@@ -203,7 +233,7 @@ export default function ChatPanel(props) {
 								}
 							</IconButton>
 						}
-						{ channelID && <>
+						{channelID && <>
 							{
 								displayData
 									? <Avatar className={classes.avatar} src={displayData.image} alt={'test'}></Avatar>
@@ -217,6 +247,7 @@ export default function ChatPanel(props) {
 										</>
 										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
 								}
+								{isTyping && ' is typing...'}
 							</Typography>
 							{
 								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && <Timer endTime={new Date(channel.video.endTime)} />
@@ -232,11 +263,11 @@ export default function ChatPanel(props) {
 				</AppBar>
 				<Box className={classes.mainContent}>
 					<Box className={classes.chatHolder}>
-						{ channel
+						{channel
 							? (
 								viewType === ViewType.Messages
-									? <MessagesPanel channel={channel} />
-									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!}/>
+									? <MessagesPanel channel={channel} hideTypingIndicator={() => setIsTyping(false)} />
+									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!} />
 							)
 							: <Box className={classes.emptyChatArea}>
 								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
@@ -246,7 +277,7 @@ export default function ChatPanel(props) {
 					{
 						channelID && (isSmall
 							? <Drawer anchor="right" open={infoPanelOpen} onClose={() => setInfoPanelOpen(false)}>
-								{ generateInfoPanel() }
+								{generateInfoPanel()}
 							</Drawer>
 							: generateInfoPanel()
 						)

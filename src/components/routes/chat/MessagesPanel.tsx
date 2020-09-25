@@ -1,6 +1,6 @@
 import { makeStyles, Card, TextField, Fab, CircularProgress } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { APIDMChannel, APIEventChannel } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, ClientTypingPacket, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
 import React, { createRef, useCallback, useEffect, useState } from 'react';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import { createGroups } from './MessageGroup';
@@ -8,6 +8,7 @@ import SendIcon from '@material-ui/icons/Send';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { readChannel } from '../../../store/slices/ReadSlice';
+import { client } from '../../util/makeClient';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -42,9 +43,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface MessagesPanelProps {
-	channel: (APIDMChannel|APIEventChannel) & {
+	channel: (APIDMChannel | APIEventChannel) & {
 		firstMessage?: string;
 	};
+	hideTypingIndicator(): void;
 }
 
 export default function MessagesPanel(props: MessagesPanelProps) {
@@ -59,8 +61,9 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 	const inputBoxRef = createRef<HTMLInputElement>();
 	const [loadingMore, setLoadingMore] = useState<{
 		scrollPosition: number;
-	}|null>(null);
+	} | null>(null);
 	const [scrollSynced, setScrollSynced] = useState(true);
+	const [canSendTypingPacket, setCanSendTypingPacket] = useState(true);
 
 	useEffect(() => {
 		if (messages.length === 0 && !loadingMore) {
@@ -68,7 +71,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 			(dispatch(fetchMessages({ channelID: props.channel.id })) as any)
 				.then(() => setLoadingMore(null));
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.channel.id]);
 
 	useEffect(() => {
@@ -81,6 +84,11 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		if (messages && chatBoxRef.current && scrollSynced) {
 			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
 		}
+
+		if (messages.length > 0 && messages[messages.length - 1].authorID !== me?.id) {
+			props.hideTypingIndicator();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chatBoxRef, messages, scrollSynced]);
 
 	useEffect(() => {
@@ -93,7 +101,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		if (chatBoxRef.current && loadingMore) {
 			chatBoxRef.current.scrollTop = 0;
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loadingMore]);
 
 	return <>
@@ -133,12 +141,13 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 					channelID: props.channel.id
 				}));
 				if (inputBoxRef.current) {
-					const textbox: HTMLElement|null = inputBoxRef.current.querySelector('input[type=text]');
+					const textbox: HTMLElement | null = inputBoxRef.current.querySelector('input[type=text]');
 					if (textbox) {
 						textbox.focus();
 					}
 				}
 			}}>
+
 				<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
 					ref={inputBoxRef}
 					onClick={() => {
@@ -150,6 +159,19 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 							if (count-- > 0) setTimeout(resetScroll, 50);
 						};
 						resetScroll();
+						setCanSendTypingPacket(true);
+					}}
+					onChange={() => {
+						if (canSendTypingPacket) {
+							client.gateway?.send<ClientTypingPacket>({
+								type: GatewayPacketType.ClientTyping,
+								data: {
+									channelID: props.channel.id
+								}
+							});
+							setCanSendTypingPacket(false);
+							setTimeout(() => setCanSendTypingPacket(true), 3500);
+						}
 					}}
 				/>
 				<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
