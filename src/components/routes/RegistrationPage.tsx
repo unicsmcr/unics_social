@@ -17,11 +17,12 @@ import Page from '../Page';
 const EMAIL_REGEX = new RegExp(/^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z`{|}~])*@(\w+\.)?manchester\.ac\.uk$/);
 
 const useStyles = makeStyles(theme => ({
-	heroContent: {
-		padding: theme.spacing(28, 2, 8, 2)
-	},
 	mainContent: {
-		padding: theme.spacing(8, 2, 28, 2)
+		minHeight: '70vh',
+		padding: theme.spacing(4, 2),
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center'
 	},
 	form: {
 		'textAlign': 'center',
@@ -144,18 +145,18 @@ export default function RegistrationPage() {
 	return (
 		<Page>
 			{/* Hero unit */}
-			<Container maxWidth="sm" component="main" className={classes.heroContent}>
-				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-          Register
-				</Typography>
-				<Typography variant="h5" align="center" color="textSecondary" component="p">
-          Register a new account here
-				</Typography>
-			</Container>
 			<Container maxWidth="sm" component="section" className={classes.mainContent}>
-				{
-					mainContent()
-				}
+				<Box>
+					<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+          Register
+					</Typography>
+					<Typography variant="h5" align="center" color="textSecondary" component="p" gutterBottom>
+          Register a new account here
+					</Typography>
+					{
+						mainContent()
+					}
+				</Box>
 			</Container>
 			{/* End hero unit */}
 			<NotificationDialog
