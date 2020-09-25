@@ -7,7 +7,6 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Avatar from '@material-ui/core/Avatar';
 import grey from '@material-ui/core/colors/grey';
 import IconButton from '@material-ui/core/IconButton';
-import Card from '@material-ui/core/Card';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import GroupIcon from '@material-ui/icons/Group';
 import { DRAWER_WIDTH } from './ChannelsPanel';
