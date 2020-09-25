@@ -11,21 +11,20 @@ const footers = [
 		title: 'General',
 		links: [
 			['About', '/'],
-			['Sponsors', '/sponsors'],
 			['Contact', '/contact']
 		]
 	},
 	{
 		title: 'Resources',
 		links: [
-			['News', ''],
+			['UniCS', 'https://unicsmcr.com'],
 			['GitHub', 'https://github.com/unicsmcr']
 		]
 	},
 	{
 		title: 'Legal',
 		links: [
-			['Privacy policy', ''],
+			['Privacy policy', 'privacy-policy'],
 			['Terms of use', '']
 		]
 	}

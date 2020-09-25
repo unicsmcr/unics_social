@@ -17,6 +17,7 @@ import AutoAppBar from './components/AutoAppBar';
 import DiscordIntroPage from './components/routes/discord/DiscordIntroPage';
 import DiscordLinkerPage from './components/routes/discord/DiscordLinkerPage';
 import ResetPasswordPage from './components/routes/ResetPassword';
+import GDPRPage from './components/legal/GDPRPage';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
@@ -67,6 +68,7 @@ function App() {
 								<Route path="/discord_link" exact component={DiscordLinkerPage} />
 								<Route path="/reset_password" exact component={ResetPasswordPage} />
 								<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
+								<Route path="/privacy-policy" exact component={GDPRPage} />
 								<Redirect to="/" />
 							</Switch>
 						</AppLayer>
