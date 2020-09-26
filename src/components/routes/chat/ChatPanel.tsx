@@ -104,8 +104,17 @@ const useStyles = makeStyles(theme => ({
 		width: 'min(300px, 50vw)'
 	},
 	infoPanel: {
+		[theme.breakpoints.up('md')]: {
+			position: 'absolute',
+			top: theme.spacing(8),
+			[theme.breakpoints.down('sm')]: {
+				right: 0,
+				top: theme.spacing(7)
+			},
+			right: 0,
+			bottom: 0
+		},
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
-		height: '100%',
 		gridColumn: 2
 	}
 }));
