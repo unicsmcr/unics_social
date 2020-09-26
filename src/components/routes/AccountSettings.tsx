@@ -23,7 +23,7 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { APIUser, Year, Course, Visibility } from '@unicsmcr/unics_social_api_client';
+import { APIUser, Year, Course } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -267,24 +267,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 							{
 								[...Object.values(Year)].map(year => <MenuItem value={year} key={year}>{year}</MenuItem>)
 							}
-						</Select>
-					</FormControl>
-				</Box>
-
-				<Box>
-					<FormControl variant="outlined" className={classes.formControl}>
-						<InputLabel id="form-label-visibility" required>Profile Visibility</InputLabel>
-						<Select
-							labelId="form-label-visibility"
-							id="form-visibility"
-							name="visibility"
-							defaultValue={userState.profile.visibility ?? Visibility.Public}
-							label="Profile Visibility *"
-							onChange={() => profileSettingsChanged()}
-							required
-						>
-							<MenuItem value={Visibility.Public}>Public - list me in the users directory</MenuItem>
-							<MenuItem value={Visibility.Private}>Private - don't list me in the users directory</MenuItem>
 						</Select>
 					</FormControl>
 				</Box>
