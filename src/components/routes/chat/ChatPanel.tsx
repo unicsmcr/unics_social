@@ -114,7 +114,9 @@ const useStyles = makeStyles(theme => ({
 			right: 0,
 			bottom: 0
 		},
-		height: '100%',
+		[theme.breakpoints.down('xs')]: {
+			height: '100%'
+		},
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
 		gridColumn: 2
 	}
