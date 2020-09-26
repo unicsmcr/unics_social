@@ -51,7 +51,6 @@ export function ForgotPasswordModal(props: ForgotPasswordModalProps) {
 					</DialogContentText>
 					<TextField
 						label="Email"
-						variant="outlined"
 						className={classes.textField}
 						defaultValue={props.email}
 						ref={textfieldRef}
