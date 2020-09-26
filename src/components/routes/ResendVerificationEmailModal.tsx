@@ -50,7 +50,6 @@ export function ResendVerificationEmailModal(props: ResendVerificationEmailModal
 					</DialogContentText>
 					<TextField
 						label="Email"
-						variant="outlined"
 						className={classes.textField}
 						ref={textfieldRef}
 						InputProps={{ type: 'email' }}/>

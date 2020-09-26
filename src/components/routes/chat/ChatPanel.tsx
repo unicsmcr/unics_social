@@ -72,6 +72,9 @@ const useStyles = makeStyles(theme => ({
 		display: 'grid',
 		gridAutoColumns: 'auto 320px'
 	},
+	noChat: {
+		right: '0 !important'
+	},
 	chatHolder: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -246,7 +249,7 @@ export default function ChatPanel(props) {
 					</Toolbar>
 				</AppBar>
 				<Box className={classes.mainContent}>
-					<Box className={classes.chatHolder}>
+					<Box className={clsx(classes.chatHolder, !channel && classes.noChat)}>
 						{ channel
 							? (
 								viewType === ViewType.Messages
