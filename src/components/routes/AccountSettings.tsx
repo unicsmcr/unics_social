@@ -271,24 +271,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 					</FormControl>
 				</Box>
 
-				<Box>
-					<FormControl variant="outlined" className={classes.formControl}>
-						<InputLabel id="form-label-visibility" required>Profile Visibility</InputLabel>
-						<Select
-							labelId="form-label-visibility"
-							id="form-visibility"
-							name="visibility"
-							defaultValue={userState.profile.visibility ?? Visibility.Public}
-							label="Profile Visibility *"
-							onChange={() => profileSettingsChanged()}
-							required
-						>
-							<MenuItem value={Visibility.Public}>Public - list me in the users directory</MenuItem>
-							<MenuItem value={Visibility.Private}>Private - don't list me in the users directory</MenuItem>
-						</Select>
-					</FormControl>
-				</Box>
-
 				<Typography variant="overline" gutterBottom className={classes.profileSection}>Social Media</Typography>
 
 				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" defaultValue={userState.profile.instagram}
