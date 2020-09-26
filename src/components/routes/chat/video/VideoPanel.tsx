@@ -1,10 +1,13 @@
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Video, { createLocalTracks, TwilioError } from 'twilio-video';
+import { createMessage } from '../../../../store/slices/MessagesSlice';
 import NotificationDialog from '../../../util/NotificationDialog';
+import SystemMessage from '../../../util/SystemMessage';
 import OptionsPanel from './OptionsPanel';
 import PeerVideo from './PeerVideo';
 import SelfVideo from './SelfVideo';
@@ -72,6 +75,8 @@ export default function VideoPanel(props: VideoPanelProps) {
 
 	const [error, setError] = useState<string>();
 
+	const dispatch = useCallback(useDispatch(), []);
+
 	useEffect(() => {
 		let _room: Video.Room;
 		let _tracks: Video.LocalTrack[];
@@ -98,6 +103,12 @@ export default function VideoPanel(props: VideoPanelProps) {
 					return Promise.reject(new Error(translateVideoError(err)));
 				});
 				setRoom(_room);
+
+				// send join message
+				dispatch(createMessage({
+					content: SystemMessage.JoinVideo,
+					channelID: props.channel.id
+				}));
 
 				function userConnected(user: Video.Participant) {
 					user.on('trackSubscribed', (track: Video.AudioTrack|Video.VideoTrack) => {
@@ -143,6 +154,10 @@ export default function VideoPanel(props: VideoPanelProps) {
 			}
 			if (_room) {
 				_room.disconnect();
+				dispatch(createMessage({
+					content: SystemMessage.LeaveVideo,
+					channelID: props.channel.id
+				}));
 			}
 		};
 	// eslint-disable-next-line react-hooks/exhaustive-deps

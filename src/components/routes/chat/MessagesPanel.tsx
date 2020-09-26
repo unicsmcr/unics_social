@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { readChannel } from '../../../store/slices/ReadSlice';
 import { selectNoteByID } from '../../../store/slices/NotesSlice';
+import { SystemMessagesList } from '../../util/SystemMessage';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -47,6 +48,8 @@ interface MessagesPanelProps {
 		firstMessage?: string;
 	};
 }
+
+const NBSP_CHAR = String.fromCharCode(160);
 
 export default function MessagesPanel(props: MessagesPanelProps) {
 	const classes = useStyles();
@@ -145,8 +148,9 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 				<form className={classes.flexGrow} onSubmit={e => {
 					e.preventDefault();
 					const form = e.target as any;
-					const message = String(new FormData(form).get('message'));
+					let message = String(new FormData(form).get('message'));
 					form.reset();
+					if (SystemMessagesList.includes(message as any)) message = `${NBSP_CHAR}${message}`;
 					dispatch(createMessage({
 						content: message,
 						channelID: props.channel.id
