@@ -160,9 +160,6 @@ export default function RegistrationPage() {
 						<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
 							Register
 						</Typography>
-						<Typography variant="h5" align="center" color="textSecondary" component="p" gutterBottom>
-							Register a new account here
-						</Typography>
 						{
 							mainContent()
 						}
