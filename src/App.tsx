@@ -56,7 +56,7 @@ function AppLayer({ children }) {
 					horizontal: 'left'
 				}}
 				open={cookiesOpen}
-				message="By using this service, you agree to our cookie policy"
+				message="We make use of functional cookies"
 				action={
 					<React.Fragment>
 						<Button color="secondary" size="small" onClick={() => {
