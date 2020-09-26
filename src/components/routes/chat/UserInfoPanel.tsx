@@ -148,7 +148,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 			{user.forename} {user.surname}
 		</Typography>
 		{
-			hasVideo() && <Box className={classes.videoBox}>
+			hasVideo() && !isBlocked && <Box className={classes.videoBox}>
 				<Fab color={onVideoPage ? 'secondary' : 'primary'} onClick={() => {
 					onClose();
 					history.push(`${history.location.pathname.replace(/\/video/g, '')}${onVideoPage ? '' : '/video'}`);
