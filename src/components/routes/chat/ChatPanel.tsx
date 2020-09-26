@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
-import { APIDMChannel, APIEventChannel, APIUser } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, APIUser, NoteType } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import getIcon from '../../util/getAvatar';
@@ -28,6 +28,7 @@ import VideoPanel from './video/VideoPanel';
 import NotificationDialog from '../../util/NotificationDialog';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 import Timer from './Timer';
+import { selectNoteByID } from '../../../store/slices/NotesSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -157,6 +158,11 @@ export default function ChatPanel(props) {
 	const channel = useSelector(selectChannel(channelID));
 	const resource: APIUser|undefined = useSelector(selectChannelResource(channel, me!.id));
 
+	const isBlocked = useSelector((state: any) => {
+		if (!resource) return false;
+		return selectNoteByID(resource.id)(state)?.noteType === NoteType.Blocked;
+	});
+
 	useEffect(() => {
 		if (channel?.type === 'dm' && channel.video) {
 			const endTime = new Date(channel.video.endTime).getTime();
@@ -209,7 +215,7 @@ export default function ChatPanel(props) {
 
 	const videoToken = getVideoDetails();
 
-	const viewType = (requestedViewType === ViewType.Video && videoToken) ? ViewType.Video : ViewType.Messages;
+	const viewType = (requestedViewType === ViewType.Video && videoToken && !isBlocked) ? ViewType.Video : ViewType.Messages;
 
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
@@ -249,7 +255,7 @@ export default function ChatPanel(props) {
 								}
 							</Typography>
 							{
-								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && <Timer endTime={new Date(channel.video.endTime)} />
+								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && resource && !isBlocked && <Timer endTime={new Date(channel.video.endTime)} />
 							}
 						</>
 						}

@@ -1,3 +1,4 @@
+import { Typography } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { APIDMChannel } from '@unicsmcr/unics_social_api_client';
@@ -17,7 +18,7 @@ interface VideoPanelProps {
 	videoJWT: string;
 }
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
 	panel: {
 		display: 'grid',
 		height: '100%',
@@ -28,7 +29,13 @@ const useStyles = makeStyles(() => ({
 	videoArea: {
 		height: '100%',
 		width: '100%',
-		position: 'relative'
+		position: 'relative',
+		display: 'flex',
+		alignItems: 'center',
+		justifyContent: 'center'
+	},
+	waitingMessage: {
+		color: theme.palette.getContrastText('#000')
 	}
 }));
 
@@ -73,6 +80,8 @@ export default function VideoPanel(props: VideoPanelProps) {
 	const [cameraMode, setCameraMode] = useState<'user'|'environment'>('user');
 	const [tracks, setTracks] = useState<Video.LocalTrack[]>();
 
+	const [hasOtherUser, setHasOtherUser] = useState(false);
+
 	const [error, setError] = useState<string>();
 
 	const dispatch = useCallback(useDispatch(), []);
@@ -111,6 +120,7 @@ export default function VideoPanel(props: VideoPanelProps) {
 				}));
 
 				function userConnected(user: Video.Participant) {
+					setHasOtherUser(true);
 					user.on('trackSubscribed', (track: Video.AudioTrack|Video.VideoTrack) => {
 						if (peerVideoRef.current) {
 							track.attach(peerVideoRef.current);
@@ -124,6 +134,7 @@ export default function VideoPanel(props: VideoPanelProps) {
 				}
 
 				function userDisconnected() {
+					setHasOtherUser(false);
 					if (peerVideoRef.current) {
 						peerVideoRef.current.srcObject = null;
 					}
@@ -165,6 +176,9 @@ export default function VideoPanel(props: VideoPanelProps) {
 
 	return <Box className={classes.panel}>
 		<Box className={classes.videoArea}>
+			{
+				!hasOtherUser && <Typography variant="h5" className={classes.waitingMessage}>Waiting for other user...</Typography>
+			}
 			{
 				<PeerVideo ref={peerVideoRef} />
 			}
