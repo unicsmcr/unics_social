@@ -9,6 +9,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import VideocamOutlinedIcon from '@material-ui/icons/VideocamOutlined';
+import ChatOutlinedIcon from '@material-ui/icons/ChatOutlined';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { useHistory } from 'react-router-dom';
@@ -139,6 +140,8 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 		return Boolean(details?.accessToken);
 	};
 
+	const onVideoPage = history.location.pathname.includes('/video');
+
 	return <Box className={classes.root}>
 		<Avatar className={classes.avatar} src={getIcon(user)} />
 		<Typography variant="subtitle1" gutterBottom>
@@ -146,11 +149,11 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 		</Typography>
 		{
 			hasVideo() && <Box className={classes.videoBox}>
-				<Fab color="primary" onClick={() => {
+				<Fab color={onVideoPage ? 'secondary' : 'primary'} onClick={() => {
 					onClose();
-					history.push(`${history.location.pathname.replace(/\/video/g, '')}/video`);
+					history.push(`${history.location.pathname.replace(/\/video/g, '')}${onVideoPage ? '' : '/video'}`);
 				}}>
-					<VideocamOutlinedIcon />
+					{ onVideoPage ? <ChatOutlinedIcon /> : <VideocamOutlinedIcon /> }
 				</Fab>
 			</Box>
 		}
