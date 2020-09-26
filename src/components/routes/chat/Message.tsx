@@ -49,6 +49,7 @@ const useStyles = makeStyles(theme => ({
 		'alignItems': 'center',
 		'flexDirection': 'row',
 		'fontSize': '0.8rem',
+		'lineHeight': '0.8rem',
 		'& svg': {
 			height: '0.8rem'
 		}
