@@ -4,3 +4,7 @@ enum SystemMessage {
 }
 
 export default SystemMessage;
+
+const SystemMessagesList = Object.values(SystemMessage);
+
+export { SystemMessagesList };
