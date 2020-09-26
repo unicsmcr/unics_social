@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { APIChannel, APIDMChannel, APIEventChannel, APIMessage } from '@unicsmcr/unics_social_api_client';
 import { client } from '../../components/util/makeClient';
+import { SystemMessagesList } from '../../components/util/SystemMessage';
 import { addMessage, fetchMessages } from './MessagesSlice';
 import { wrapAPIError } from './util';
 
@@ -48,7 +49,7 @@ export const ChannelsSlice = createSlice({
 		builder.addCase(addMessage, (state, action) => {
 			const message: APIMessage = action.payload;
 			const channel = state.values[message.channelID];
-			if (channel && message.time > channel.lastUpdated) {
+			if (channel && message.time > channel.lastUpdated && !SystemMessagesList.includes(message.content as any)) {
 				channel.lastUpdated = message.time;
 			}
 		});
