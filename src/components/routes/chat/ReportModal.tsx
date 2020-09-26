@@ -57,7 +57,8 @@ export function ReportModal(props: ReportModalProps) {
 						rows={4}
 						variant="outlined"
 						className={classes.textField}
-						ref={textfieldRef}/>
+						ref={textfieldRef}
+						helperText="Reports must be at least 10 characters long"/>
 					<Box className={classes.buttonBox}>
 						<Button variant="contained" color="primary" onClick={() => {
 							if (!textfieldRef.current) return;
