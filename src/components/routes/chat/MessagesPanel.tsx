@@ -140,40 +140,42 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 				generateMessageBody()
 			}
 		</div>
-		<Card className={classes.chatBox}>
-			<form className={classes.flexGrow} onSubmit={e => {
-				e.preventDefault();
-				const form = e.target as any;
-				const message = String(new FormData(form).get('message'));
-				form.reset();
-				dispatch(createMessage({
-					content: message,
-					channelID: props.channel.id
-				}));
-				if (inputBoxRef.current) {
-					const textbox: HTMLElement|null = inputBoxRef.current.querySelector('input[type=text]');
-					if (textbox) {
-						textbox.focus();
+		{
+			(!isBlocked || (isBlocked && showBlocked)) && <Card className={classes.chatBox}>
+				<form className={classes.flexGrow} onSubmit={e => {
+					e.preventDefault();
+					const form = e.target as any;
+					const message = String(new FormData(form).get('message'));
+					form.reset();
+					dispatch(createMessage({
+						content: message,
+						channelID: props.channel.id
+					}));
+					if (inputBoxRef.current) {
+						const textbox: HTMLElement|null = inputBoxRef.current.querySelector('input[type=text]');
+						if (textbox) {
+							textbox.focus();
+						}
 					}
-				}
-			}}>
-				<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
-					ref={inputBoxRef}
-					onClick={() => {
-						let count = 20;
-						const resetScroll = () => {
-							if (scrollSynced && chatBoxRef.current) {
-								chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-							}
-							if (count-- > 0) setTimeout(resetScroll, 50);
-						};
-						resetScroll();
-					}}
-				/>
-				<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
-					<SendIcon />
-				</Fab>
-			</form>
-		</Card>
+				}}>
+					<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
+						ref={inputBoxRef}
+						onClick={() => {
+							let count = 20;
+							const resetScroll = () => {
+								if (scrollSynced && chatBoxRef.current) {
+									chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+								}
+								if (count-- > 0) setTimeout(resetScroll, 50);
+							};
+							resetScroll();
+						}}
+					/>
+					<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
+						<SendIcon />
+					</Fab>
+				</form>
+			</Card>
+		}
 	</>;
 }
