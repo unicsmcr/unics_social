@@ -135,7 +135,7 @@ export default function AutoAppBar() {
 						<MenuIcon />
 					</IconButton>
 				}
-				<RouterLink to="/" ><img src={require('../assets/kb_logo.png')} className={classes.logo} /></RouterLink>
+				<RouterLink to="/" ><img src={require('../assets/kb_logo.png')} className={classes.logo} alt="KB Logo"/></RouterLink>
 				{
 					!isMobile && <Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
 						<RouterLink style={{ color: 'inherit' }} to="/">UniCS KB</RouterLink>
