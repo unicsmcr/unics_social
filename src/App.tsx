@@ -89,7 +89,7 @@ function App() {
 						<AppLayer>
 							<Switch>
 								<Route path="/" exact component={Animated(HomePage, 'homepage')} />
-								<PublicRoute path="/contact" exact component={Animated(ContactUsPage, 'contact')} />
+								<Route path="/contact" exact component={Animated(ContactUsPage, 'contact')} />
 								<PublicRoute path="/register" exact component={Animated(RegistrationPage, 'registration')} />
 								<PublicRoute path="/login" exact component={Animated(LoginPage, 'login')} />
 								<PublicRoute path="/verify" exact component={VerifyEmailPage} />

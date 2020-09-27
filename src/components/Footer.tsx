@@ -5,6 +5,7 @@ import Box from '@material-ui/core/Box';
 import Typography from '@material-ui/core/Typography';
 import Link from '@material-ui/core/Link';
 import useStyles from './util/useStyles';
+import { Link as RouterLink } from 'react-router-dom';
 
 const footers = [
 	{
@@ -30,27 +31,35 @@ const footers = [
 	}
 ];
 
+const footerList = footers.map(footer => (
+	<Grid item xs={6} sm={4} key={footer.title}>
+		<Typography variant="h6" color="textPrimary" gutterBottom>
+			{footer.title}
+		</Typography>
+		<ul>
+			{footer.links.map(([item, url]) => (
+				<li key={item}>
+					{
+						url.startsWith('http')
+							? <Link href={url} variant="subtitle1" color="textSecondary">
+								{item}
+							</Link>
+							: <Link component={RouterLink} to={url} variant="subtitle1" color="textSecondary">
+								{item}
+							</Link>
+					}
+				</li>
+			))}
+		</ul>
+	</Grid>
+));
+
 export default function Footer() {
 	const classes = useStyles();
 
 	return <Container maxWidth="md" component="footer" className={classes.footer}>
 		<Grid container spacing={4} justify="space-between">
-			{footers.map(footer => (
-				<Grid item xs={6} sm={4} key={footer.title}>
-					<Typography variant="h6" color="textPrimary" gutterBottom>
-						{footer.title}
-					</Typography>
-					<ul>
-						{footer.links.map(([item, url]) => (
-							<li key={item}>
-								<Link href={url} variant="subtitle1" color="textSecondary">
-									{item}
-								</Link>
-							</li>
-						))}
-					</ul>
-				</Grid>
-			))}
+			{footerList}
 		</Grid>
 		<Box mt={5}>
 			<Copyright />
