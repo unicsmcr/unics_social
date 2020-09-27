@@ -18,14 +18,14 @@ const footers = [
 		title: 'Resources',
 		links: [
 			['UniCS', 'https://unicsmcr.com'],
-			['GitHub', 'https://github.com/unicsmcr']
+			['GitHub', 'https://github.com/unicsmcr'],
+			['Discord', 'https://unicsmcr.com/discord']
 		]
 	},
 	{
 		title: 'Legal',
 		links: [
-			['Privacy policy', 'privacy-policy'],
-			['Terms of use', '']
+			['Privacy policy', 'privacy-policy']
 		]
 	}
 ];
