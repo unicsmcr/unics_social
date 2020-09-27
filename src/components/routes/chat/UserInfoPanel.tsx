@@ -18,6 +18,7 @@ import { grey } from '@material-ui/core/colors';
 import { ReportModal } from './ReportModal';
 import { BlockUserModal } from './BlockUserModal';
 import { deleteNote, selectNoteByID } from '../../../store/slices/NotesSlice';
+import NextCallModal from './NextCallModal';
 
 const useStyles = makeStyles(theme => ({
 	root: {
@@ -36,7 +37,10 @@ const useStyles = makeStyles(theme => ({
 		margin: theme.spacing(4, 0)
 	},
 	videoBox: {
-		margin: theme.spacing(1, 0, 4, 0)
+		'margin': theme.spacing(0, 0, 3, 0),
+		'& > *': {
+			margin: theme.spacing(1, 0)
+		}
 	},
 	sampleQuestions: {
 		'width': '100%',
@@ -111,6 +115,7 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 	const [questions, setQuestions] = useState<string[]>([]);
 	const [reportOpen, setReportOpen] = useState<boolean>(false);
 	const [blockOpen, setBlockOpen] = useState<boolean>(false);
+	const [nextCallOpen, setNextCallOpen] = useState<boolean>(false);
 
 	useLayoutEffect(() => {
 		setQuestions(pickQuestions(3));
@@ -148,21 +153,6 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 			{user.forename} {user.surname}
 		</Typography>
 		{
-			hasVideo() && !isBlocked && <Box className={classes.videoBox}>
-				<Fab color={onVideoPage ? 'secondary' : 'primary'} onClick={() => {
-					onClose();
-					history.push(`${history.location.pathname.replace(/\/video/g, '')}${onVideoPage ? '' : '/video'}`);
-				}}>
-					{ onVideoPage ? <ChatOutlinedIcon /> : <VideocamOutlinedIcon /> }
-				</Fab>
-			</Box>
-		}
-		<Box>
-			{
-				renderSocialMedia()
-			}
-		</Box>
-		{
 			user.profile && <>
 				<Typography variant="subtitle2">
 					{user.profile.course}
@@ -172,6 +162,24 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 				</Typography>
 			</>
 		}
+		{
+			hasVideo() && !isBlocked && <Box className={classes.videoBox}>
+				<Box>
+					<Fab color={onVideoPage ? 'secondary' : 'primary'} onClick={() => {
+						onClose();
+						history.push(`${history.location.pathname.replace(/\/video/g, '')}${onVideoPage ? '' : '/video'}`);
+					}}>
+						{ onVideoPage ? <ChatOutlinedIcon /> : <VideocamOutlinedIcon /> }
+					</Fab>
+				</Box>
+				<Button variant="contained" color="primary" onClick={() => setNextCallOpen(true)}>Next Call</Button>
+			</Box>
+		}
+		<Box>
+			{
+				renderSocialMedia()
+			}
+		</Box>
 		{
 			!isBlocked && <Paper elevation={1} className={classes.sampleQuestions}>
 				<Typography variant="overline" align="center" className={classes.questionsTitle}>
@@ -203,5 +211,6 @@ export default function UserInfoPanel({ user, channel, onClose }: UserInfoPanelP
 		</Box>
 		<ReportModal open={reportOpen} onClose={() => setReportOpen(false)} againstUser={user} />
 		<BlockUserModal open={blockOpen} onClose={() => setBlockOpen(false)} user={user} />
+		<NextCallModal open={nextCallOpen} onClose={() => setNextCallOpen(false)} user={user} />
 	</Box>;
 }
