@@ -36,6 +36,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
+import { Prompt } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -65,7 +66,12 @@ const useStyles = makeStyles(theme => ({
 		cursor: 'pointer'
 	},
 	saveButton: {
-		margin: theme.spacing(4, 0, 8, 0)
+		position: 'fixed',
+		bottom: 0,
+		left: 0,
+		right: 0,
+		padding: theme.spacing(3),
+		textAlign: 'center'
 	},
 	saveIcon: {
 		marginRight: theme.spacing(1)
@@ -210,10 +216,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 				</Typography>
 			</Paper>
 		}
-		{<Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
-			<SaveIcon className={classes.saveIcon} />
-			Save Changes
-		</Fab>}
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
 			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>To change any of the information here, please contact us directly.</Typography>
@@ -321,6 +323,13 @@ function AccountSettings({ me }: { me: APIUser }) {
 			</form>
 		</Paper>
 
+		{(hasChanged && saveState !== SaveState.Saving) && <Box className={classes.saveButton}>
+			<Fab variant="extended" color="primary" aria-label="save" onClick={updateProfile}>
+				<SaveIcon className={classes.saveIcon} />
+					Save Changes
+			</Fab>
+		</Box>}
+
 		<Backdrop open={saveState === SaveState.Saving} className={classes.backdrop}>
 			<CircularProgress color="inherit" />
 		</Backdrop>
@@ -338,6 +347,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 			open={resetPasswordOpen}
 			onClose={() => setResetPasswordOpen(false)}
 		/>
+
+		<Prompt message="There are unsaved changes to your profile, are you sure you want to leave?" when={hasChanged} />
 	</>;
 }
 
