@@ -133,13 +133,14 @@ enum ViewType {
 
 const useTyping = (channelID: string) => {
 	const [isTyping, setIsTyping] = useState(false);
-	const [timer, setTimer] = useState<NodeJS.Timeout>(setTimeout(() => console.log('Typing initialised'), 0));
-
+	const [timer, setTimer] = useState<NodeJS.Timeout>(() => setTimeout(() => console.log('Typing initialised'), 0));
 	const currentUserID = useSelector(selectMe)?.id;
+
 	useEffect(() => {
 		const listener = client.gateway?.on(GatewayPacketType.GatewayTyping, data => {
-			console.log(data);
+			console.log(timer);
 			if (data.channelID === channelID && data.userID !== currentUserID) {
+				console.log('in if');
 				setIsTyping(true);
 				clearTimeout(timer);
 				setTimer(setTimeout(() => setIsTyping(false), 5000));
@@ -149,7 +150,7 @@ const useTyping = (channelID: string) => {
 			listener?.destroy();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [timer]);
 	return { isTyping, setIsTyping };
 };
 

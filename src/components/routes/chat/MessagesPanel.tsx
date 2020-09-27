@@ -96,7 +96,11 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
 		}
 
-		if (messages.length > 0 && messages[messages.length - 1].authorID !== me?.id) {
+		// hide typing indicator when the other user sends the message they were typing by
+		// checking if the last message was sent by them and that it was sent in the last 0.5 seconds
+		if (messages.length > 0 &&
+			messages[messages.length - 1].authorID !== me?.id &&
+			(Date.now() - messages[messages.length - 1].time) < 500) {
 			props.hideTypingIndicator();
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -188,7 +192,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 								}
 							});
 							setCanSendTypingPacket(false);
-							setTimeout(() => setCanSendTypingPacket(true), 3500);
+							setTimeout(() => setCanSendTypingPacket(true), 3000);
 						}
 					}}
 				/>
