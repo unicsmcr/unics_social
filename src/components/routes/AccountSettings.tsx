@@ -104,6 +104,26 @@ enum SaveState {
 	Saving
 }
 
+const FACEBOOK_REGEX = new RegExp(/facebook.com\/([a-zA-Z.\d]{5,})/);
+const TWITTER_REGEX = new RegExp(/twitter.com\/([^\W][\w]{1,15})/);
+const INSTAGRAM_REGEX = new RegExp(/instagram.com\/((?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29})/);
+const LINKEDIN_REGEX = new RegExp(/linkedin.com\/in\/((\w-?){0,29})/);
+
+const SOCIAL_REGEX = [
+	['facebook', FACEBOOK_REGEX],
+	['twitter', TWITTER_REGEX],
+	['instagram', INSTAGRAM_REGEX],
+	['linkedin', LINKEDIN_REGEX]
+];
+
+function tryToParse(input: string, regex: RegExp) {
+	const match = regex.exec(input);
+	if (match && match.length >= 2) {
+		return match[1];
+	}
+	return input;
+}
+
 function AccountSettings({ me }: { me: APIUser }) {
 	const classes = useStyles();
 	const dispatch = useDispatch();
@@ -173,6 +193,23 @@ function AccountSettings({ me }: { me: APIUser }) {
 		if (!formRef.current) return;
 
 		const profile = Object.fromEntries(new FormData(formRef.current).entries());
+
+		const updateField = (name: string, value: string) => {
+			const el = formRef.current?.querySelector(`input[name=${name}]`);
+			if (el && (el as any).value) {
+				(el as any).value = value;
+			}
+		};
+
+		for (const [_key, regex] of SOCIAL_REGEX) {
+			const key = _key as string;
+			if (typeof profile[key] === 'string') {
+				const value = tryToParse(profile[key] as string, regex as RegExp);
+				profile[key] = value;
+				updateField(key, value);
+			}
+		}
+
 		const newUserState = {
 			...userState,
 			profile: {
