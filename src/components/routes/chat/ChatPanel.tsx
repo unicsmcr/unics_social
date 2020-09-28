@@ -155,20 +155,21 @@ const useTyping = (channelID: string) => {
 	const currentUserID = useSelector(selectMe)?.id;
 
 	useEffect(() => {
-		const listener = client.gateway?.on(GatewayPacketType.GatewayTyping, data => {
+		const callback = data => {
 			if (data.channelID === channelID && data.userID !== currentUserID) {
 				setIsTyping(true);
 				clearTimeout(timer.current);
 				const timeout = setTimeout(() => setIsTyping(false), 4500);
 				timer.current = timeout;
-				console.log(timeout);
 			}
-		});
+		};
+
+		client.gateway?.on(GatewayPacketType.GatewayTyping, callback);
 		return () => {
-			listener?.destroy();
+			client.gateway?.off(GatewayPacketType.GatewayTyping, callback);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [channelID]);
 	return { isTyping, setIsTyping };
 };
 
