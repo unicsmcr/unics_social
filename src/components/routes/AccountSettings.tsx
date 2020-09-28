@@ -233,7 +233,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 			setSaveState(SaveState.Idle);
 			setSaveMessage({
 				title: 'Saved!',
-				message: 'Your profile has been updated'
+				message: 'Your profile has been updated! Profile pictures might take up to an hour to refresh.'
 			});
 		}).catch(err => {
 			setSaveState(SaveState.Idle);
