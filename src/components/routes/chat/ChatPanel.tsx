@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -40,6 +40,8 @@ const useStyles = makeStyles(theme => ({
 	appBar: {
 		'background': grey[700],
 		'color': theme.palette.getContrastText(grey[700]),
+		'paddingTop': theme.spacing(0.5),
+		'paddingBottom': theme.spacing(0.5),
 		'& h6': {
 			width: '100%',
 			textAlign: 'left'
@@ -133,24 +135,24 @@ enum ViewType {
 
 const useTyping = (channelID: string) => {
 	const [isTyping, setIsTyping] = useState(false);
-	const [timer, setTimer] = useState<NodeJS.Timeout>(() => setTimeout(() => console.log('Typing initialised'), 0));
+	const timer = useRef(setTimeout(() => null, 0));
 	const currentUserID = useSelector(selectMe)?.id;
 
 	useEffect(() => {
 		const listener = client.gateway?.on(GatewayPacketType.GatewayTyping, data => {
-			console.log(timer);
 			if (data.channelID === channelID && data.userID !== currentUserID) {
-				console.log('in if');
 				setIsTyping(true);
-				clearTimeout(timer);
-				setTimer(setTimeout(() => setIsTyping(false), 5000));
+				clearTimeout(timer.current);
+				const timeout = setTimeout(() => setIsTyping(false), 4500);
+				timer.current = timeout;
+				console.log(timeout);
 			}
 		});
 		return () => {
 			listener?.destroy();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [timer]);
+	}, []);
 	return { isTyping, setIsTyping };
 };
 
@@ -263,7 +265,11 @@ export default function ChatPanel(props) {
 										</>
 										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
 								}
-								{isTyping && ' is typing...'}
+								{isTyping &&
+									<Typography>
+										typing...
+									</Typography>
+								}
 							</Typography>
 							{
 								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && <Timer endTime={new Date(channel.video.endTime)} />

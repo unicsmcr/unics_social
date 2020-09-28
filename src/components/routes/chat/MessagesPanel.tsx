@@ -192,7 +192,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 								}
 							});
 							setCanSendTypingPacket(false);
-							setTimeout(() => setCanSendTypingPacket(true), 3000);
+							setTimeout(() => setCanSendTypingPacket(true), 4000);
 						}
 					}}
 				/>
