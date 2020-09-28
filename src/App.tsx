@@ -19,6 +19,8 @@ import DiscordLinkerPage from './components/routes/discord/DiscordLinkerPage';
 import ResetPasswordPage from './components/routes/ResetPassword';
 import GDPRPage from './components/legal/GDPRPage';
 import CloseIcon from '@material-ui/icons/Close';
+import Animated from './components/Animated';
+import ContactUsPage from './components/routes/ContactUs';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
@@ -55,7 +57,7 @@ function AppLayer({ children }) {
 					horizontal: 'left'
 				}}
 				open={cookiesOpen}
-				message="By using this service, you agree to our cookie policy"
+				message="We make use of functional cookies"
 				action={
 					<React.Fragment>
 						<Button color="secondary" size="small" onClick={() => {
@@ -86,17 +88,18 @@ function App() {
 					<BrowserRouter>
 						<AppLayer>
 							<Switch>
-								<Route path="/" exact component={HomePage} />
-								<PublicRoute path="/register" exact component={RegistrationPage} />
-								<PublicRoute path="/login" exact component={LoginPage} />
+								<Route path="/" exact component={Animated(HomePage, 'homepage')} />
+								<Route path="/contact" exact component={Animated(ContactUsPage, 'contact')} />
+								<PublicRoute path="/register" exact component={Animated(RegistrationPage, 'registration')} />
+								<PublicRoute path="/login" exact component={Animated(LoginPage, 'login')} />
 								<PublicRoute path="/verify" exact component={VerifyEmailPage} />
-								<ProtectedRoute path="/account" exact component={AccountSettingsPage} />
-								<ProtectedRoute path="/networking" exact component={NetworkingPage} />
-								<ProtectedRoute path="/discord" exact component={DiscordIntroPage} />
-								<Route path="/discord_link" exact component={DiscordLinkerPage} />
-								<Route path="/reset_password" exact component={ResetPasswordPage} />
-								<ProtectedRoute path="/chats/:id?/:type?" component={ChatPage} />
-								<Route path="/privacy-policy" exact component={GDPRPage} />
+								<ProtectedRoute path="/account" exact component={Animated(AccountSettingsPage, 'account-settings')} />
+								<ProtectedRoute path="/networking" exact component={Animated(NetworkingPage, 'networking')} />
+								<ProtectedRoute path="/discord" exact component={Animated(DiscordIntroPage, 'discord-intro')} />
+								<Route path="/discord_link" exact component={Animated(DiscordLinkerPage, 'discord-linker')} />
+								<Route path="/reset_password" exact component={Animated(ResetPasswordPage, 'password-reset')} />
+								<ProtectedRoute path="/chats/:id?/:type?" component={Animated(ChatPage, 'chats')} />
+								<Route path="/privacy-policy" exact component={Animated(GDPRPage, 'privacy-policy')} />
 								<Redirect to="/" />
 							</Switch>
 						</AppLayer>

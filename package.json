@@ -1,6 +1,6 @@
 {
   "name": "unics_social",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
     "@material-ui/core": "^4.11.0",
@@ -12,8 +12,9 @@
     "@types/jest": "^24.9.1",
     "@types/node": "^12.12.53",
     "@types/react-router-dom": "^5.1.5",
+    "@types/react-transition-group": "^4.4.0",
     "@types/twilio-video": "^2.7.0",
-    "@unicsmcr/unics_social_api_client": "^0.1.5",
+    "@unicsmcr/unics_social_api_client": "^0.1.6",
     "clsx": "^1.1.1",
     "moment": "^2.28.0",
     "react": "^16.13.1",
@@ -23,6 +24,7 @@
     "react-responsive": "^8.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
+    "react-transition-group": "^4.4.1",
     "redux": "^4.0.5",
     "twilio-video": "^2.7.2",
     "typescript": "^4.0.2"

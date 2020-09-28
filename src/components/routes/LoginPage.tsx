@@ -182,9 +182,6 @@ export default function LoginPage() {
 						<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
 							Login
 						</Typography>
-						<Typography variant="h5" align="center" color="textSecondary" component="p" gutterBottom>
-							Login to your account here
-						</Typography>
 						{
 							mainContent()
 						}

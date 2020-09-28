@@ -69,7 +69,7 @@ export default function DMListItem({ channel, selected, lastReadTime }: DMListIt
 		}
 	};
 
-	return <MenuItem button onClick={() => history.push(`/chats/${channel.id}`)} selected={selected}>
+	return <MenuItem button onClick={() => !selected && history.push(`/chats/${channel.id}`)} selected={selected}>
 		<ListItemAvatar>
 			{
 				!lastReadTime || (lastReadTime > new Date(channel.lastUpdated).getTime()) || selected

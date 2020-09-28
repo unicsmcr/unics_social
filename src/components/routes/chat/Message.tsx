@@ -6,10 +6,16 @@ import { darken, makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
 import { deleteMessage, OptimisedAPIMessage } from '../../../store/slices/MessagesSlice';
 
+import CallIcon from '@material-ui/icons/Call';
+import CallEndIcon from '@material-ui/icons/CallEnd';
+
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import SystemMessage from '../../util/SystemMessage';
+import clsx from 'clsx';
+import { green, red } from '@material-ui/core/colors';
 
 export interface MessageProps {
 	message: OptimisedAPIMessage;
@@ -34,7 +40,25 @@ const useStyles = makeStyles(theme => ({
 	time: (props: any) => ({
 		color: props.isOwn ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
 		marginLeft: theme.spacing(1)
-	})
+	}),
+	systemMessage: {
+		'fontWeight': 500,
+		'fontStyle': 'oblique 10deg',
+		'display': 'inline-flex',
+		'justifyContent': 'center',
+		'alignItems': 'center',
+		'flexDirection': 'row',
+		'fontSize': '0.8rem',
+		'lineHeight': '0.8rem',
+		'& svg': {
+			height: '0.8rem'
+		}
+	},
+	centered: {
+		display: 'inline-flex',
+		alignItems: 'center',
+		justifyContent: 'center'
+	}
 }));
 
 export default function Message({ message, isOwn }: MessageProps) {
@@ -52,16 +76,31 @@ export default function Message({ message, isOwn }: MessageProps) {
 		setDialogOpen(false);
 	};
 
+	let content: JSX.Element|string = message.content;
+	if (content === SystemMessage.JoinVideo) {
+		content = <Box className={classes.systemMessage}>
+			<CallIcon htmlColor={green[500]} />
+			{'Joined call'}
+		</Box>;
+	} else if (content === SystemMessage.LeaveVideo) {
+		content = <Box className={classes.systemMessage}>
+			<CallEndIcon htmlColor={red[500]} />
+			{'Left call'}
+		</Box>;
+	}
+
+	const isSystem = typeof content !== 'string';
+
 	return <>
 		<Box onMouseOver={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
 			{
-				isOwn && selected && <IconButton onClick={() => setDialogOpen(true)}>
+				isOwn && selected && !isSystem && <IconButton onClick={() => setDialogOpen(true)}>
 					<DeleteOutlinedIcon />
 				</IconButton>
 			}
 			<div className={classes.messageBubble}>
-				<Typography variant="body1" style={{ textAlign: 'left' }}>
-					{ message.content }
+				<Typography variant="body1" style={{ textAlign: 'left' }} component="div" className={clsx(isSystem && classes.centered)}>
+					{ content }
 					<Typography variant="caption" className={classes.time}>{ formatTime(message.time) }</Typography>
 				</Typography>
 			</div>

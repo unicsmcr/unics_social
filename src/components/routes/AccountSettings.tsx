@@ -23,7 +23,7 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { APIUser, Year, Course, Visibility } from '@unicsmcr/unics_social_api_client';
+import { APIUser, Year, Course } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -36,6 +36,7 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
+import { Prompt } from 'react-router-dom';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -65,7 +66,12 @@ const useStyles = makeStyles(theme => ({
 		cursor: 'pointer'
 	},
 	saveButton: {
-		margin: theme.spacing(4, 0, 8, 0)
+		position: 'fixed',
+		bottom: 0,
+		left: 0,
+		right: 0,
+		padding: theme.spacing(3),
+		textAlign: 'center'
 	},
 	saveIcon: {
 		marginRight: theme.spacing(1)
@@ -96,6 +102,26 @@ enum PageState {
 enum SaveState {
 	Idle,
 	Saving
+}
+
+const FACEBOOK_REGEX = new RegExp(/facebook.com\/([a-zA-Z.\d]{5,})/);
+const TWITTER_REGEX = new RegExp(/twitter.com\/([^\W][\w]{1,15})/);
+const INSTAGRAM_REGEX = new RegExp(/instagram.com\/((?!.*\.\.)(?!.*\.$)[^\W][\w.]{0,29})/);
+const LINKEDIN_REGEX = new RegExp(/linkedin.com\/in\/((\w-?){0,29})/);
+
+const SOCIAL_REGEX = [
+	['facebook', FACEBOOK_REGEX],
+	['twitter', TWITTER_REGEX],
+	['instagram', INSTAGRAM_REGEX],
+	['linkedin', LINKEDIN_REGEX]
+];
+
+function tryToParse(input: string, regex: RegExp) {
+	const match = regex.exec(input);
+	if (match && match.length >= 2) {
+		return match[1];
+	}
+	return input;
 }
 
 function AccountSettings({ me }: { me: APIUser }) {
@@ -167,6 +193,23 @@ function AccountSettings({ me }: { me: APIUser }) {
 		if (!formRef.current) return;
 
 		const profile = Object.fromEntries(new FormData(formRef.current).entries());
+
+		const updateField = (name: string, value: string) => {
+			const el = formRef.current?.querySelector(`input[name=${name}]`);
+			if (el && (el as any).value) {
+				(el as any).value = value;
+			}
+		};
+
+		for (const [_key, regex] of SOCIAL_REGEX) {
+			const key = _key as string;
+			if (typeof profile[key] === 'string') {
+				const value = tryToParse(profile[key] as string, regex as RegExp);
+				profile[key] = value;
+				updateField(key, value);
+			}
+		}
+
 		const newUserState = {
 			...userState,
 			profile: {
@@ -210,10 +253,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 				</Typography>
 			</Paper>
 		}
-		{<Fab variant="extended" color="primary" aria-label="save" className={classes.saveButton} disabled={!hasChanged || saveState === SaveState.Saving} onClick={updateProfile}>
-			<SaveIcon className={classes.saveIcon} />
-			Save Changes
-		</Fab>}
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
 			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>To change any of the information here, please contact us directly.</Typography>
@@ -271,24 +310,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 					</FormControl>
 				</Box>
 
-				<Box>
-					<FormControl variant="outlined" className={classes.formControl}>
-						<InputLabel id="form-label-visibility" required>Profile Visibility</InputLabel>
-						<Select
-							labelId="form-label-visibility"
-							id="form-visibility"
-							name="visibility"
-							defaultValue={userState.profile.visibility ?? Visibility.Public}
-							label="Profile Visibility *"
-							onChange={() => profileSettingsChanged()}
-							required
-						>
-							<MenuItem value={Visibility.Public}>Public - list me in the users directory</MenuItem>
-							<MenuItem value={Visibility.Private}>Private - don't list me in the users directory</MenuItem>
-						</Select>
-					</FormControl>
-				</Box>
-
 				<Typography variant="overline" gutterBottom className={classes.profileSection}>Social Media</Typography>
 
 				<TextField fullWidth label="Instagram" name="instagram" variant="outlined" defaultValue={userState.profile.instagram}
@@ -339,6 +360,13 @@ function AccountSettings({ me }: { me: APIUser }) {
 			</form>
 		</Paper>
 
+		{(hasChanged && saveState !== SaveState.Saving) && <Box className={classes.saveButton}>
+			<Fab variant="extended" color="primary" aria-label="save" onClick={updateProfile}>
+				<SaveIcon className={classes.saveIcon} />
+					Save Changes
+			</Fab>
+		</Box>}
+
 		<Backdrop open={saveState === SaveState.Saving} className={classes.backdrop}>
 			<CircularProgress color="inherit" />
 		</Backdrop>
@@ -356,6 +384,8 @@ function AccountSettings({ me }: { me: APIUser }) {
 			open={resetPasswordOpen}
 			onClose={() => setResetPasswordOpen(false)}
 		/>
+
+		<Prompt message="There are unsaved changes to your profile, are you sure you want to leave?" when={hasChanged} />
 	</>;
 }
 

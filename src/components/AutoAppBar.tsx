@@ -12,6 +12,7 @@ import { Link as RouterLink, useHistory } from 'react-router-dom';
 import { colors, Divider, Drawer, IconButton, List, ListItem, ListItemText } from '@material-ui/core';
 import { useMediaQuery } from 'react-responsive';
 import MenuIcon from '@material-ui/icons/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -30,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 		flexGrow: 1
 	},
 	link: {
-		margin: theme.spacing(1, 1.5)
+		margin: theme.spacing(1, 0)
 	},
 	backdrop: {
 		zIndex: theme.zIndex.drawer + 1,
@@ -44,6 +45,14 @@ const useStyles = makeStyles(theme => ({
 		'textAlign': 'center',
 		'& > * > *': {
 			padding: theme.spacing(1, 3)
+		}
+	},
+	logo: {
+		height: theme.spacing(6),
+		marginRight: theme.spacing(2),
+		marginTop: theme.spacing(0.5),
+		[theme.breakpoints.down('md')]: {
+			height: theme.spacing(6)
 		}
 	}
 }));
@@ -126,9 +135,12 @@ export default function AutoAppBar() {
 						<MenuIcon />
 					</IconButton>
 				}
-				<Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
-					<RouterLink style={{ color: 'inherit' }} to="/">UniCS KB</RouterLink>
-				</Typography>
+				<RouterLink to="/" ><img src={require('../assets/kb_logo.png')} className={classes.logo} alt="KB Logo"/></RouterLink>
+				{
+					!isMobile && <Typography variant="h6" color="inherit" noWrap className={classes.toolbarTitle}>
+						<RouterLink style={{ color: 'inherit' }} to="/">UniCS KB</RouterLink>
+					</Typography>
+				}
 				{
 					!isMobile && <nav>
 						{
@@ -138,14 +150,14 @@ export default function AutoAppBar() {
 									<Button color="inherit" component={RouterLink} to="/networking">Networking</Button>
 									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
 									<Button color="inherit" component={RouterLink} to="/discord">Discord</Button>
-									<Button href="#" color="inherit" variant="outlined" className={classes.link} onClick={logout}>
-											Logout
-									</Button>
+									<IconButton edge="end" color="inherit" className={classes.link} onClick={() => logout()}>
+										<ExitToAppIcon />
+									</IconButton>
 								</>
 								: <>
 									<Button color="inherit" component={RouterLink} to="/">About</Button>
 									<Button color="inherit" component={RouterLink} to="/register">Register</Button>
-									<Button href="#" color="inherit" variant="outlined" className={classes.link} component={RouterLink} to="/login">
+									<Button href="#" color="inherit" component={RouterLink} to="/login">
 											Login
 									</Button>
 								</>

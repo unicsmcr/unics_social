@@ -10,6 +10,7 @@ import { selectMe } from '../../../store/slices/UsersSlice';
 import { readChannel } from '../../../store/slices/ReadSlice';
 import { client } from '../../util/makeClient';
 import { selectNoteByID } from '../../../store/slices/NotesSlice';
+import { SystemMessagesList } from '../../util/SystemMessage';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -49,6 +50,8 @@ interface MessagesPanelProps {
 	};
 	hideTypingIndicator(): void;
 }
+
+const NBSP_CHAR = String.fromCharCode(160);
 
 export default function MessagesPanel(props: MessagesPanelProps) {
 	const classes = useStyles();
@@ -152,54 +155,56 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 				generateMessageBody()
 			}
 		</div>
-		<Card className={classes.chatBox}>
-			<form className={classes.flexGrow} onSubmit={e => {
-				e.preventDefault();
-				const form = e.target as any;
-				const message = String(new FormData(form).get('message'));
-				form.reset();
-				dispatch(createMessage({
-					content: message,
-					channelID: props.channel.id
-				}));
-				if (inputBoxRef.current) {
-					const textbox: HTMLElement | null = inputBoxRef.current.querySelector('input[type=text]');
-					if (textbox) {
-						textbox.focus();
-					}
-				}
-			}}>
-
-				<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
-					ref={inputBoxRef}
-					onClick={() => {
-						let count = 20;
-						const resetScroll = () => {
-							if (scrollSynced && chatBoxRef.current) {
-								chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
-							}
-							if (count-- > 0) setTimeout(resetScroll, 50);
-						};
-						resetScroll();
-						setCanSendTypingPacket(true);
-					}}
-					onChange={() => {
-						if (canSendTypingPacket) {
-							client.gateway!.send<ClientTypingPacket>({
-								type: GatewayPacketType.ClientTyping,
-								data: {
-									channelID: props.channel.id
-								}
-							});
-							setCanSendTypingPacket(false);
-							setTimeout(() => setCanSendTypingPacket(true), 4000);
+		{
+			(!isBlocked || (isBlocked && showBlocked)) && <Card className={classes.chatBox}>
+				<form className={classes.flexGrow} onSubmit={e => {
+					e.preventDefault();
+					const form = e.target as any;
+					let message = String(new FormData(form).get('message'));
+					form.reset();
+					if (SystemMessagesList.includes(message as any)) message = `${NBSP_CHAR}${message}`;
+					dispatch(createMessage({
+						content: message,
+						channelID: props.channel.id
+					}));
+					if (inputBoxRef.current) {
+						const textbox: HTMLElement | null = inputBoxRef.current.querySelector('input[type=text]');
+						if (textbox) {
+							textbox.focus();
 						}
-					}}
-				/>
-				<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
-					<SendIcon />
-				</Fab>
-			</form>
-		</Card>
+					}
+				}}>
+					<TextField label="Type a message" variant="filled" className={classes.flexGrow} name="message" inputProps={{ autoComplete: 'off' }}
+						ref={inputBoxRef}
+						onClick={() => {
+							let count = 20;
+							const resetScroll = () => {
+								if (scrollSynced && chatBoxRef.current) {
+									chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+								}
+								if (count-- > 0) setTimeout(resetScroll, 50);
+							};
+							resetScroll();
+							setCanSendTypingPacket(true);
+						}}
+						onChange={() => {
+							if (canSendTypingPacket) {
+								client.gateway!.send<ClientTypingPacket>({
+									type: GatewayPacketType.ClientTyping,
+									data: {
+										channelID: props.channel.id
+									}
+								});
+								setCanSendTypingPacket(false);
+								setTimeout(() => setCanSendTypingPacket(true), 4000);
+							}
+						}}
+					/>
+					<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
+						<SendIcon />
+					</Fab>
+				</form>
+			</Card>
+		}
 	</>;
 }

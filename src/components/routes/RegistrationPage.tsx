@@ -97,22 +97,18 @@ export default function RegistrationPage() {
 		if (newState.formState !== RegistrationState.Registering) return;
 
 		const { forename, surname, password, email } = newState;
-		const register = () => {
-			client.register({
-				forename, surname, password, email
-			})
-				.then(() => setState({ ...state, formState: RegistrationState.Success }))
-				.catch(err => {
-					console.warn(err);
-					setState({
-						...state,
-						formState: RegistrationState.FillingForm,
-						formError: asAPIError(err) ?? 'An unexpected error occurred trying to register your account.'
-					});
+		client.register({
+			forename, surname, password, email
+		})
+			.then(() => setState({ ...state, formState: RegistrationState.Success }))
+			.catch(err => {
+				console.warn(err);
+				setState({
+					...state,
+					formState: RegistrationState.FillingForm,
+					formError: asAPIError(err) ?? 'An unexpected error occurred trying to register your account.'
 				});
-		};
-
-		setTimeout(register, 1e3);
+			});
 	};
 
 	const mainContent = () => {
@@ -129,8 +125,8 @@ export default function RegistrationPage() {
 				return <form noValidate autoComplete="off" className={classes.form} onSubmit={onSubmit}>
 					<TextField variant="outlined" { ...buildProps('forename', 'Forename') } />
 					<TextField variant="outlined" { ...buildProps('surname', 'Surname') } />
-					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('email', 'Email') }/>
-					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('password', 'Password') } />
+					<TextField variant="outlined" InputProps={{ type: 'email' }} { ...buildProps('email', 'Email') } helperText="Your University email address"/>
+					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('password', 'Password') } helperText="At least 10 characters" />
 					<TextField variant="outlined" InputProps={{ type: 'password' }} { ...buildProps('confirmPassword', 'Confirm Password') } />
 					<Button variant="contained" color="primary" type="submit">
 						Register
@@ -163,9 +159,6 @@ export default function RegistrationPage() {
 					<Container maxWidth="sm">
 						<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
 							Register
-						</Typography>
-						<Typography variant="h5" align="center" color="textSecondary" component="p" gutterBottom>
-							Register a new account here
 						</Typography>
 						{
 							mainContent()

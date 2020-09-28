@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
-import { APIDMChannel, APIEventChannel, APIUser, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, APIUser, GatewayPacketType, NoteType } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import getIcon from '../../util/getAvatar';
@@ -29,6 +29,7 @@ import NotificationDialog from '../../util/NotificationDialog';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 import Timer from './Timer';
 import { client } from '../../util/makeClient';
+import { selectNoteByID } from '../../../store/slices/NotesSlice';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -75,6 +76,9 @@ const useStyles = makeStyles(theme => ({
 		display: 'grid',
 		gridAutoColumns: 'auto 320px'
 	},
+	noChat: {
+		right: '0 !important'
+	},
 	chatHolder: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -104,8 +108,20 @@ const useStyles = makeStyles(theme => ({
 		width: 'min(300px, 50vw)'
 	},
 	infoPanel: {
+		[theme.breakpoints.up('md')]: {
+			position: 'absolute',
+			top: theme.spacing(8),
+			[theme.breakpoints.down('sm')]: {
+				right: 0,
+				top: theme.spacing(7)
+			},
+			right: 0,
+			bottom: 0
+		},
+		[theme.breakpoints.down('xs')]: {
+			height: '100%'
+		},
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
-		height: '100%',
 		gridColumn: 2
 	},
 	typingIndicator: {
@@ -175,6 +191,11 @@ export default function ChatPanel(props) {
 	const channel = useSelector(selectChannel(channelID));
 	const resource: APIUser | undefined = useSelector(selectChannelResource(channel, me!.id));
 
+	const isBlocked = useSelector((state: any) => {
+		if (!resource) return false;
+		return selectNoteByID(resource.id)(state)?.noteType === NoteType.Blocked;
+	});
+
 	useEffect(() => {
 		if (channel?.type === 'dm' && channel.video) {
 			const endTime = new Date(channel.video.endTime).getTime();
@@ -227,7 +248,7 @@ export default function ChatPanel(props) {
 
 	const videoToken = getVideoDetails();
 
-	const viewType = (requestedViewType === ViewType.Video && videoToken) ? ViewType.Video : ViewType.Messages;
+	const viewType = (requestedViewType === ViewType.Video && videoToken && !isBlocked) ? ViewType.Video : ViewType.Messages;
 
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
@@ -272,7 +293,7 @@ export default function ChatPanel(props) {
 								}
 							</Typography>
 							{
-								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && <Timer endTime={new Date(channel.video.endTime)} />
+								channel && channel.type === 'dm' && channel.video && new Date(channel.video.endTime) > new Date() && resource && !isBlocked && <Timer endTime={new Date(channel.video.endTime)} />
 							}
 						</>
 						}
@@ -284,7 +305,7 @@ export default function ChatPanel(props) {
 					</Toolbar>
 				</AppBar>
 				<Box className={classes.mainContent}>
-					<Box className={classes.chatHolder}>
+					<Box className={clsx(classes.chatHolder, !channel && classes.noChat)}>
 						{channel
 							? (
 								viewType === ViewType.Messages

@@ -7,11 +7,11 @@ import { useSelector } from 'react-redux';
 import { selectChannelsSorted } from '../../../store/slices/ChannelsSlice';
 import { APIDMChannel, APIEventChannel, NoteType } from '@unicsmcr/unics_social_api_client';
 import DMListItem from './DMListItem';
-import { useParams } from 'react-router-dom';
+import { useParams, Link as RouterLink } from 'react-router-dom';
 import { selectReadTimes, startTime } from '../../../store/slices/ReadSlice';
 import { selectNotesByType } from '../../../store/slices/NotesSlice';
 import { selectMe } from '../../../store/slices/UsersSlice';
-import { ListItem, ListItemText, Typography } from '@material-ui/core';
+import { Link, ListItem, ListItemText, Typography } from '@material-ui/core';
 
 export const DRAWER_WIDTH = '20rem';
 
@@ -31,6 +31,10 @@ const useStyles = makeStyles(theme => ({
 	},
 	showBlockedText: {
 		textAlign: 'center'
+	},
+	padded: {
+		padding: theme.spacing(2),
+		textAlign: 'left'
 	}
 }));
 
@@ -79,6 +83,16 @@ export default function ChannelsPanel() {
 			<DMListItem channel={channel} selected={channel.id === id} lastReadTime={times ? (readTimes[channel.id] || startTime) : undefined} />
 		</div>
 	));
+
+	if (dmChannels.length + blockedDmChannels.length === 0) {
+		return <Box className={classes.root}>
+			<div className={classes.channelsPanel}>
+				<List aria-label="channels" className={classes.padded}>
+					<Typography variant="body1">You don't have any chats. Head over to <Link component={RouterLink} to="/networking">Networking</Link> to find somebody new to talk to!</Typography>
+				</List>
+			</div>
+		</Box>;
+	}
 
 	return <Box className={classes.root}>
 		<div className={classes.channelsPanel}>
