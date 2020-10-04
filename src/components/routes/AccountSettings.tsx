@@ -259,7 +259,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>
 				<>To change any of the information here, please </>
 				<Link component={RouterLink} to={'/contact'} variant="subtitle1" color="textSecondary">
-					contact us.
+					contact us
 				</Link>
 				<> directly.</>
 			</Typography>
