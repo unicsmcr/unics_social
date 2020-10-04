@@ -34,7 +34,7 @@ const initialState: AuthSliceState = {
 		status: QueueStatus.Idle,
 		errorMessage: '',
 		uxOptions: {
-			autoJoinVideo: false
+			autoJoinVideo: true
 		}
 	},
 	connected: false
