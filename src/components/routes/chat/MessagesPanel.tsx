@@ -73,10 +73,11 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		scrollPosition: number;
 	} | null>(null);
 	const [scrollSynced, setScrollSynced] = useState(true);
-	const [canSendTypingPacket, setCanSendTypingPacket] = useState(true);
+	const [lastSentTypingPacket, setLastSentTypingPacket] = useState(0);
 
 	useEffect(() => {
 		setShowBlocked(false);
+		setLastSentTypingPacket(0);
 	}, [props.channel.id]);
 
 	useEffect(() => {
@@ -185,18 +186,16 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 								if (count-- > 0) setTimeout(resetScroll, 50);
 							};
 							resetScroll();
-							setCanSendTypingPacket(true);
 						}}
 						onChange={() => {
-							if (canSendTypingPacket) {
+							if (Date.now() - lastSentTypingPacket >= 4500) {
 								client.gateway!.send<ClientTypingPacket>({
 									type: GatewayPacketType.ClientTyping,
 									data: {
 										channelID: props.channel.id
 									}
 								});
-								setCanSendTypingPacket(false);
-								setTimeout(() => setCanSendTypingPacket(true), 4000);
+								setLastSentTypingPacket(Date.now());
 							}
 						}}
 					/>
