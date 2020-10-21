@@ -125,10 +125,8 @@ const useStyles = makeStyles(theme => ({
 		gridColumn: 2
 	},
 	typingIndicator: {
-		margin: theme.spacing(1, 1),
-		display: 'flex',
-		alignItems: 'flex-start',
-		position: 'relative'
+		color: grey[300],
+		marginTop: `-${theme.spacing(0.5)}px`
 	}
 }));
 
@@ -287,10 +285,11 @@ export default function ChatPanel(props) {
 										</>
 										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
 								}
-								{isTyping &&
-									<Typography>
-										typing...
-									</Typography>
+								{
+									isTyping &&
+										<Typography className={classes.typingIndicator}>
+											typing...
+										</Typography>
 								}
 							</Typography>
 							{
