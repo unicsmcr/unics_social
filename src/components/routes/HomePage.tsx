@@ -75,7 +75,7 @@ export default function Homepage() {
 					<Typography variant="h3" component="h2">About</Typography>
 					<Typography variant="subtitle1" gutterBottom className={classes.subtitle}>Made by students, for students</Typography>
 					<Typography variant="body1">
-					KB is a platform created by UniCS to create a space for UniCS members to socialise and network with each other online! For new students, this an excellent way for you to find and connect with other students just like you!
+					KB is a platform created by UniCS as a space for students at the University of Manchester to socialise and network with each other online! For new students, this an excellent way for you to find and connect with other students just like you!
 					</Typography>
 					<ul className={classes.list}>
 						<li>Socialise and network with each other online</li>
@@ -88,7 +88,7 @@ export default function Homepage() {
 					</Typography>
 				</Paper>
 				<Typography variant="h5" color="textSecondary" className={classes.joinNow}>
-					What are you waiting for? <Link component={RouterLink} to="/register">Join now</Link> and meet potentials friends for life!
+					What are you waiting for? <Link component={RouterLink} to="/register">Join now</Link> and meet potential friends for life!
 				</Typography>
 			</Container>
 		</Page>
