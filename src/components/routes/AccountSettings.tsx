@@ -36,7 +36,8 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
-import { Prompt } from 'react-router-dom';
+import { Link as RouterLink, Prompt } from 'react-router-dom';
+import Link from '@material-ui/core/Link';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -233,7 +234,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 			setSaveState(SaveState.Idle);
 			setSaveMessage({
 				title: 'Saved!',
-				message: 'Your profile has been updated'
+				message: 'Your profile has been updated! Profile pictures might take up to an hour to refresh.'
 			});
 		}).catch(err => {
 			setSaveState(SaveState.Idle);
@@ -255,7 +256,13 @@ function AccountSettings({ me }: { me: APIUser }) {
 		}
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
-			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>To change any of the information here, please contact us directly.</Typography>
+			<Typography component="p" color="textSecondary" align="center" className={classes.margin}>
+				<>To change any of the information here, please </>
+				<Link component={RouterLink} to={'/contact'} variant="subtitle1" color="textSecondary">
+					contact us
+				</Link>
+				<> directly.</>
+			</Typography>
 			<form className={classes.form}>
 				<TextField fullWidth label="Forename" name="forename" variant="outlined" disabled defaultValue={userState.forename} />
 				<TextField fullWidth label="Surname" name="surname" variant="outlined" disabled defaultValue={userState.surname} />
