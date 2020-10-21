@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -14,7 +14,7 @@ import clsx from 'clsx';
 import { useMediaQuery } from 'react-responsive';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchChannels, selectChannel } from '../../../store/slices/ChannelsSlice';
-import { APIDMChannel, APIEventChannel, APIUser, NoteType } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, APIUser, GatewayPacketType, NoteType } from '@unicsmcr/unics_social_api_client';
 import { Skeleton } from '@material-ui/lab';
 import { fetchUser, selectMe, selectUserById } from '../../../store/slices/UsersSlice';
 import getIcon from '../../util/getAvatar';
@@ -28,6 +28,7 @@ import VideoPanel from './video/VideoPanel';
 import NotificationDialog from '../../util/NotificationDialog';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 import Timer from './Timer';
+import { client } from '../../util/makeClient';
 import { selectNoteByID } from '../../../store/slices/NotesSlice';
 
 const useStyles = makeStyles(theme => ({
@@ -40,6 +41,8 @@ const useStyles = makeStyles(theme => ({
 	appBar: {
 		'background': grey[700],
 		'color': theme.palette.getContrastText(grey[700]),
+		'paddingTop': theme.spacing(0.5),
+		'paddingBottom': theme.spacing(0.5),
 		'& h6': {
 			width: '100%',
 			textAlign: 'left'
@@ -120,6 +123,10 @@ const useStyles = makeStyles(theme => ({
 		},
 		width: `min(${DRAWER_WIDTH}, 80vw)`,
 		gridColumn: 2
+	},
+	typingIndicator: {
+		color: grey[300],
+		marginTop: `-${theme.spacing(0.5)}px`
 	}
 }));
 
@@ -128,7 +135,7 @@ export interface ChannelDisplayData {
 	image?: string;
 }
 
-const selectChannelResource = (channel: APIDMChannel|APIEventChannel|undefined, meId: string) => {
+const selectChannelResource = (channel: APIDMChannel | APIEventChannel | undefined, meId: string) => {
 	if (channel?.type === 'dm') {
 		return selectUserById(channel.users.find(userId => userId !== meId)!);
 	}
@@ -140,6 +147,30 @@ enum ViewType {
 	Video = 'video'
 }
 
+const useTyping = (channelID: string) => {
+	const [isTyping, setIsTyping] = useState(false);
+	const timer = useRef(setTimeout(() => null, 0));
+	const currentUserID = useSelector(selectMe)?.id;
+
+	useEffect(() => {
+		const callback = data => {
+			if (data.channelID === channelID && data.userID !== currentUserID) {
+				setIsTyping(true);
+				clearTimeout(timer.current);
+				const timeout = setTimeout(() => setIsTyping(false), 4500);
+				timer.current = timeout;
+			}
+		};
+
+		client.gateway?.on(GatewayPacketType.GatewayTyping, callback);
+		return () => {
+			client.gateway?.off(GatewayPacketType.GatewayTyping, callback);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [channelID]);
+	return { isTyping, setIsTyping };
+};
+
 export default function ChatPanel(props) {
 	const classes = useStyles();
 	const theme = useTheme();
@@ -147,6 +178,7 @@ export default function ChatPanel(props) {
 	const isSmall = useMediaQuery({ query: `(max-width: ${theme.breakpoints.values.md - 1}px)` });
 	const dispatch = useCallback(useDispatch(), []);
 	const { id: channelID, type: viewTypeRaw } = useParams<{ id: string; type: string }>();
+	const { isTyping, setIsTyping } = useTyping(channelID);
 	const [hasEnded, setHasEnded] = useState(false);
 	const history = useHistory();
 
@@ -156,7 +188,7 @@ export default function ChatPanel(props) {
 	const me = useSelector(selectMe);
 
 	const channel = useSelector(selectChannel(channelID));
-	const resource: APIUser|undefined = useSelector(selectChannelResource(channel, me!.id));
+	const resource: APIUser | undefined = useSelector(selectChannelResource(channel, me!.id));
 
 	const isBlocked = useSelector((state: any) => {
 		if (!resource) return false;
@@ -190,7 +222,7 @@ export default function ChatPanel(props) {
 	const [_infoPanelOpen, setInfoPanelOpen] = useState(false);
 	const infoPanelOpen = _infoPanelOpen || !isSmall;
 
-	let displayData: ChannelDisplayData|undefined;
+	let displayData: ChannelDisplayData | undefined;
 	if (resource) {
 		const user = resource;
 		displayData = {
@@ -220,7 +252,7 @@ export default function ChatPanel(props) {
 	const generateInfoPanel = () => <Box className={clsx(classes.infoPanel)}>
 		{
 			resource
-				? <UserInfoPanel user={resource} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)}/>
+				? <UserInfoPanel user={resource} channel={channel as APIDMChannel} onClose={() => setInfoPanelOpen(false)} />
 				: <CircularProgress />
 		}
 	</Box>;
@@ -230,7 +262,7 @@ export default function ChatPanel(props) {
 			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
-						{ isMobile &&
+						{isMobile &&
 							<IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={() => props.onOpenChannels()} >
 								{
 									hasUserChanges.length > 1 || (hasUserChanges.length === 1 && hasUserChanges[0] !== channelID)
@@ -239,7 +271,7 @@ export default function ChatPanel(props) {
 								}
 							</IconButton>
 						}
-						{ channelID && <>
+						{channelID && <>
 							{
 								displayData
 									? <Avatar className={classes.avatar} src={displayData.image} alt={'test'}></Avatar>
@@ -252,6 +284,12 @@ export default function ChatPanel(props) {
 											{displayData.title}
 										</>
 										: <Skeleton animation="wave" variant="text" className={classes.skeletonText} />
+								}
+								{
+									isTyping &&
+										<Typography className={classes.typingIndicator}>
+											typing...
+										</Typography>
 								}
 							</Typography>
 							{
@@ -268,11 +306,11 @@ export default function ChatPanel(props) {
 				</AppBar>
 				<Box className={classes.mainContent}>
 					<Box className={clsx(classes.chatHolder, !channel && classes.noChat)}>
-						{ channel
+						{channel
 							? (
 								viewType === ViewType.Messages
-									? <MessagesPanel channel={channel} />
-									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!}/>
+									? <MessagesPanel channel={channel} hideTypingIndicator={() => setIsTyping(false)} />
+									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!} />
 							)
 							: <Box className={classes.emptyChatArea}>
 								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
@@ -282,7 +320,7 @@ export default function ChatPanel(props) {
 					{
 						channelID && (isSmall
 							? <Drawer anchor="right" open={infoPanelOpen} onClose={() => setInfoPanelOpen(false)}>
-								{ generateInfoPanel() }
+								{generateInfoPanel()}
 							</Drawer>
 							: generateInfoPanel()
 						)

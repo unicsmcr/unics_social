@@ -1,6 +1,6 @@
 import { makeStyles, Card, TextField, Fab, CircularProgress, Button } from '@material-ui/core';
 import { grey } from '@material-ui/core/colors';
-import { APIDMChannel, APIEventChannel, NoteType } from '@unicsmcr/unics_social_api_client';
+import { APIDMChannel, APIEventChannel, NoteType, ClientTypingPacket, GatewayPacketType } from '@unicsmcr/unics_social_api_client';
 import React, { createRef, useCallback, useEffect, useState } from 'react';
 import { createMessage, fetchMessages, selectMessages } from '../../../store/slices/MessagesSlice';
 import { createGroups } from './MessageGroup';
@@ -8,6 +8,7 @@ import SendIcon from '@material-ui/icons/Send';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import { readChannel } from '../../../store/slices/ReadSlice';
+import { client } from '../../util/makeClient';
 import { selectNoteByID } from '../../../store/slices/NotesSlice';
 import { SystemMessagesList } from '../../util/SystemMessage';
 
@@ -44,9 +45,10 @@ const useStyles = makeStyles(theme => ({
 }));
 
 interface MessagesPanelProps {
-	channel: (APIDMChannel|APIEventChannel) & {
+	channel: (APIDMChannel | APIEventChannel) & {
 		firstMessage?: string;
 	};
+	hideTypingIndicator(): void;
 }
 
 const NBSP_CHAR = String.fromCharCode(160);
@@ -69,11 +71,13 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 	const inputBoxRef = createRef<HTMLInputElement>();
 	const [loadingMore, setLoadingMore] = useState<{
 		scrollPosition: number;
-	}|null>(null);
+	} | null>(null);
 	const [scrollSynced, setScrollSynced] = useState(true);
+	const [lastSentTypingPacket, setLastSentTypingPacket] = useState(0);
 
 	useEffect(() => {
 		setShowBlocked(false);
+		setLastSentTypingPacket(0);
 	}, [props.channel.id]);
 
 	useEffect(() => {
@@ -82,7 +86,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 			(dispatch(fetchMessages({ channelID: props.channel.id })) as any)
 				.then(() => setLoadingMore(null));
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [props.channel.id]);
 
 	useEffect(() => {
@@ -95,6 +99,15 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		if (messages && chatBoxRef.current && scrollSynced) {
 			chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
 		}
+
+		// hide typing indicator when the other user sends the message they were typing by
+		// checking if the last message was sent by them and that it was sent in the last 0.5 seconds
+		if (messages.length > 0 &&
+			messages[messages.length - 1].authorID !== me?.id &&
+			(Date.now() - messages[messages.length - 1].time) < 500) {
+			props.hideTypingIndicator();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [chatBoxRef, messages, scrollSynced]);
 
 	useEffect(() => {
@@ -107,7 +120,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 		if (chatBoxRef.current && loadingMore) {
 			chatBoxRef.current.scrollTop = 0;
 		}
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [loadingMore]);
 
 	const generateMessageBody = () => {
@@ -156,7 +169,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 						channelID: props.channel.id
 					}));
 					if (inputBoxRef.current) {
-						const textbox: HTMLElement|null = inputBoxRef.current.querySelector('input[type=text]');
+						const textbox: HTMLElement | null = inputBoxRef.current.querySelector('input[type=text]');
 						if (textbox) {
 							textbox.focus();
 						}
@@ -173,6 +186,17 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 								if (count-- > 0) setTimeout(resetScroll, 50);
 							};
 							resetScroll();
+						}}
+						onChange={() => {
+							if (Date.now() - lastSentTypingPacket >= 4500) {
+								client.gateway!.send<ClientTypingPacket>({
+									type: GatewayPacketType.ClientTyping,
+									data: {
+										channelID: props.channel.id
+									}
+								});
+								setLastSentTypingPacket(Date.now());
+							}
 						}}
 					/>
 					<Fab aria-label="send" className={classes.sendIcon} color="primary" type="submit">
