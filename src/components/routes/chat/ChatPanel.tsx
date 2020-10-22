@@ -70,6 +70,9 @@ const useStyles = makeStyles(theme => ({
 			left: DRAWER_WIDTH
 		}
 	},
+	halloweenChatPanel: {
+		background: `url(${require('../../../assets/halloween_chat_bg.jpg')})`
+	},
 	mainContent: {
 		overflow: 'hidden',
 		flexGrow: 1,
@@ -257,9 +260,15 @@ export default function ChatPanel(props) {
 		}
 	</Box>;
 
+	const dateToday = new Date();
+
 	return (
 		<Box className={classes.flexGrow}>
-			<Box className={classes.chatPanel}>
+			<Box className={
+				(dateToday.getMonth() === 9 && dateToday.getDate() >= 30) || (dateToday.getMonth() === 10 && dateToday.getDate() === 1)
+					? `${classes.chatPanel} ${classes.halloweenChatPanel}`
+					: classes.chatPanel
+			}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
 						{isMobile &&
