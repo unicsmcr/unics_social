@@ -4,7 +4,7 @@
 ![Lint](https://github.com/unicsmcr/unics_social/workflows/Lint/badge.svg)
 [![codecov](https://codecov.io/gh/unicsmcr/unics_social/branch/main/graph/badge.svg)](https://codecov.io/gh/unicsmcr/unics_social)
 
-UniCS's networking platform for its members at the University of Manchester.
+UniCS's networking platform for students at the University of Manchester.
 
 ## License
 
