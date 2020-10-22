@@ -23,7 +23,7 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { APIUser, Year } from '@unicsmcr/unics_social_api_client';
+import { APIUser, courses, Year } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -39,8 +39,6 @@ import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { Link as RouterLink, Prompt } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import { Autocomplete } from '@material-ui/lab';
-
-import courses from '@unicsmcr/unics_social_api_client/dist/types/courses';
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -221,7 +219,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 				...profile
 			}
 		};
-		console.log(newUserState);
 		setUserState(newUserState);
 
 		setSaveState(SaveState.Saving);

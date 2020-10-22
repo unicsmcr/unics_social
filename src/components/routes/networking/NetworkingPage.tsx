@@ -1,8 +1,8 @@
 import { Box, Button, Checkbox, CircularProgress, Container, FormControlLabel, FormGroup, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
 import { getDepartmentFromCourse } from '@unicsmcr/unics_social_api_client';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueOptions, selectQueueState, setQueueState } from '../../../store/slices/AuthSlice';
+import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueUXOptions, selectQueueState, setQueueState, selectQueueMatchOptions, setQueueMatchOptions } from '../../../store/slices/AuthSlice';
 import { selectMe } from '../../../store/slices/UsersSlice';
 import Page from '../../Page';
 
@@ -39,14 +39,11 @@ const useStyles = makeStyles(theme => ({
 
 function JoinQueue() {
 	const dispatch = useDispatch();
-	const uxOptions = useSelector(selectQueueOptions);
+	const uxOptions = useSelector(selectQueueUXOptions);
 	const classes = useStyles();
 	const me = useSelector(selectMe)!;
 
-	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean; sameDepartment: boolean }>({
-		sameYear: true,
-		sameDepartment: true
-	});
+	const matchOptions = useSelector(selectQueueMatchOptions);
 
 	return <>
 		<Typography variant="body1" align="center" component="p" className={classes.paddedPg}>
@@ -68,7 +65,9 @@ function JoinQueue() {
 					control={
 						<Checkbox
 							checked={matchOptions.sameYear}
-							onChange={e => setMatchOptions({ ...matchOptions, sameYear: e.target.checked })}
+							onChange={e => dispatch(setQueueMatchOptions({
+								sameYear: e.target.checked
+							}))}
 							name="sameYear"
 							color="primary"
 						/>
@@ -80,7 +79,9 @@ function JoinQueue() {
 					control={
 						<Checkbox
 							checked={matchOptions.sameDepartment}
-							onChange={e => setMatchOptions({ ...matchOptions, sameDepartment: e.target.checked })}
+							onChange={e => dispatch(setQueueMatchOptions({
+								sameDepartment: e.target.checked
+							}))}
 							name="sameYear"
 							color="primary"
 						/>
