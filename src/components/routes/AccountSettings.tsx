@@ -40,6 +40,10 @@ import { Link as RouterLink, Prompt } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import { Autocomplete } from '@material-ui/lab';
 
+import { matchSorter } from 'match-sorter';
+
+const filterOptions = (options: typeof courses, { inputValue }) => matchSorter(options, inputValue, { keys: ['name'] });
+
 const useStyles = makeStyles(theme => ({
 	heroContent: {
 		padding: theme.spacing(8, 2, 0, 2)
@@ -288,6 +292,7 @@ function AccountSettings({ me }: { me: APIUser }) {
 							getOptionLabel={option => option.name}
 							getOptionSelected={(option, value) => option.name === value.name}
 							onChange={() => profileSettingsChanged()}
+							filterOptions={filterOptions}
 							renderInput={params => <TextField {...params} name="course" label="Course *" variant="outlined" />}
 						/>
 					</FormControl>
