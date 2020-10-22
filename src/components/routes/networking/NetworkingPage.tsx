@@ -1,7 +1,9 @@
 import { Box, Button, Checkbox, CircularProgress, Container, FormControlLabel, FormGroup, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
+import { getDepartmentFromCourse } from '@unicsmcr/unics_social_api_client';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueOptions, selectQueueState, setQueueState } from '../../../store/slices/AuthSlice';
+import { selectMe } from '../../../store/slices/UsersSlice';
 import Page from '../../Page';
 
 const useStyles = makeStyles(theme => ({
@@ -29,6 +31,9 @@ const useStyles = makeStyles(theme => ({
 	},
 	form: {
 		textAlign: 'left'
+	},
+	formInput: {
+		marginBottom: theme.spacing(1)
 	}
 }));
 
@@ -36,8 +41,9 @@ function JoinQueue() {
 	const dispatch = useDispatch();
 	const uxOptions = useSelector(selectQueueOptions);
 	const classes = useStyles();
+	const me = useSelector(selectMe)!;
 
-	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean; sameDepartment: true }>({
+	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean; sameDepartment: boolean }>({
 		sameYear: true,
 		sameDepartment: true
 	});
@@ -58,6 +64,7 @@ function JoinQueue() {
 		<Paper elevation={2} className={classes.padded}>
 			<FormGroup className={classes.form}>
 				<FormControlLabel
+					className={classes.formInput}
 					control={
 						<Checkbox
 							checked={matchOptions.sameYear}
@@ -69,6 +76,19 @@ function JoinQueue() {
 					label="Only match with users in the same year"
 				/>
 				<FormControlLabel
+					className={classes.formInput}
+					control={
+						<Checkbox
+							checked={matchOptions.sameDepartment}
+							onChange={e => setMatchOptions({ ...matchOptions, sameDepartment: e.target.checked })}
+							name="sameYear"
+							color="primary"
+						/>
+					}
+					label={`Only match within the ${getDepartmentFromCourse(me.profile!.course)}`}
+				/>
+				<FormControlLabel
+					className={classes.formInput}
 					control={
 						<Checkbox
 							checked={uxOptions.autoJoinVideo}
