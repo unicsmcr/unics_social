@@ -37,8 +37,9 @@ function JoinQueue() {
 	const uxOptions = useSelector(selectQueueOptions);
 	const classes = useStyles();
 
-	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean }>({
-		sameYear: true
+	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean; sameDepartment: true }>({
+		sameYear: true,
+		sameDepartment: true
 	});
 
 	return <>
