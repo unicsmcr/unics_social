@@ -43,6 +43,8 @@ function JoinQueue() {
 	const classes = useStyles();
 	const me = useSelector(selectMe)!;
 
+	const course = me.profile!.course;
+
 	const matchOptions = useSelector(selectQueueMatchOptions);
 
 	return <>
@@ -74,20 +76,22 @@ function JoinQueue() {
 					}
 					label="Only match with users in the same year"
 				/>
-				<FormControlLabel
-					className={classes.formInput}
-					control={
-						<Checkbox
-							checked={matchOptions.sameDepartment}
-							onChange={e => dispatch(setQueueMatchOptions({
-								sameDepartment: e.target.checked
-							}))}
-							name="sameYear"
-							color="primary"
-						/>
-					}
-					label={`Only match within the ${getDepartmentFromCourse(me.profile!.course)}`}
-				/>
+				{
+					course !== 'Other' && <FormControlLabel
+						className={classes.formInput}
+						control={
+							<Checkbox
+								checked={matchOptions.sameDepartment}
+								onChange={e => dispatch(setQueueMatchOptions({
+									sameDepartment: e.target.checked
+								}))}
+								name="sameYear"
+								color="primary"
+							/>
+						}
+						label={`Only match within the ${getDepartmentFromCourse(course)}`}
+					/>
+				}
 				<FormControlLabel
 					className={classes.formInput}
 					control={

@@ -42,7 +42,15 @@ import { Autocomplete } from '@material-ui/lab';
 
 import { matchSorter } from 'match-sorter';
 
-const filterOptions = (options: typeof courses, { inputValue }) => matchSorter(options, inputValue, { keys: ['name'] });
+const other = courses.find(course => course.name === 'Other')!;
+
+const filterOptions = (options: typeof courses, { inputValue }) => {
+	const matches = matchSorter(options, inputValue, { keys: ['name'] });
+	if (matches.length < 30 && !matches.some(match => match.name === other.name)) {
+		matches.push(other);
+	}
+	return matches;
+};
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
