@@ -49,7 +49,11 @@ const useStyles = makeStyles(theme => ({
 		gridTemplateColumns: 'auto min-content auto',
 		alignItems: 'center',
 		gap: '1rem',
-		margin: theme.spacing(1, 0, 1, 0)
+		margin: theme.spacing(1, 0, 1, 0),
+		color: 'rgba(0, 0, 0, 0.54)'
+	},
+	halloweenDateBox: {
+		color: '#CCC !important'
 	},
 	dateLine: {
 		background: grey[500],
@@ -58,10 +62,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function DateSeparator({ date }: { date: Date }) {
-	const classes = useStyles();
-	return <Box className={classes.dateBox}>
+	const classes = useStyles(),
+		  dateToday = new Date();
+	return <Box className={
+		(dateToday.getMonth() === 9 && dateToday.getDate() >= 30) || (dateToday.getMonth() === 10 && dateToday.getDate() === 1)
+					? `${classes.dateBox} ${classes.halloweenDateBox}`
+					: classes.dateBox
+	}>
 		<Box className={classes.dateLine} />
-		<Typography variant="subtitle2" color="textSecondary" noWrap>{ moment(date).format('MMMM Do YYYY') }</Typography>
+		<Typography variant="subtitle2" noWrap>{ moment(date).format('MMMM Do YYYY') }</Typography>
 		<Box className={classes.dateLine} />
 	</Box>;
 }

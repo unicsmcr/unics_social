@@ -104,7 +104,11 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: 'center',
 		padding: theme.spacing(2),
 		overflow: 'auto',
-		flexGrow: 1
+		flexGrow: 1,
+		color: 'rgba(0, 0, 0, 0.54)'
+	},
+	halloweenEmptyChatArea: {
+		color: '#CCC'
 	},
 	skeletonText: {
 		marginLeft: theme.spacing(2),
@@ -321,8 +325,12 @@ export default function ChatPanel(props) {
 									? <MessagesPanel channel={channel} hideTypingIndicator={() => setIsTyping(false)} />
 									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!} />
 							)
-							: <Box className={classes.emptyChatArea}>
-								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+							: <Box className={
+								(dateToday.getMonth() === 9 && dateToday.getDate() >= 30) || (dateToday.getMonth() === 10 && dateToday.getDate() === 1)
+									? `${classes.emptyChatArea} ${classes.halloweenEmptyChatArea}`
+									: classes.emptyChatArea
+							}>
+								<Typography variant="h4">Select a chat!</Typography>
 							</Box>
 						}
 					</Box>
