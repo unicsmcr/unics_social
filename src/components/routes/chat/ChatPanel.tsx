@@ -264,10 +264,9 @@ export default function ChatPanel(props) {
 	const setUnreadIndicators = () => <Helmet defer={false}>
 		<title>
 			{
-				(hasUserChanges.length > 0 
+				(hasUserChanges.length > 0
 					? '*✉️ '
-					: '')
-				+ DEFAULT_TITLE
+					: '') + DEFAULT_TITLE
 			}
 		</title>
 	</Helmet>;
