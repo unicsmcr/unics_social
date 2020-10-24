@@ -1,7 +1,9 @@
 import { Box, Button, Checkbox, CircularProgress, Container, FormControlLabel, FormGroup, LinearProgress, makeStyles, Paper, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import { getDepartmentFromCourse } from '@unicsmcr/unics_social_api_client';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueOptions, selectQueueState, setQueueState } from '../../../store/slices/AuthSlice';
+import { joinDiscoveryQueue, leaveDiscoveryQueue, QueueStatus, selectQueueUXOptions, selectQueueState, setQueueState, selectQueueMatchOptions, setQueueMatchOptions } from '../../../store/slices/AuthSlice';
+import { selectMe } from '../../../store/slices/UsersSlice';
 import Page from '../../Page';
 
 const useStyles = makeStyles(theme => ({
@@ -29,17 +31,21 @@ const useStyles = makeStyles(theme => ({
 	},
 	form: {
 		textAlign: 'left'
+	},
+	formInput: {
+		marginBottom: theme.spacing(1)
 	}
 }));
 
 function JoinQueue() {
 	const dispatch = useDispatch();
-	const uxOptions = useSelector(selectQueueOptions);
+	const uxOptions = useSelector(selectQueueUXOptions);
 	const classes = useStyles();
+	const me = useSelector(selectMe)!;
 
-	const [matchOptions, setMatchOptions] = useState<{ sameYear: boolean }>({
-		sameYear: true
-	});
+	const course = me.profile!.course;
+
+	const matchOptions = useSelector(selectQueueMatchOptions);
 
 	return <>
 		<Typography variant="body1" align="center" component="p" className={classes.paddedPg}>
@@ -57,17 +63,37 @@ function JoinQueue() {
 		<Paper elevation={2} className={classes.padded}>
 			<FormGroup className={classes.form}>
 				<FormControlLabel
+					className={classes.formInput}
 					control={
 						<Checkbox
 							checked={matchOptions.sameYear}
-							onChange={e => setMatchOptions({ ...matchOptions, sameYear: e.target.checked })}
+							onChange={e => dispatch(setQueueMatchOptions({
+								sameYear: e.target.checked
+							}))}
 							name="sameYear"
 							color="primary"
 						/>
 					}
 					label="Only match with users in the same year"
 				/>
+				{
+					course !== 'Other' && <FormControlLabel
+						className={classes.formInput}
+						control={
+							<Checkbox
+								checked={matchOptions.sameDepartment}
+								onChange={e => dispatch(setQueueMatchOptions({
+									sameDepartment: e.target.checked
+								}))}
+								name="sameYear"
+								color="primary"
+							/>
+						}
+						label={`Only match within the ${getDepartmentFromCourse(course)}`}
+					/>
+				}
 				<FormControlLabel
+					className={classes.formInput}
 					control={
 						<Checkbox
 							checked={uxOptions.autoJoinVideo}
