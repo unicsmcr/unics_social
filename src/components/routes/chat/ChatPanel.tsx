@@ -260,16 +260,17 @@ export default function ChatPanel(props) {
 
 	// TODO: Store the default title in an more appropriate place, maybe App.txs?
 	// For now, this is the only component that requires a different title,
-	const DEFAULT_TITLE = "UniCS KB";
-	const setUnreadIndicators = () => {
-		return <>
-			<Helmet defer={false}>
-				<title>
-					{ (hasUserChanges.length > 0 ? '*✉️ ' : '' ) + DEFAULT_TITLE }
-				</title>
-			</Helmet>
-		</>
-	};
+	const DEFAULT_TITLE = 'UniCS KB';
+	const setUnreadIndicators = () => <Helmet defer={false}>
+		<title>
+			{
+				(hasUserChanges.length > 0 
+					? '*✉️ '
+					: '')
+				+ DEFAULT_TITLE
+			}
+		</title>
+	</Helmet>;
 
 	return (
 		<Box className={classes.flexGrow}>
