@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createRef } from 'react';
+import React, { useEffect, useState, createRef, useCallback } from 'react';
 
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
@@ -17,6 +17,7 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import Box from '@material-ui/core/Box';
+import Snackbar from '@material-ui/core/Snackbar';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
@@ -28,7 +29,6 @@ import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
 
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 import InstagramIcon from '@material-ui/icons/Instagram';
@@ -36,11 +36,12 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
-import { Link as RouterLink, Prompt } from 'react-router-dom';
+import { Link as RouterLink, Prompt, useLocation } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
-import { Autocomplete } from '@material-ui/lab';
+import { Alert, Autocomplete } from '@material-ui/lab';
 
 import { matchSorter } from 'match-sorter';
+import qs from 'qs';
 
 const other = courses.find(course => course.name === 'Other')!;
 
@@ -61,7 +62,8 @@ const useStyles = makeStyles(theme => ({
 		textAlign: 'center'
 	},
 	warning: {
-		padding: theme.spacing(4)
+		padding: theme.spacing(4),
+		marginBottom: theme.spacing(4)
 	},
 	paper: {
 		padding: theme.spacing(2),
@@ -259,12 +261,11 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 	return <>
 		{
-			!me.profile && <Paper elevation={2} className={classes.warning}>
-				<ErrorOutlineIcon />
+			!me.profile && <Alert elevation={2} severity="warning" className={classes.warning}>
 				<Typography variant="body1" color="textSecondary">
 				Before you can use UniCS  KB and meet new people, you need to finish setting up your profile below! You need to set at least your course and year of study before you can continue.
 				</Typography>
-			</Paper>
+			</Alert>
 		}
 		<Paper elevation={2} className={classes.paper}>
 			<Typography component="h2" variant="h6" color="textPrimary" align="left" gutterBottom>Account Settings</Typography>
@@ -411,6 +412,16 @@ export default function AccountSettingsPage() {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 
+	const { search } = useLocation();
+	const { promptSetup } = qs.parse(search.substring(1, search.length));
+	const [snackOpen, setSnackOpen] = useState(typeof promptSetup !== 'undefined');
+	useEffect(() => {
+		setSnackOpen(typeof promptSetup !== 'undefined');
+	}, [promptSetup]);
+	const closeSnack = useCallback(() => {
+		setSnackOpen(false);
+	}, []);
+
 	useEffect(() => {
 		if (!me && pageState === PageState.Loading) {
 			(dispatch(fetchMe()) as any)
@@ -431,6 +442,11 @@ export default function AccountSettingsPage() {
 
 	return (
 		<Page>
+			<Snackbar autoHideDuration={6000} open={snackOpen} onClose={closeSnack}>
+				<Alert severity="error" onClose={closeSnack}>
+					Please complete your profile before using chat!
+				</Alert>
+			</Snackbar>
 			{/* Hero unit */}
 			<Container maxWidth="sm" component="header" className={classes.heroContent}>
 				<Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
