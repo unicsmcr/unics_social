@@ -19,7 +19,7 @@ export const ReadSlice = createSlice({
 	reducers: {
 		readChannel(state, action) {
 			if (!state.values[action.payload.channelID] || state.values[action.payload.channelID] < action.payload.time) {
-				state.values[action.payload.channelID] = action.payload.time || Date.now() || document.hasFocus()
+				state.values[action.payload.channelID] = action.payload.time || Date.now() || document.hasFocus();
 			}
 		}
 	}
