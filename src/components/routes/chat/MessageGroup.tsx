@@ -10,6 +10,7 @@ import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import moment from 'moment';
 import { grey } from '@material-ui/core/colors';
+import { isHalloween } from '../../util/Themes';
 
 export enum Align {
 	Left = 'left',
@@ -62,13 +63,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 export function DateSeparator({ date }: { date: Date }) {
-	const classes = useStyles(),
-		  dateToday = new Date();
-	return <Box className={
-		(dateToday.getMonth() === 9 && dateToday.getDate() >= 30) || (dateToday.getMonth() === 10 && dateToday.getDate() === 1)
-					? `${classes.dateBox} ${classes.halloweenDateBox}`
-					: classes.dateBox
-	}>
+	const classes = useStyles();
+	return <Box className={clsx(classes.dateBox, isHalloween() && classes.halloweenDateBox)}>
 		<Box className={classes.dateLine} />
 		<Typography variant="subtitle2" noWrap>{ moment(date).format('MMMM Do YYYY') }</Typography>
 		<Box className={classes.dateLine} />

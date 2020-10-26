@@ -26,6 +26,7 @@ import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
 import VideoPanel from './video/VideoPanel';
 import NotificationDialog from '../../util/NotificationDialog';
+import { isHalloween } from '../../util/Themes';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 import Timer from './Timer';
 import { client } from '../../util/makeClient';
@@ -264,15 +265,9 @@ export default function ChatPanel(props) {
 		}
 	</Box>;
 
-	const dateToday = new Date();
-
 	return (
 		<Box className={classes.flexGrow}>
-			<Box className={
-				(dateToday.getMonth() === 9 && dateToday.getDate() >= 30) || (dateToday.getMonth() === 10 && dateToday.getDate() === 1)
-					? `${classes.chatPanel} ${classes.halloweenChatPanel}`
-					: classes.chatPanel
-			}>
+			<Box className={clsx(classes.chatPanel, isHalloween() && classes.halloweenChatPanel)}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
 						{isMobile &&
@@ -325,11 +320,7 @@ export default function ChatPanel(props) {
 									? <MessagesPanel channel={channel} hideTypingIndicator={() => setIsTyping(false)} />
 									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!} />
 							)
-							: <Box className={
-								(dateToday.getMonth() === 9 && dateToday.getDate() >= 30) || (dateToday.getMonth() === 10 && dateToday.getDate() === 1)
-									? `${classes.emptyChatArea} ${classes.halloweenEmptyChatArea}`
-									: classes.emptyChatArea
-							}>
+							: <Box className={clsx(classes.emptyChatArea, isHalloween() && classes.halloweenEmptyChatArea)}>
 								<Typography variant="h4">Select a chat!</Typography>
 							</Box>
 						}
