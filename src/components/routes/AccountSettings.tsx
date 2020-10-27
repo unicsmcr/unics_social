@@ -444,7 +444,7 @@ export default function AccountSettingsPage() {
 		<Page>
 			<Snackbar autoHideDuration={6000} open={snackOpen} onClose={closeSnack}>
 				<Alert severity="error" onClose={closeSnack}>
-					Please complete your profile before using chat!
+					Please complete your profile first!
 				</Alert>
 			</Snackbar>
 			{/* Hero unit */}
