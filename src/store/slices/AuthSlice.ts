@@ -16,6 +16,10 @@ export interface QueueState {
 	uxOptions: {
 		autoJoinVideo: boolean;
 	};
+	matchOptions: {
+		sameYear: boolean;
+		sameDepartment: boolean;
+	};
 	match?: {
 		channelID: string;
 		startTime: number;
@@ -35,6 +39,10 @@ const initialState: AuthSliceState = {
 		errorMessage: '',
 		uxOptions: {
 			autoJoinVideo: true
+		},
+		matchOptions: {
+			sameDepartment: false,
+			sameYear: false
 		}
 	},
 	connected: false
@@ -70,6 +78,9 @@ export const AuthSlice = createSlice({
 				...state.queue,
 				...action.payload
 			};
+		},
+		setQueueMatchOptions: (state, action: { payload: Partial<QueueState['matchOptions']> }) => {
+			Object.assign(state.queue.matchOptions, action.payload);
 		},
 		setQueueStatus: (state, action) => {
 			state.queue.status = action.payload;
@@ -114,7 +125,7 @@ export const AuthSlice = createSlice({
 	}
 });
 
-export const { setJWT, setQueueState, setQueueStatus, setConnected } = AuthSlice.actions;
+export const { setJWT, setQueueState, setQueueStatus, setConnected, setQueueMatchOptions } = AuthSlice.actions;
 
 export const selectJWT = state => state.auth.jwt;
 
@@ -124,6 +135,8 @@ export const selectQueueState = (state: { auth: AuthSliceState }) => state.auth.
 
 export const selectQueueMatch = (state: { auth: AuthSliceState }) => selectQueueState(state).match;
 
-export const selectQueueOptions = (state: { auth: AuthSliceState }) => selectQueueState(state).uxOptions;
+export const selectQueueUXOptions = (state: { auth: AuthSliceState }) => selectQueueState(state).uxOptions;
+
+export const selectQueueMatchOptions = (state: { auth: AuthSliceState }) => selectQueueState(state).matchOptions;
 
 export default AuthSlice.reducer;
