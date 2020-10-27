@@ -26,6 +26,7 @@ import { selectHasUserChanges } from '../../../store/slices/ReadSlice';
 import MessagesPanel from './MessagesPanel';
 import VideoPanel from './video/VideoPanel';
 import NotificationDialog from '../../util/NotificationDialog';
+import { isHalloween } from '../../util/Themes';
 import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice';
 import Timer from './Timer';
 import { client } from '../../util/makeClient';
@@ -70,6 +71,9 @@ const useStyles = makeStyles(theme => ({
 			left: DRAWER_WIDTH
 		}
 	},
+	halloweenChatPanel: {
+		background: `url(${require('../../../assets/halloween_chat_bg.jpg')})`
+	},
 	mainContent: {
 		overflow: 'hidden',
 		flexGrow: 1,
@@ -101,7 +105,11 @@ const useStyles = makeStyles(theme => ({
 		justifyContent: 'center',
 		padding: theme.spacing(2),
 		overflow: 'auto',
-		flexGrow: 1
+		flexGrow: 1,
+		color: 'rgba(0, 0, 0, 0.54)'
+	},
+	halloweenEmptyChatArea: {
+		color: '#CCC'
 	},
 	skeletonText: {
 		marginLeft: theme.spacing(2),
@@ -259,7 +267,7 @@ export default function ChatPanel(props) {
 
 	return (
 		<Box className={classes.flexGrow}>
-			<Box className={classes.chatPanel}>
+			<Box className={clsx(classes.chatPanel, isHalloween() && classes.halloweenChatPanel)}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
 						{isMobile &&
@@ -312,8 +320,8 @@ export default function ChatPanel(props) {
 									? <MessagesPanel channel={channel} hideTypingIndicator={() => setIsTyping(false)} />
 									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!} />
 							)
-							: <Box className={classes.emptyChatArea}>
-								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+							: <Box className={clsx(classes.emptyChatArea, isHalloween() && classes.halloweenEmptyChatArea)}>
+								<Typography variant="h4">Select a chat!</Typography>
 							</Box>
 						}
 					</Box>

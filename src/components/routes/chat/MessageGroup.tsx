@@ -10,6 +10,7 @@ import { Skeleton } from '@material-ui/lab';
 import clsx from 'clsx';
 import moment from 'moment';
 import { grey } from '@material-ui/core/colors';
+import { isHalloween } from '../../util/Themes';
 
 export enum Align {
 	Left = 'left',
@@ -49,7 +50,11 @@ const useStyles = makeStyles(theme => ({
 		gridTemplateColumns: 'auto min-content auto',
 		alignItems: 'center',
 		gap: '1rem',
-		margin: theme.spacing(1, 0, 1, 0)
+		margin: theme.spacing(1, 0, 1, 0),
+		color: 'rgba(0, 0, 0, 0.54)'
+	},
+	halloweenDateBox: {
+		color: '#CCC !important'
 	},
 	dateLine: {
 		background: grey[500],
@@ -59,9 +64,9 @@ const useStyles = makeStyles(theme => ({
 
 export function DateSeparator({ date }: { date: Date }) {
 	const classes = useStyles();
-	return <Box className={classes.dateBox}>
+	return <Box className={clsx(classes.dateBox, isHalloween() && classes.halloweenDateBox)}>
 		<Box className={classes.dateLine} />
-		<Typography variant="subtitle2" color="textSecondary" noWrap>{ moment(date).format('MMMM Do YYYY') }</Typography>
+		<Typography variant="subtitle2" noWrap>{ moment(date).format('MMMM Do YYYY') }</Typography>
 		<Box className={classes.dateLine} />
 	</Box>;
 }
