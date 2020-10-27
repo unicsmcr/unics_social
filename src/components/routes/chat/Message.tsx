@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import SystemMessage from '../../util/SystemMessage';
 import clsx from 'clsx';
 import { green, red } from '@material-ui/core/colors';
+import { isHalloween } from '../../util/Themes';
 
 export interface MessageProps {
 	message: OptimisedAPIMessage;
@@ -95,7 +96,7 @@ export default function Message({ message, isOwn }: MessageProps) {
 		<Box onMouseOver={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>
 			{
 				isOwn && selected && !isSystem && <IconButton onClick={() => setDialogOpen(true)}>
-					<DeleteOutlinedIcon />
+					<DeleteOutlinedIcon htmlColor={isHalloween() ? grey[300] : grey[800] } />
 				</IconButton>
 			}
 			<div className={classes.messageBubble}>
