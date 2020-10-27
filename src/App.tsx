@@ -12,7 +12,7 @@ import { Provider, useSelector } from 'react-redux';
 import ChatPage from './components/routes/chat/ChatsPage';
 import { Button, createMuiTheme, CssBaseline, IconButton, Snackbar, ThemeProvider } from '@material-ui/core';
 import NetworkingPage from './components/routes/networking/NetworkingPage';
-import { selectQueueMatch, selectQueueOptions } from './store/slices/AuthSlice';
+import { selectQueueMatch, selectQueueUXOptions } from './store/slices/AuthSlice';
 import AutoAppBar from './components/AutoAppBar';
 import DiscordIntroPage from './components/routes/discord/DiscordIntroPage';
 import DiscordLinkerPage from './components/routes/discord/DiscordLinkerPage';
@@ -24,7 +24,7 @@ import ContactUsPage from './components/routes/ContactUs';
 
 function AppLayer({ children }) {
 	const match = useSelector(selectQueueMatch);
-	const uxOptions = useSelector(selectQueueOptions);
+	const uxOptions = useSelector(selectQueueUXOptions);
 	const history = useHistory();
 	const discordOAuthPage = history.location.pathname.includes('discord_link');
 

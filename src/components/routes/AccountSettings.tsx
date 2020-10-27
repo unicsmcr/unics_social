@@ -23,7 +23,7 @@ import { fetchMe, selectMe } from '../../store/slices/UsersSlice';
 import { unwrapResult } from '@reduxjs/toolkit';
 import NotificationDialog from '../util/NotificationDialog';
 import Page from '../Page';
-import { APIUser, Year, Course } from '@unicsmcr/unics_social_api_client';
+import { APIUser, courses, Year } from '@unicsmcr/unics_social_api_client';
 import API_HOST from '../util/APIHost';
 import { client } from '../util/makeClient';
 import asAPIError from '../util/asAPIError';
@@ -38,6 +38,19 @@ import LinkedInIcon from '@material-ui/icons/LinkedIn';
 import { ForgotPasswordModal } from './ForgotPasswordModal';
 import { Link as RouterLink, Prompt } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
+import { Autocomplete } from '@material-ui/lab';
+
+import { matchSorter } from 'match-sorter';
+
+const other = courses.find(course => course.name === 'Other')!;
+
+const filterOptions = (options: typeof courses, { inputValue }) => {
+	const matches = matchSorter(options, inputValue, { keys: ['name'] });
+	if (matches.length < 30 && !matches.some(match => match.name === other.name)) {
+		matches.push(other);
+	}
+	return matches;
+};
 
 const useStyles = makeStyles(theme => ({
 	heroContent: {
@@ -218,7 +231,6 @@ function AccountSettings({ me }: { me: APIUser }) {
 				...profile
 			}
 		};
-		console.log(newUserState);
 		setUserState(newUserState);
 
 		setSaveState(SaveState.Saving);
@@ -281,20 +293,16 @@ function AccountSettings({ me }: { me: APIUser }) {
 
 				<Box>
 					<FormControl variant="outlined" className={classes.formControl}>
-						<InputLabel id="form-label-course" required>Course</InputLabel>
-						<Select
-							labelId="form-label-course"
-							id="form-course"
-							name="course"
-							defaultValue={userState.profile.course}
-							label="Course *"
-							required
+						<Autocomplete
+						  id="form-course"
+							options={courses}
+							defaultValue={courses.find(course => course.name === userState.profile.course)}
+							getOptionLabel={option => option.name}
+							getOptionSelected={(option, value) => option.name === value.name}
 							onChange={() => profileSettingsChanged()}
-						>
-							{
-								[...Object.values(Course)].map(course => <MenuItem value={course} key={course}>{course}</MenuItem>)
-							}
-						</Select>
+							filterOptions={filterOptions}
+							renderInput={params => <TextField {...params} name="course" label="Course *" variant="outlined" />}
+						/>
 					</FormControl>
 				</Box>
 
