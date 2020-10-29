@@ -73,7 +73,7 @@ const ProtectedRoute = props => {
 	if (jwt && (!me || !connected || !haveNotes)) {
 		fallback = <ConnectingBackdrop />;
 	} else if (jwt && me && !me.profile && !isAccountPage) {
-		fallback = <Redirect to="/account" />;
+		fallback = <Redirect to="/account?promptSetup" />;
 	}	else if (!jwt) {
 		fallback = <Redirect to="/login" />;
 	}
