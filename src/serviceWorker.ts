@@ -141,6 +141,7 @@ export function unregister() {
 		navigator.serviceWorker.ready
 			.then(registration => {
 				registration.unregister();
+				window.location.reload();
 			})
 			.catch(error => {
 				console.error(error.message);
