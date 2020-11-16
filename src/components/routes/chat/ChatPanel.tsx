@@ -30,7 +30,6 @@ import { selectQueueMatch, setQueueState } from '../../../store/slices/AuthSlice
 import Timer from './Timer';
 import { client } from '../../util/makeClient';
 import { selectNoteByID } from '../../../store/slices/NotesSlice';
-import { Helmet } from 'react-helmet';
 
 const useStyles = makeStyles(theme => ({
 	flexGrow: {
@@ -258,22 +257,8 @@ export default function ChatPanel(props) {
 		}
 	</Box>;
 
-	// TODO: Store the default title in an more appropriate place, maybe App.txs?
-	// For now, this is the only component that requires a different title,
-	const DEFAULT_TITLE = 'UniCS KB';
-	const setUnreadIndicators = () => <Helmet defer={false}>
-		<title>
-			{
-				(hasUserChanges.length > 0
-					? '*✉️ '
-					: '') + DEFAULT_TITLE
-			}
-		</title>
-	</Helmet>;
-
 	return (
 		<Box className={classes.flexGrow}>
-			{setUnreadIndicators()}
 			<Box className={classes.chatPanel}>
 				<AppBar position="static" color="inherit" elevation={2} className={classes.appBar}>
 					<Toolbar>
