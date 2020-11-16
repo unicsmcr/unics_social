@@ -111,18 +111,18 @@ export function AppDrawer(props) {
 	</Drawer>;
 }
 
-function SetUnreadIndicators(){
-	const DEFAULT_TITLE = 'UniCS KB';	
-	let unreadMessages = useSelector(selectHasUserChanges)
+function SetUnreadIndicators (){
+	const DEFAULT_TITLE = 'UniCS KB';
+	const unreadMessages = useSelector(selectHasUserChanges);
 	return <Helmet defer={false}>
 		<title>
-			{ 
+			{
 				(unreadMessages.length > 0
-					?  '('+unreadMessages.length+') ✉️ '
+					? `(${unreadMessages.length}) ✉️ `
 					: '') + DEFAULT_TITLE
 			}
 		</title>
-	</Helmet>
+	</Helmet>;
 }
 
 export default function AutoAppBar() {
@@ -145,7 +145,7 @@ export default function AutoAppBar() {
 
 	return (
 		<AppBar position="static" color="default" elevation={0} className={classes.appBar}>
-		{SetUnreadIndicators()}
+			{SetUnreadIndicators()}
 			<Toolbar className={classes.toolbar}>
 				{
 					isMobile && <IconButton color="inherit" onClick={() => setDrawerOpen(true)} edge="start">
