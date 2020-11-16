@@ -111,7 +111,7 @@ export function AppDrawer(props) {
 	</Drawer>;
 }
 
-function SetUnreadIndicators (){
+function SetUnreadIndicators() {
 	const DEFAULT_TITLE = 'UniCS KB';
 	const unreadMessages = useSelector(selectHasUserChanges);
 	return <Helmet defer={false}>
