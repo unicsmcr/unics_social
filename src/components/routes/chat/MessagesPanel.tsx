@@ -149,7 +149,7 @@ export default function MessagesPanel(props: MessagesPanelProps) {
 	}, [props.channel.id]);
 
 	useEffect(() => {
-		if (scrollSynced) {
+		if (scrollSynced && document.hasFocus()) {
 			dispatch(readChannel({ channelID: props.channel.id, time: Date.now() }));
 		}
 	}, [props.channel.id, scrollSynced, messages.length, dispatch]);
