@@ -13,6 +13,8 @@ import { colors, Divider, Drawer, IconButton, List, ListItem, ListItemText } fro
 import { useMediaQuery } from 'react-responsive';
 import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { Helmet } from 'react-helmet';
+import { selectHasUserChanges } from './../store/slices/ReadSlice';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -109,6 +111,20 @@ export function AppDrawer(props) {
 	</Drawer>;
 }
 
+function SetUnreadIndicators() {
+	const DEFAULT_TITLE = 'UniCS KB';
+	const unreadMessages = useSelector(selectHasUserChanges);
+	return <Helmet defer={false}>
+		<title>
+			{
+				(unreadMessages.length > 0
+					? `(${unreadMessages.length}) ✉️ `
+					: '') + DEFAULT_TITLE
+			}
+		</title>
+	</Helmet>;
+}
+
 export default function AutoAppBar() {
 	const classes = useStyles();
 	const hasJWT = Boolean(useSelector(selectJWT));
@@ -129,6 +145,7 @@ export default function AutoAppBar() {
 
 	return (
 		<AppBar position="static" color="default" elevation={0} className={classes.appBar}>
+			{SetUnreadIndicators()}
 			<Toolbar className={classes.toolbar}>
 				{
 					isMobile && <IconButton color="inherit" onClick={() => setDrawerOpen(true)} edge="start">
