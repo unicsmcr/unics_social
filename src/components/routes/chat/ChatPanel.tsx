@@ -313,7 +313,10 @@ export default function ChatPanel(props) {
 									: <VideoPanel channel={channel as APIDMChannel} videoJWT={videoToken!} />
 							)
 							: <Box className={classes.emptyChatArea}>
-								<Typography variant="h4" color="textSecondary">Select a chat!</Typography>
+								<Box>
+									<Typography variant="h4" color="textSecondary">Select a chat!</Typography><br />
+									<Button variant="contained" color="primary" onClick={() => history.push('/networking')}>Find someone new</Button>
+								</Box>
 							</Box>
 						}
 					</Box>
