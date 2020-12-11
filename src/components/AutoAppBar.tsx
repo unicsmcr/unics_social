@@ -15,6 +15,7 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Helmet } from 'react-helmet';
 import { selectHasUserChanges } from './../store/slices/ReadSlice';
+import clsx from 'clsx';
 
 const useStyles = makeStyles(theme => ({
 	appBar: {
@@ -56,6 +57,12 @@ const useStyles = makeStyles(theme => ({
 		[theme.breakpoints.down('md')]: {
 			height: theme.spacing(6)
 		}
+	},
+	xmasInfo: {
+		'& > img': {
+			maxHeight: '90vh',
+			maxWidth: '95vw'
+		}
 	}
 }));
 
@@ -72,6 +79,14 @@ const AUTH_LINKS = [
 	['Account Settings', '/account'],
 	['Discord', '/discord']
 ];
+
+function shouldShowPoster() {
+	const hasSeen = Boolean(localStorage.getItem('seenxmas'));
+	if (!hasSeen) {
+		localStorage.setItem('seenxmas', 'yes');
+	}
+	return !hasSeen;
+}
 
 export function AppDrawer(props) {
 	const classes = useStyles();
@@ -129,6 +144,7 @@ export default function AutoAppBar() {
 	const classes = useStyles();
 	const hasJWT = Boolean(useSelector(selectJWT));
 	const [loggingOut, setLoggingOut] = useState(false);
+	const [xmasOpen, setXmasOpen] = useState(shouldShowPoster());
 	const dispatch = useDispatch();
 	const theme = useTheme();
 
@@ -163,6 +179,7 @@ export default function AutoAppBar() {
 						{
 							hasJWT
 								? <>
+									<Button color="secondary" variant="contained" onClick={() => setXmasOpen(true)}>Christmas</Button>
 									<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
 									<Button color="inherit" component={RouterLink} to="/networking">Networking</Button>
 									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
@@ -185,6 +202,9 @@ export default function AutoAppBar() {
 			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()}/>
 			<Backdrop open={loggingOut && hasJWT} className={classes.backdrop}>
 				<CircularProgress color="inherit" />
+			</Backdrop>
+			<Backdrop open={xmasOpen} className={clsx(classes.backdrop, classes.xmasInfo)} onClick={() => setXmasOpen(false)}>
+				<img src={require('../assets/info.png')} alt="Christmas Event Poster" />
 			</Backdrop>
 		</AppBar>
 	);
