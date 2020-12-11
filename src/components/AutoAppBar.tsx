@@ -112,6 +112,17 @@ export function AppDrawer(props) {
 				))
 			}
 			{
+				<>
+					<Divider />
+					<ListItem button className={classes.drawerItem} onClick={() => {
+						props.onXmas();
+						props.onClose();
+					}}>
+						<ListItemText>Christmas Event</ListItemText>
+					</ListItem>
+				</>
+			}
+			{
 				props.hasJWT && <>
 					<Divider />
 					<ListItem button className={classes.drawerItem} onClick={() => {
@@ -199,7 +210,7 @@ export default function AutoAppBar() {
 					</nav>
 				}
 			</Toolbar>
-			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()}/>
+			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()} onXmas={() => setXmasOpen(true)}/>
 			<Backdrop open={loggingOut && hasJWT} className={classes.backdrop}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
