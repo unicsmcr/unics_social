@@ -61,7 +61,7 @@ const useStyles = makeStyles(theme => ({
 		bottom: 0,
 		right: 0,
 		backgroundColor: '#BABABA',
-		background: `url(${require('../../../assets/chat_bg.png')})`,
+		background: `url(${require('../../../assets/easter_bg.png')})`,
 		transition: theme.transitions.create(['left'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.leavingScreen

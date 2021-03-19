@@ -118,7 +118,7 @@ export function AppDrawer(props) {
 						props.onXmas();
 						props.onClose();
 					}}>
-						<ListItemText>Christmas Event</ListItemText>
+						<ListItemText>Easter Event</ListItemText>
 					</ListItem>
 				</>
 			}
@@ -190,7 +190,7 @@ export default function AutoAppBar() {
 						{
 							hasJWT
 								? <>
-									<Button color="secondary" variant="contained" onClick={() => setXmasOpen(true)}>Christmas</Button>
+									<Button color="secondary" variant="contained" onClick={() => setXmasOpen(true)}>Easter</Button>
 									<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
 									<Button color="inherit" component={RouterLink} to="/networking">Networking</Button>
 									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
