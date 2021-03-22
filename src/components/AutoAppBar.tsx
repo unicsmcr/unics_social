@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
 			height: theme.spacing(6)
 		}
 	},
-	xmasInfo: {
+	specialEventInfo: {
 		'& > img': {
 			maxHeight: '90vh',
 			maxWidth: '95vw'
@@ -81,9 +81,9 @@ const AUTH_LINKS = [
 ];
 
 function shouldShowPoster() {
-	const hasSeen = Boolean(localStorage.getItem('seenxmas'));
+	const hasSeen = Boolean(localStorage.getItem('seeneaster'));
 	if (!hasSeen) {
-		localStorage.setItem('seenxmas', 'yes');
+		localStorage.setItem('seeneaster', 'yes');
 	}
 	return !hasSeen;
 }
@@ -115,7 +115,7 @@ export function AppDrawer(props) {
 				<>
 					<Divider />
 					<ListItem button className={classes.drawerItem} onClick={() => {
-						props.onXmas();
+						props.onSpecialEvent();
 						props.onClose();
 					}}>
 						<ListItemText>Easter Event</ListItemText>
@@ -155,7 +155,7 @@ export default function AutoAppBar() {
 	const classes = useStyles();
 	const hasJWT = Boolean(useSelector(selectJWT));
 	const [loggingOut, setLoggingOut] = useState(false);
-	const [xmasOpen, setXmasOpen] = useState(shouldShowPoster());
+	const [specialEventOpen, setSpecialEventOpen] = useState(shouldShowPoster());
 	const dispatch = useDispatch();
 	const theme = useTheme();
 
@@ -190,7 +190,7 @@ export default function AutoAppBar() {
 						{
 							hasJWT
 								? <>
-									<Button color="secondary" variant="contained" onClick={() => setXmasOpen(true)}>Easter</Button>
+									<Button color="secondary" variant="contained" onClick={() => setSpecialEventOpen(true)}>Easter</Button>
 									<Button color="inherit" component={RouterLink} to="/chats">Chats</Button>
 									<Button color="inherit" component={RouterLink} to="/networking">Networking</Button>
 									<Button color="inherit" component={RouterLink} to="/account">Account</Button>
@@ -210,11 +210,11 @@ export default function AutoAppBar() {
 					</nav>
 				}
 			</Toolbar>
-			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()} onXmas={() => setXmasOpen(true)}/>
+			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()} SpecialEvent={() => setSpecialEventOpen(true)}/>
 			<Backdrop open={loggingOut && hasJWT} className={classes.backdrop}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
-			<Backdrop open={xmasOpen} className={clsx(classes.backdrop, classes.xmasInfo)} onClick={() => setXmasOpen(false)}>
+			<Backdrop open={specialEventOpen} className={clsx(classes.backdrop, classes.specialEventInfo)} onClick={() => setSpecialEventOpen(false)}>
 				<img src={require('../assets/info.png')} alt="Christmas Event Poster" />
 			</Backdrop>
 		</AppBar>
