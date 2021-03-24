@@ -210,7 +210,7 @@ export default function AutoAppBar() {
 					</nav>
 				}
 			</Toolbar>
-			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()} SpecialEvent={() => setSpecialEventOpen(true)}/>
+			<AppDrawer open={isMobile && drawerOpen} onClose={() => setDrawerOpen(false)} hasJWT={hasJWT} onLogout={() => logout()} onSpecialEvent={() => setSpecialEventOpen(true)}/>
 			<Backdrop open={loggingOut && hasJWT} className={classes.backdrop}>
 				<CircularProgress color="inherit" />
 			</Backdrop>
