@@ -17,14 +17,11 @@ export default function pickQuestions(n = 3): string[] {
 }
 
 export const SAMPLE_QUESTIONS = [
-	'Where are you from?',
-	'Which course are you studying?',
-	'Which year are you in?',
-	'Where are you staying?',
-	'What are you excited for this year?',
-	'How was your summer?',
-	'Have you visited Manchester before?',
-	'What societies have you joined or planning to join?',
-	'What do you do for fun?',
-	'What do you want to do after graduating?'
+	'What are your plans for Easter break?',
+	'What is the best part about Easter for you?',
+	'How are you finding University so far, especially with the remote studying?',
+	'How is life different from what you did before going to University?',
+	'What is your favourite movie or TV show?',
+	'What is your favourite dish or dessert?',
+	'What is a place you want to visit someday?'
 ];
