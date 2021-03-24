@@ -215,7 +215,7 @@ export default function AutoAppBar() {
 				<CircularProgress color="inherit" />
 			</Backdrop>
 			<Backdrop open={specialEventOpen} className={clsx(classes.backdrop, classes.specialEventInfo)} onClick={() => setSpecialEventOpen(false)}>
-				<img src={require('../assets/info.png')} alt="Christmas Event Poster" />
+				<img src={require('../assets/easter_poster.jpg')} alt="Christmas Event Poster" />
 			</Backdrop>
 		</AppBar>
 	);
